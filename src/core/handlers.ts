@@ -55,7 +55,13 @@ import {
   type OpenContextHolder,
   type OpenRefusalCode,
 } from './open-context.js';
-import { projectFilePath, readProjectSets, writeProjectSets } from './project-store.js';
+import {
+  projectFilePath,
+  readProjectSets,
+  readProjectSetsReport,
+  writeProjectSets,
+  type UnreadableProjectFile,
+} from './project-store.js';
 import type { Repository, RepositoryDocument } from './repository.js';
 import { ConfirmationLedger, fail, fingerprint } from './safety.js';
 
@@ -139,6 +145,14 @@ const resolveSet = (
     fail('not_found', `no script set "${id}"`, {
       available: document.sets.map((s) => s.id),
     });
+  const unreadable = (set as MaybeUnreadable)[UNREADABLE];
+  if (unreadable)
+    fail(
+      'unavailable',
+      `set "${set.id}" belongs to the open project, whose fli.tubby.json cannot be read — ` +
+        `its live copy may be there: ${unreadable.message}`,
+      { unreadable },
+    );
   return set;
 };
 
@@ -254,16 +268,51 @@ async function effectiveDocument(context: HandlerContext): Promise<RepositoryDoc
 }
 
 /** `effectiveDocument`, plus which ids came from the project file. */
-async function effectiveView(
-  context: HandlerContext,
-): Promise<{ document: RepositoryDocument; projectIds: Set<string> }> {
+async function effectiveView(context: HandlerContext): Promise<{
+  document: RepositoryDocument;
+  projectIds: Set<string>;
+  unreadable: UnreadableProjectFile | null;
+}> {
   const document = await context.repository.read();
   const status = context.openContext.get();
-  if (!status.context) return { document, projectIds: new Set() };
-  const projectSets = await readProjectSets(projectDirOf(status.context));
+  if (!status.context) return { document, projectIds: new Set(), unreadable: null };
+  const { sets: projectSets, unreadable } = await readProjectSetsReport(
+    projectDirOf(status.context),
+  );
+  if (unreadable) {
+    return {
+      document: { ...document, sets: markUnreadable(document.sets, status.context.project, unreadable) },
+      projectIds: new Set(),
+      unreadable,
+    };
+  }
   const projectIds = new Set(projectSets.map((set) => set.id));
-  if (projectSets.length === 0) return { document, projectIds };
-  return { document: { ...document, sets: mergeSets(document.sets, projectSets) }, projectIds };
+  if (projectSets.length === 0) return { document, projectIds, unreadable: null };
+  return {
+    document: { ...document, sets: mergeSets(document.sets, projectSets) },
+    projectIds,
+    unreadable: null,
+  };
+}
+
+/**
+ * When the open project's `fli.tubby.json` cannot be read, the store copy of a
+ * set attached to that project might be stale — the file may hold a newer one.
+ * Such a set is carried as a COPY tagged with why, and `resolveSet` refuses it
+ * (`unavailable`); every other set answers as usual (W6 fix M2). The tag is a
+ * symbol, so it can never be serialised into either file.
+ */
+const UNREADABLE = Symbol('project file unreadable');
+type MaybeUnreadable = ScriptSet & { [UNREADABLE]?: UnreadableProjectFile };
+
+function markUnreadable(
+  sets: ScriptSet[],
+  project: string,
+  unreadable: UnreadableProjectFile,
+): ScriptSet[] {
+  return sets.map((set) =>
+    set.project === project ? ({ ...set, [UNREADABLE]: unreadable } as MaybeUnreadable) : set,
+  );
 }
 
 /**
@@ -290,7 +339,9 @@ async function projectAwareUpdate<T>(
   const status = context.openContext.get();
   const openContext = status.context;
   const projectDir = openContext ? projectDirOf(openContext) : null;
-  const before = projectDir ? await readProjectSets(projectDir) : [];
+  const report = projectDir ? await readProjectSetsReport(projectDir) : null;
+  const before = report?.sets ?? [];
+  const unreadable = report?.unreadable ?? null;
   const beforeIds = new Set(before.map((set) => set.id));
   // Snapshot NOW: handlers mutate the merged sets in place, and those are the
   // very objects in `before`, so comparing afterwards would always say "same".
@@ -303,7 +354,13 @@ async function projectAwareUpdate<T>(
     // never part of the merged view a handler edits, and re-attached below
     // byte-for-byte rather than reconstructed from it.
     const visible = storeDocument.sets.filter((set) => !beforeIds.has(set.id));
-    const merged: RepositoryDocument = { ...storeDocument, sets: [...visible, ...before] };
+    const merged: RepositoryDocument = {
+      ...storeDocument,
+      sets:
+        unreadable && openContext
+          ? markUnreadable(visible, openContext.project, unreadable)
+          : [...visible, ...before],
+    };
 
     const { document: mergedAfter, result: handlerResult } = fn(merged);
 
@@ -496,7 +553,7 @@ export function createHandlers(): Record<string, Handler> {
 
   handlers.list_sets = async (input, context) => {
     const { allSets } = parse(INPUT.list_sets, input);
-    const { document, projectIds } = await effectiveView(context);
+    const { document, projectIds, unreadable } = await effectiveView(context);
     const status = context.openContext.get();
     const project = !allSets && status.context ? status.context.project : null;
     const sets = document.sets.filter((set) => project === null || set.project === project);
@@ -511,7 +568,7 @@ export function createHandlers(): Record<string, Handler> {
         // An exported store copy is LISTED, never hidden and never editable:
         // with no context on its project it is the only copy this launch can
         // see, and the talent can still prompt from it (W6 fix F4, Swagger).
-        readOnly: Boolean(set.exportedTo),
+        readOnly: Boolean(set.exportedTo) || Boolean((set as MaybeUnreadable)[UNREADABLE]),
         livesIn: set.exportedTo ? `${set.exportedTo}/fli.tubby.json` : null,
         source: projectIds.has(set.id) ? 'project' : 'store',
         scriptCount: set.scripts.length,
@@ -522,6 +579,9 @@ export function createHandlers(): Record<string, Handler> {
         project,
         allSets: Boolean(allSets),
         missing: status.refused?.code === 'missing' ? (status.refused.missing ?? []) : [],
+        // What could NOT be read, said out loud — the list still answers for
+        // every set the file does not own (W6 fix M2).
+        unreadable,
       },
     };
   };
@@ -692,74 +752,68 @@ export function createHandlers(): Record<string, Handler> {
         'no open context — point Teletubby at the set\'s project first (context_select)',
       );
     const openContext = status.context;
-    const alreadyInProject = (await readProjectSets(projectDirOf(openContext))).some(
-      (candidate) => candidate.id === parsed.setId,
-    );
+    const projectDir = projectDirOf(openContext);
 
-    return context.repository.update<unknown>((document) => {
-      const set = document.sets.find((candidate) => candidate.id === parsed.setId);
-      if (!set)
-        fail('not_found', `no set "${parsed.setId}" in the app store`, {
-          available: document.sets.map((s) => s.id),
+    // Every check against the store copy, BEFORE anything is written.
+    const store = await context.repository.read();
+    const set = store.sets.find((candidate) => candidate.id === parsed.setId);
+    if (!set)
+      fail('not_found', `no set "${parsed.setId}" in the app store`, {
+        available: store.sets.map((s) => s.id),
+      });
+    if (!set.project)
+      fail(
+        'invalid_input',
+        `set "${set.id}" is not attached to a project — attach one with rename_set first`,
+      );
+    if (set.project !== openContext.project)
+      fail(
+        'invalid_input',
+        `set "${set.id}" is attached to "${set.project}", but Teletubby is open on ` +
+          `"${openContext.project}" — open Teletubby at "${set.project}" to export it`,
+      );
+
+    // An unreadable project file refuses here (`internal`), before the store
+    // is marked — it is never overwritten on a guess.
+    const existing = await readProjectSets(projectDir);
+    const alreadyInProject = existing.some((candidate) => candidate.id === set.id);
+    // A second export would copy the STALE store data over the live project
+    // copy — a silent revert of every edit made since (W6 fix F3). Refused,
+    // never the default; nothing here offers a same-id overwrite.
+    if (set.exportedTo || alreadyInProject)
+      fail(
+        'conflict',
+        `set "${set.id}" is already exported to "${set.exportedTo ?? openContext.project}"; ` +
+          `the project copy (fli.tubby.json) is live`,
+        { exportedTo: set.exportedTo ?? openContext.project, inProjectFile: alreadyInProject },
+      );
+
+    if (context.dryRun)
+      return { applied: false, preview: { setId: set.id, project: openContext.project } };
+
+    // `exportedTo` describes where the app-store copy went, and is meaningless
+    // on the project's own copy — so the exported data carries neither field.
+    const exported: ScriptSet = { ...set, exportedTo: null, exportedBrand: null };
+
+    // PROJECT FILE FIRST, then the store mark (W6 fix M2). The other order left
+    // a store copy marked `exportedTo` — and so read-only everywhere — when the
+    // project write failed, pointing at a live copy that did not exist.
+    await writeProjectSets(projectDir, openContext.project, [...existing, exported]);
+
+    await context.repository.update<void>((document) => {
+      const live = document.sets.find((candidate) => candidate.id === set.id);
+      if (live) {
+        context.recordPrior({
+          exportedTo: live.exportedTo ?? null,
+          exportedBrand: live.exportedBrand ?? null,
         });
-      // A second export would copy the STALE store data over the live project
-      // copy — a silent revert of every edit made since (W6 fix F3). Refused,
-      // never the default; nothing here offers a same-id overwrite.
-      if (set.exportedTo || alreadyInProject)
-        fail(
-          'conflict',
-          `set "${set.id}" is already exported to "${set.exportedTo ?? openContext.project}"; ` +
-            `the project copy (fli.tubby.json) is live`,
-          { exportedTo: set.exportedTo ?? openContext.project, inProjectFile: alreadyInProject },
-        );
-      if (!set.project)
-        fail(
-          'invalid_input',
-          `set "${set.id}" is not attached to a project — attach one with rename_set first`,
-        );
-      if (set.project !== openContext.project)
-        fail(
-          'invalid_input',
-          `set "${set.id}" is attached to "${set.project}", but Teletubby is open on ` +
-            `"${openContext.project}" — open Teletubby at "${set.project}" to export it`,
-        );
-
-      if (context.dryRun)
-        return {
-          document,
-          result: { applied: false, preview: { setId: set.id, project: openContext.project } },
-        };
-
-      context.recordPrior({ exportedTo: set.exportedTo ?? null, exportedBrand: set.exportedBrand ?? null });
-      set.exportedTo = openContext.project;
-      set.exportedBrand = openContext.brand;
-      // The store copy is captured BEFORE the mark above is persisted, so the
-      // exported copy in fli.tubby.json is the clean data, not `{…exportedTo}`
-      // of itself — `exportedTo` describes where the app-store copy went, and
-      // is meaningless on the project's own copy.
-      const exported: ScriptSet = { ...set, exportedTo: null, exportedBrand: null };
-      return { document, result: { applied: true, exported, projectDir: projectDirOf(openContext) } };
-    }).then(async (result) => {
-      const outcome = result as {
-        applied: boolean;
-        exported?: ScriptSet;
-        projectDir?: string;
-        preview?: unknown;
-      };
-      if (!outcome.applied || !outcome.exported || !outcome.projectDir) return outcome;
-
-      const existing = await readProjectSets(outcome.projectDir);
-      const next = [
-        ...existing.filter((candidate) => candidate.id !== outcome.exported!.id),
-        outcome.exported,
-      ];
-      await writeProjectSets(outcome.projectDir, openContext.project, next);
-      return {
-        applied: true,
-        set: outcome.exported,
-        projectFile: projectFilePath(outcome.projectDir),
-      };
+        live.exportedTo = openContext.project;
+        live.exportedBrand = openContext.brand;
+      }
+      return { document, result: undefined };
     });
+
+    return { applied: true, set: exported, projectFile: projectFilePath(projectDir) };
   };
 
   handlers.create_script = async (input, context) => {

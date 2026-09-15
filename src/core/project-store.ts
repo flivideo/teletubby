@@ -71,6 +71,30 @@ export async function readProjectSets(projectDir: string): Promise<ScriptSet[]> 
   return (result as { success: true; data: z.infer<typeof projectFileSchema> }).data.sets;
 }
 
+export interface UnreadableProjectFile {
+  file: string;
+  message: string;
+}
+
+/**
+ * `readProjectSets`, but a file that exists and cannot be used is REPORTED
+ * rather than thrown — so a read can still answer for every set the file does
+ * not own, and say what it could not read (W6 fix M2). Absent is still `[]`
+ * with nothing reported: absent and unreadable must never look alike.
+ */
+export async function readProjectSetsReport(
+  projectDir: string,
+): Promise<{ sets: ScriptSet[]; unreadable: UnreadableProjectFile | null }> {
+  try {
+    return { sets: await readProjectSets(projectDir), unreadable: null };
+  } catch (error) {
+    return {
+      sets: [],
+      unreadable: { file: projectFilePath(projectDir), message: (error as Error).message },
+    };
+  }
+}
+
 /** Atomic write of the project's own sets — the whole file, always rewritten in full. */
 export async function writeProjectSets(
   projectDir: string,

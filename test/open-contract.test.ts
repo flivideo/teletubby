@@ -135,7 +135,7 @@ describe('door 2 — launch arguments resolve the same way door 3 does (C1)', ()
 
     const listed = await invoke('list_sets');
     expect(listed.sets.map((s: { id: string }) => s.id)).toEqual(['attached-set', 'export-me']);
-    expect(listed.filter).toEqual({ project: PROJECT, allSets: false, missing: [] });
+    expect(listed.filter).toEqual({ project: PROJECT, allSets: false, missing: [], unreadable: null });
   });
 
   it('2 · context_select is idempotent and never touches teletubby.json (C2)', async () => {
@@ -476,6 +476,37 @@ describe('F6 · a no-op re-point wakes nobody', () => {
     } finally {
       unsubscribe();
     }
+  });
+});
+
+describe('M2 · an unusable project file never costs a set', () => {
+  it('export writes the project file FIRST: a failed write leaves the store copy unmarked', async () => {
+    mkdirSync(PROJECT_FILE(), { recursive: true }); // fli.tubby.json is a directory
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+    const refused = await post('set_export_to_project', { setId: 'export-me' });
+    expect(refused.body.ok).toBe(false);
+    expect(storeSet('export-me').exportedTo).toBeNull();
+  });
+
+  it('a corrupt project file degrades per set, and list_sets says what it could not read', async () => {
+    writeFileSync(PROJECT_FILE(), '{ not json');
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+
+    const listed = await invoke('list_sets', { allSets: true });
+    expect(listed.sets.map((s: { id: string }) => s.id).sort()).toEqual(['attached-set', 'export-me', 'other-set']);
+    expect(listed.filter.unreadable.file).toBe(PROJECT_FILE());
+    expect(listed.sets.find((s: { id: string }) => s.id === 'attached-set').readOnly).toBe(true);
+    expect(listed.sets.find((s: { id: string }) => s.id === 'other-set').readOnly).toBe(false);
+
+    // A set the file cannot own answers, reads and writes alike…
+    expect((await post('get_set', { setId: 'other-set' })).status).toBe(200);
+    expect((await post('rename_set', { setId: 'other-set', title: 'still works' })).status).toBe(200);
+    // …and one it might own refuses, saying why, rather than serving a stale copy.
+    const attached = await post('get_set', { setId: 'attached-set' });
+    expect(attached.status).toBe(503);
+    expect(attached.body.error.details.unreadable.file).toBe(PROJECT_FILE());
+    expect((await post('rename_set', { setId: 'attached-set', title: 'no' })).status).toBe(503);
+    expect(storeSet('attached-set').title).toBe('Attached');
   });
 });
 
