@@ -298,9 +298,16 @@ session-scoped context, never a sticky setting — restarting the app loses it, 
   `teletubby call context_select --input '{"brand":"appydave","project":"d02-cutty-audio-cleanup"}'`.
   Both doors call the SAME resolver (`src/core/open-context.ts`), so drift between them is a
   test bug, not a design one (👤 David's own framing, open-contract §3.1).
-- **A refusal never moves the context.** `context_select` on a bad brand/ambiguous project
-  leaves whatever was open alone and reports why in `refused`; `list_sets` falls back to
-  today's unfiltered list and says `filter.missing` when nothing was ever set.
+- **A refusal never moves the context, and it FAILS on the wire.** `context_select` on a bad
+  brand/ambiguous project leaves whatever was open alone, records the refusal (`context_get`
+  shows it) and returns the same statuses FliHub W3 does, with `details: { context, refused }`:
+  `missing` 400 · `unknown-brand`/`project-not-found` 404 · `project-ambiguous` 409 ·
+  `no-brand-root`/`registry-unreadable` 503. The CLI exits non-zero. `list_sets` falls back to
+  today's unfiltered list and says `filter.missing` when nothing was ever set. An invalid
+  `~/.fli/machine.json` refuses `no-brand-root` rather than silently dropping its `brandRoots`.
+- **An identical re-select is a no-op** (`applied: false`, no change event), and the window's
+  change listener never swaps the set on stage for another. A set that disappears from the
+  list stays on stage and the setup panel says so.
 
 ⚠️ **Teletubby is LOOSER than `@flivideo/core`'s own `resolveOpenContext`.** That helper
 requires a valid `fli.studio.json` (FliStudio's identity file — not yet written into any real
@@ -425,7 +432,7 @@ npm install        # npm ONLY — packageManager is pinned; pnpm blocks Electron
 npm run app        # start DETACHED — renderer on 7110, control API on 7111 (registered slots)
 npm run app:status # is it up? (health, not a guess)
 npm run app:stop
-npm test           # 287 tests
+npm test           # 355 tests
 npm run typecheck
 ```
 
