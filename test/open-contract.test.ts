@@ -29,6 +29,11 @@ const BRAND = 'fixture';
 const PROJECT = 'd02-fixture-project';
 const AMBIGUOUS_CODE_A = 'd02-fixture-project';
 const AMBIGUOUS_CODE_B = 'd02-another-project';
+const SINGLE_CODE = 'd03-single';
+/** Registered, but with no `video_projects` location — `resolveBrandRoot` → null. */
+const ROOTLESS_BRAND = 'rootless';
+/** Registered, pointing at a root folder that does not exist. */
+const NOWHERE_BRAND = 'nowhere';
 
 beforeAll(() => {
   home = mkdtempSync(join(tmpdir(), 'teletubby-open-contract-home-'));
@@ -45,6 +50,11 @@ beforeAll(() => {
             // fixture registry entry work on any machine, including this one.
             locations: { video_projects: '/Users/placeholder/video-projects/v-fixture' },
           },
+          [ROOTLESS_BRAND]: { name: 'Rootless Brand' },
+          [NOWHERE_BRAND]: {
+            name: 'Nowhere Brand',
+            locations: { video_projects: '/Users/placeholder/video-projects/v-nowhere' },
+          },
         },
       },
       null,
@@ -58,6 +68,7 @@ beforeAll(() => {
   // `membership: 'folder'` path is what this fixture exercises.
   mkdirSync(join(brandRoot, AMBIGUOUS_CODE_A), { recursive: true });
   mkdirSync(join(brandRoot, AMBIGUOUS_CODE_B), { recursive: true });
+  mkdirSync(join(brandRoot, SINGLE_CODE), { recursive: true });
 
   originalHome = process.env.HOME;
   process.env.HOME = home;
@@ -119,14 +130,23 @@ afterEach(async () => {
   rmSync(PROJECT_FILE(), { recursive: true, force: true });
 });
 
-describe('door 2 — launch arguments resolve the same way door 3 does (C1)', () => {
-  it('1 · reports the context and filters the set list to the project', async () => {
-    // Exactly what src/main/index.ts does at startup: parse argv/env, hand
-    // the result straight to context_select.
-    const openArgs = parseOpenArgs(['--brand', BRAND, '--project', PROJECT], {});
-    expect(openArgs.missing).toEqual([]);
+/** Door 2 exactly as src/main/index.ts runs it: parse argv/env, invoke in-process as `agent`. */
+const door2 = async (target: Core, argv: string[], env: Record<string, string>): Promise<any> => {
+  const openArgs = parseOpenArgs(argv, env);
+  expect(openArgs.missing).toEqual([]);
+  const result = await target.invoke('context_select', openArgs.context, { principal: 'agent' });
+  if (!result.ok) throw new Error(`door 2: ${result.error.code} ${result.error.message}`);
+  return result.data;
+};
 
-    const selected = await invoke('context_select', openArgs.context);
+const DOOR_2_SOURCES: [string, string[], Record<string, string>][] = [
+  ['argv (--brand/--project)', ['--brand', BRAND, '--project', PROJECT], {}],
+  ['env (FLIVIDEO_BRAND/FLIVIDEO_PROJECT, what scripts/app.sh exports)', [], { FLIVIDEO_BRAND: BRAND, FLIVIDEO_PROJECT: PROJECT }],
+];
+
+describe('door 2 — launch arguments resolve the same way door 3 does (C1)', () => {
+  it.each(DOOR_2_SOURCES)('1 · via %s: reports the context and filters the set list to the project', async (_label, argv, env) => {
+    const selected = await door2(core, argv, env);
     expect(selected.applied).toBe(true);
     expect(selected.context).toMatchObject({ brand: BRAND, project: PROJECT, membership: 'folder' });
 
@@ -138,18 +158,87 @@ describe('door 2 — launch arguments resolve the same way door 3 does (C1)', ()
     expect(listed.filter).toEqual({ project: PROJECT, allSets: false, missing: [], unreadable: null });
   });
 
-  it('2 · context_select is idempotent and never touches teletubby.json (C2)', async () => {
-    const openArgs = parseOpenArgs(['--brand', BRAND, '--project', PROJECT], {});
-    const first = await invoke('context_select', openArgs.context);
+  it('2 · door 3 on a fresh session returns the door-2 body, deep-equal, and neither touches teletubby.json (C2)', async () => {
+    // Baseline BEFORE the first select, so a select that wrote the store fails here.
     const before = readFileSync(storePath, 'utf8');
 
-    const second = await invoke('context_select', openArgs.context);
-    // Nothing changed, so nothing is applied (W6 fix F6) — the context is the same.
-    expect(second.applied).toBe(false);
-    expect(second.context).toEqual(first.context);
+    // Door 2 on its own session (a separate core over the same store)…
+    const launched = await door2(restartedCore(), ['--brand', BRAND, '--project', PROJECT], {});
+    // …and door 3, over HTTP, on this test's fresh session.
+    const selected = await invoke('context_select', { brand: BRAND, project: PROJECT });
+    expect(selected).toEqual(launched);
 
-    const after = readFileSync(storePath, 'utf8');
-    expect(after).toBe(before);
+    // A re-select of the context already held changes nothing, so it applies
+    // nothing (W6 fix F6) — the context itself is identical.
+    const again = await invoke('context_select', { brand: BRAND, project: PROJECT });
+    expect(again).toEqual({ ...launched, applied: false });
+
+    expect(readFileSync(storePath, 'utf8')).toBe(before);
+  });
+});
+
+describe('R31 · a code reference over members and plain folders: 0 / exactly 1 / 2+', () => {
+  it('0 matches → 404 project-not-found', async () => {
+    const none = await post('context_select', { brand: BRAND, project: 'z99' });
+    expect(none.status).toBe(404);
+    expect(none.body.error.details.refused.code).toBe('project-not-found');
+  });
+
+  it('exactly 1 match → resolves to that folder', async () => {
+    const one = await invoke('context_select', { brand: BRAND, project: 'd03' });
+    expect(one.context).toMatchObject({ project: SINGLE_CODE, membership: 'folder' });
+  });
+
+  it('2+ matches → 409 project-ambiguous listing every folder', async () => {
+    const many = await post('context_select', { brand: BRAND, project: 'd02' });
+    expect(many.status).toBe(409);
+    expect(many.body.error.details.refused.candidates.sort()).toEqual([AMBIGUOUS_CODE_A, AMBIGUOUS_CODE_B].sort());
+  });
+
+  it('a path escape is not a reference → 404', async () => {
+    const escape = await post('context_select', { brand: BRAND, project: '../v-fixture' });
+    expect(escape.status).toBe(404);
+    expect(escape.body.error.details.refused.code).toBe('project-not-found');
+  });
+});
+
+describe('the two refusals the build never exercised → 503 unavailable', () => {
+  it('no-brand-root: a registered brand with no video_projects location', async () => {
+    const refused = await post('context_select', { brand: ROOTLESS_BRAND, project: PROJECT });
+    expect(refused.status).toBe(503);
+    expect(refused.body.error.details.refused.code).toBe('no-brand-root');
+  });
+
+  it('no-brand-root: a brand whose root folder does not exist on this machine', async () => {
+    const refused = await post('context_select', { brand: NOWHERE_BRAND, project: PROJECT });
+    expect(refused.status).toBe(503);
+    expect(refused.body.error.details.refused.code).toBe('no-brand-root');
+  });
+
+  it('registry-unreadable: brands.json is not JSON', async () => {
+    const brandsFile = join(home, '.config', 'appydave', 'brands.json');
+    const original = readFileSync(brandsFile, 'utf8');
+    writeFileSync(brandsFile, '{ not json');
+    try {
+      const refused = await post('context_select', { brand: BRAND, project: PROJECT });
+      expect(refused.status).toBe(503);
+      expect(refused.body.error.details.refused.code).toBe('registry-unreadable');
+    } finally {
+      writeFileSync(brandsFile, original);
+    }
+  });
+
+  it('registry-unreadable: brands.json does not exist', async () => {
+    const brandsFile = join(home, '.config', 'appydave', 'brands.json');
+    const original = readFileSync(brandsFile, 'utf8');
+    rmSync(brandsFile);
+    try {
+      const refused = await post('context_select', { brand: BRAND, project: PROJECT });
+      expect(refused.status).toBe(503);
+      expect(refused.body.error.details.refused.code).toBe('registry-unreadable');
+    } finally {
+      writeFileSync(brandsFile, original);
+    }
   });
 });
 
