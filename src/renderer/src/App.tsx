@@ -68,8 +68,12 @@ export default function App(): JSX.Element {
     // these. Returns the list so the callers below can choose WHICH set to
     // open, instead of the old hardcoded sets[0].
     const fetchSets = async (): Promise<SetSummary[] | null> => {
+      // allSets: the panel filters by project itself. Fetching the FILTERED
+      // list is how a context_select made the set on stage look "gone" and
+      // pulled a different one in front of the talent (W6 fix F6).
       const result = await window.appytron.invoke<{ sets: SetSummary[] }>({
         capability: 'list_sets',
+        input: { allSets: true },
       });
       if (cancelled) return null;
       if (!result.ok) {
@@ -130,6 +134,11 @@ export default function App(): JSX.Element {
     // Re-fetch the CURRENT set, not the first — a new project appearing in the
     // store must never switch the one on stage.
     //
+    // ⚠️ And NEVER fall back to a different set. If the one on stage is no
+    // longer listed, it STAYS on stage and the setup panel marks it
+    // (`stageSetGone`); choosing another set is the talent's, never a change
+    // event's (W6 fix F6). Only an empty stage may be filled from here.
+    //
     // Rigs take the same treatment: a rig an agent authored appears as a new
     // chip, and the arrangement on screen is left exactly where it is.
     const unsubscribe = window.appytron.onControlChanged(() => {
@@ -137,9 +146,12 @@ export default function App(): JSX.Element {
       void (async () => {
         const sets = await fetchSets();
         if (!sets || cancelled) return;
-        const currentId = useProm.getState().set?.id;
-        const target = sets.find((entry) => entry.id === currentId)?.id ?? sets[0]?.id;
-        if (target) await fetchSet(target, refresh);
+        const current = useProm.getState().set;
+        if (current) {
+          if (sets.some((entry) => entry.id === current.id)) await fetchSet(current.id, refresh);
+          return;
+        }
+        if (sets[0]) await fetchSet(sets[0].id, load);
       })();
     });
 

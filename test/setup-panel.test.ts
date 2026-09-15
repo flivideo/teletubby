@@ -8,7 +8,9 @@ import {
   nextScript,
   prevScript,
   setupEdge,
+  stageSetGone,
   useProm,
+  type SetSummary,
 } from '../src/renderer/src/store';
 
 /**
@@ -215,5 +217,31 @@ describe('the strip’s script stepper', () => {
     // `focus` IS a rig property and IS meant to change — that is the whole
     // point of reusing it rather than inventing a key nothing remembers.
     expect(after.focus).toBe(true);
+  });
+});
+
+describe('the set on stage when the list changes underneath it (W6 fix F6)', () => {
+  const summary = (id: string, project: string | null = null): SetSummary => ({
+    id,
+    title: id,
+    description: '',
+    project,
+    scriptCount: 0,
+  });
+
+  it('is marked gone — not swapped — when the store no longer lists it', () => {
+    s().setSets([summary('kybernesis-phase-1'), summary('other')]);
+    expect(stageSetGone(s())).toBe(false);
+
+    const onStage = s().set;
+    s().setSets([summary('other')]);
+    expect(stageSetGone(s())).toBe(true);
+    // Nothing in the store moved the talent: the set, script and beat stand.
+    expect(s().set).toBe(onStage);
+  });
+
+  it('an empty list (nothing fetched yet) is not "gone"', () => {
+    s().setSets([]);
+    expect(stageSetGone(s())).toBe(false);
   });
 });

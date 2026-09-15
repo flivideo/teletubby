@@ -473,6 +473,7 @@ export function createHandlers(): Record<string, Handler> {
   handlers.context_select = async (input, context) => {
     const parsed = parse(INPUT.context_select, input);
     const resolution = await resolveOpenArgs(parsed);
+    const held = context.openContext.get().context;
     // Recorded FIRST, so `context_get` and `list_sets.filter.missing` still
     // show the refusal — and the previous context stands (C3).
     const report = context.openContext.apply(resolution);
@@ -483,8 +484,12 @@ export function createHandlers(): Record<string, Handler> {
       const { code, message } = resolution.refusal;
       fail(REFUSAL_ERROR[code], message, { context: report.context, refused: report.refused });
     }
-    // `applied` also gates the change event (core/index.ts `didApply`).
-    return { applied: true, ...report };
+    // `applied` also gates the change event (core/index.ts `didApply`). An
+    // identical re-select changes nothing, so it announces nothing: every
+    // window re-fetching on a no-op re-point from FliStudio is exactly the
+    // path that could swap the set on stage (W6 fix F6).
+    const changed = JSON.stringify(held) !== JSON.stringify(resolution.context);
+    return { applied: changed, ...report };
   };
 
   /* --- reading ----------------------------------------------------- */

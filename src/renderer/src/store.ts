@@ -1012,6 +1012,14 @@ export const prevScript = (s: PrompterState): Script | undefined => {
 export const setupEdge = (s: PrompterState): CameraSide => edgeFor(s.camera);
 
 /**
+ * The set on stage is no longer in the store's list. It is KEPT on stage —
+ * a change event never swaps it for another (W6 fix F6) — and this is what
+ * lets the setup panel say so instead of pretending nothing happened.
+ */
+export const stageSetGone = (s: PrompterState): boolean =>
+  s.set !== null && s.sets.length > 0 && !s.sets.some((entry) => entry.id === s.set!.id);
+
+/**
  * **Layout is subordinate to camera position** (requirements §2) — the one
  * constraint everything else in the UI bends to.
  *

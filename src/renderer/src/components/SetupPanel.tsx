@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { CAMERA_SIDES, RECORDING_SET, TEXT_PRESETS } from '@shared/rig';
-import { ZONE_LABEL, layoutOf, rigModified, setupEdge, useProm } from '../store';
+import { ZONE_LABEL, layoutOf, rigModified, setupEdge, stageSetGone, useProm } from '../store';
 import { Chip } from './Controls';
 import RigAdmin from './RigAdmin';
 import type { Rig } from '@shared/rig';
@@ -26,6 +26,7 @@ function ProjectAdmin(): JSX.Element {
   const sets = useProm((s) => s.sets);
   const set = useProm((s) => s.set);
   const requestSet = useProm((s) => s.requestSet);
+  const gone = useProm(stageSetGone);
   const [mode, setMode] = useState<'idle' | 'create' | 'rename'>('idle');
   const [folder, setFolder] = useState('');
   const [title, setTitle] = useState('');
@@ -172,6 +173,12 @@ function ProjectAdmin(): JSX.Element {
             </Chip>
           )}
         </>
+      )}
+
+      {gone && set && (
+        <span className="w-full font-body text-xs text-sequence">
+          On stage: {set.title} — no longer in the store. It stays until you pick another.
+        </span>
       )}
 
       {/* The core's refusal, verbatim — including "a move, not a rename". */}

@@ -144,7 +144,9 @@ describe('door 2 — launch arguments resolve the same way door 3 does (C1)', ()
     const before = readFileSync(storePath, 'utf8');
 
     const second = await invoke('context_select', openArgs.context);
-    expect(second).toEqual(first);
+    // Nothing changed, so nothing is applied (W6 fix F6) — the context is the same.
+    expect(second.applied).toBe(false);
+    expect(second.context).toEqual(first.context);
 
     const after = readFileSync(storePath, 'utf8');
     expect(after).toBe(before);
@@ -449,6 +451,31 @@ describe('F4 · an exported set is listed read-only with no context, and never e
       source: 'project',
     });
     expect((await invoke('rename_set', { setId: 'export-me', title: 'live edit' })).applied).toBe(true);
+  });
+});
+
+describe('F6 · a no-op re-point wakes nobody', () => {
+  it('an identical context_select fires zero change events; a real switch fires one', async () => {
+    const events: string[] = [];
+    const unsubscribe = core.onChange((event) => events.push(event.capability));
+    try {
+      const first = await core.invoke('context_select', { brand: BRAND, project: PROJECT }, { principal: 'agent' });
+      expect(first.ok && (first.data as any).applied).toBe(true);
+      expect(events).toEqual(['context_select']);
+
+      const again = await core.invoke('context_select', { brand: BRAND, project: PROJECT }, { principal: 'agent' });
+      expect(again.ok && (again.data as any).applied).toBe(false);
+      expect(events).toHaveLength(1);
+
+      await core.invoke('context_select', { brand: BRAND, project: AMBIGUOUS_CODE_B }, { principal: 'agent' });
+      expect(events).toHaveLength(2);
+
+      // A refusal is not a change either.
+      await core.invoke('context_select', { brand: 'no-such-brand', project: PROJECT }, { principal: 'agent' });
+      expect(events).toHaveLength(2);
+    } finally {
+      unsubscribe();
+    }
   });
 });
 
