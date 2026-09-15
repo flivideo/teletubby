@@ -52,6 +52,7 @@ import { scoreAgainst } from './cadence.js';
 import {
   projectDirOf,
   resolveOpenArgs,
+  type OpenContext,
   type OpenContextHolder,
   type OpenRefusalCode,
 } from './open-context.js';
@@ -59,6 +60,7 @@ import {
   projectFilePath,
   readProjectSets,
   readProjectSetsReport,
+  withProjectLock,
   writeProjectSets,
   type UnreadableProjectFile,
 } from './project-store.js';
@@ -336,8 +338,20 @@ async function projectAwareUpdate<T>(
   context: HandlerContext,
   fn: (document: RepositoryDocument) => { document: RepositoryDocument; result: T },
 ): Promise<T> {
-  const status = context.openContext.get();
-  const openContext = status.context;
+  const openContext = context.openContext.get().context;
+  if (!openContext) return projectAwareUpdateLocked(context, null, fn);
+  // The project file is read, merged, and written back inside ONE queue per
+  // project directory (W6 fix M3).
+  return withProjectLock(projectDirOf(openContext), () =>
+    projectAwareUpdateLocked(context, openContext, fn),
+  );
+}
+
+async function projectAwareUpdateLocked<T>(
+  context: HandlerContext,
+  openContext: OpenContext | null,
+  fn: (document: RepositoryDocument) => { document: RepositoryDocument; result: T },
+): Promise<T> {
   const projectDir = openContext ? projectDirOf(openContext) : null;
   const report = projectDir ? await readProjectSetsReport(projectDir) : null;
   const before = report?.sets ?? [];
@@ -753,12 +767,21 @@ export function createHandlers(): Record<string, Handler> {
       );
     const openContext = status.context;
     const projectDir = projectDirOf(openContext);
+    // Same per-project queue as every other write to this file (W6 fix M3).
+    return withProjectLock(projectDir, () => exportLocked(context, parsed.setId, openContext, projectDir));
+  };
 
+  const exportLocked = async (
+    context: HandlerContext,
+    setId: string,
+    openContext: OpenContext,
+    projectDir: string,
+  ): Promise<unknown> => {
     // Every check against the store copy, BEFORE anything is written.
     const store = await context.repository.read();
-    const set = store.sets.find((candidate) => candidate.id === parsed.setId);
+    const set = store.sets.find((candidate) => candidate.id === setId);
     if (!set)
-      fail('not_found', `no set "${parsed.setId}" in the app store`, {
+      fail('not_found', `no set "${setId}" in the app store`, {
         available: store.sets.map((s) => s.id),
       });
     if (!set.project)

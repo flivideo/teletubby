@@ -71,6 +71,30 @@ export async function readProjectSets(projectDir: string): Promise<ScriptSet[]> 
   return (result as { success: true; data: z.infer<typeof projectFileSchema> }).data.sets;
 }
 
+/**
+ * One promise queue per project directory (W6 fix M3). Every read-modify-write
+ * of a `fli.tubby.json` runs inside it, re-reading the file INSIDE, so two
+ * concurrent edits (the UI and an agent) can never both start from the same
+ * old file and have the last write silently win.
+ *
+ * Lock order is always project queue → store queue (the repository's own), so
+ * the two can never wait on each other.
+ */
+const projectQueues = new Map<string, Promise<unknown>>();
+
+export function withProjectLock<T>(projectDir: string, fn: () => Promise<T>): Promise<T> {
+  const key = path.resolve(projectDir);
+  const run = (projectQueues.get(key) ?? Promise.resolve()).then(fn);
+  const settled = run.catch(() => undefined);
+  projectQueues.set(key, settled);
+  // Drop the entry once nothing is queued behind this run, so the map does not
+  // grow with every project a long session has touched.
+  void settled.then(() => {
+    if (projectQueues.get(key) === settled) projectQueues.delete(key);
+  });
+  return run;
+}
+
 export interface UnreadableProjectFile {
   file: string;
   message: string;

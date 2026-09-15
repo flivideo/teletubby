@@ -510,6 +510,35 @@ describe('M2 · an unusable project file never costs a set', () => {
   });
 });
 
+describe('M3 · concurrent writes to one project file never lose an edit', () => {
+  it('two simultaneous renames of two project sets both land', async () => {
+    await writeProjectSets(PROJECT_DIR(), PROJECT, [bare('x', PROJECT), bare('y', PROJECT)]);
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+
+    const results = await Promise.all([
+      core.invoke('rename_set', { setId: 'x', title: 'X edited' }, { principal: 'ui' }),
+      core.invoke('rename_set', { setId: 'y', title: 'Y edited' }, { principal: 'agent' }),
+    ]);
+    expect(results.every((result) => result.ok)).toBe(true);
+
+    const onDisk = await readProjectSets(PROJECT_DIR());
+    expect(onDisk.map((s) => `${s.id}:${s.title}`)).toEqual(['x:X edited', 'y:Y edited']);
+  });
+
+  it('an export racing an edit keeps both', async () => {
+    await writeProjectSets(PROJECT_DIR(), PROJECT, [bare('x', PROJECT)]);
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+
+    await Promise.all([
+      core.invoke('rename_set', { setId: 'x', title: 'X edited' }, { principal: 'ui' }),
+      core.invoke('set_export_to_project', { setId: 'export-me' }, { principal: 'agent' }),
+    ]);
+
+    const onDisk = await readProjectSets(PROJECT_DIR());
+    expect(onDisk.map((s) => `${s.id}:${s.title}`).sort()).toEqual(['export-me:Export Me', 'x:X edited']);
+  });
+});
+
 describe('set_export_to_project', () => {
   it('6 · writes the project file and leaves the store copy in place, marked exportedTo', async () => {
     await invoke('context_select', { brand: BRAND, project: PROJECT });
