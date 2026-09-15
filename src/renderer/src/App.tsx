@@ -18,6 +18,7 @@ import {
   nextScript,
   prevScript,
   rankOf,
+  holdsStage,
   useProm,
   visibleSets,
   zoneOrder,
@@ -161,12 +162,32 @@ export default function App(): JSX.Element {
     const unsubscribe = window.appytron.onControlChanged(() => {
       void fetchRigs(({ rigs }) => setRigs(rigs));
       void (async () => {
+        // The row the stage was last refreshed from — read BEFORE fetchSets
+        // replaces it, so a project→store flip is visible (W6 S1).
+        const onStageId = useProm.getState().set?.id;
+        const previous = useProm.getState().sets.find((entry) => entry.id === onStageId);
         await fetchContext();
         const sets = await fetchSets();
         if (!sets || cancelled) return;
-        const current = useProm.getState().set;
+        const state = useProm.getState();
+        const current = state.set;
         if (current) {
-          if (sets.some((entry) => entry.id === current.id)) await fetchSet(current.id, refresh);
+          const next = sets.find((entry) => entry.id === current.id);
+          if (!next) return;
+          if (holdsStage(state.stageHold, previous, next)) {
+            // Keep the live words on stage; say why in the panel. Choosing the
+            // frozen copy is the talent's, from the panel.
+            if (state.stageHold?.reason !== 'project-closed')
+              state.setStageHold({
+                reason: 'project-closed',
+                message: `On stage: live copy from ${previous?.project ?? next.project ?? 'its project'} — this project is no longer open.`,
+              });
+            return;
+          }
+          await fetchSet(current.id, (fresh) => {
+            useProm.getState().setStageHold(null);
+            refresh(fresh);
+          });
           return;
         }
         if (sets[0]) await fetchSet(sets[0].id, load);
@@ -195,7 +216,11 @@ export default function App(): JSX.Element {
         input: { setId: requestedSetId, full: true },
       });
       if (cancelled) return;
-      if (full.ok) load(full.data);
+      if (full.ok) {
+        // The talent chose; nothing on stage is being held any more.
+        useProm.getState().setStageHold(null);
+        load(full.data);
+      }
       useProm.getState().clearRequestedSet();
     })();
     return () => {

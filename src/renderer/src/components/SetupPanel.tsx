@@ -35,6 +35,7 @@ function ProjectAdmin(): JSX.Element {
   const set = useProm((s) => s.set);
   const requestSet = useProm((s) => s.requestSet);
   const gone = useProm(stageSetGone);
+  const stageHold = useProm((s) => s.stageHold);
   const openProject = useProm((s) => s.openProject);
   const filter = useProm((s) => s.setFilter);
   const setSetFilter = useProm((s) => s.setSetFilter);
@@ -233,6 +234,10 @@ function ProjectAdmin(): JSX.Element {
             </Chip>
           )}
         </>
+      )}
+
+      {stageHold && (
+        <span className="w-full font-body text-xs text-sequence">{stageHold.message}</span>
       )}
 
       {gone && set && (

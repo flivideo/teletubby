@@ -229,6 +229,9 @@ interface PrompterState {
   setOpenProject: (project: string | null) => void;
   setFilter: SetFilter;
   setSetFilter: (filter: SetFilter) => void;
+  /** Non-null while a change event is holding the on-stage data (W6 S1/S2). */
+  stageHold: StageHold | null;
+  setStageHold: (hold: StageHold | null) => void;
   requestedSetId: string | null;
   requestSet: (setId: string) => void;
   clearRequestedSet: () => void;
@@ -260,6 +263,35 @@ export interface SetSummary {
 }
 
 export type SetFilter = 'project' | 'all';
+
+/**
+ * Why the set on stage is being HELD rather than refreshed — shown by the
+ * setup panel, never by the stage. Holding keeps the words the talent is
+ * reading; the note is the only thing that changes.
+ */
+export interface StageHold {
+  reason: 'project-closed' | 'unreadable';
+  message: string;
+}
+
+/**
+ * Should a change event leave the on-stage data alone instead of refreshing
+ * it? Yes when the row it would refresh from is the app store's copy and the
+ * stage came from the project's live copy — either just now (the row's source
+ * went `project` → `store`) or on an earlier event that is already holding.
+ *
+ * Refreshing there would keep the talent's position but swap the words under
+ * it for the frozen pre-export copy, because a FliStudio re-point closed the
+ * project (W6 second pass S1). Same id is not same content.
+ */
+export function holdsStage(
+  held: StageHold | null,
+  previous: SetSummary | undefined,
+  next: SetSummary | undefined,
+): boolean {
+  if (!next || next.source !== 'store') return false;
+  return previous?.source === 'project' || held?.reason === 'project-closed';
+}
 
 /**
  * Which sets the setup panel's PROJECT row shows (W6 fix F5).
@@ -337,6 +369,7 @@ export const useProm = create<PrompterState>((set, get) => ({
   sets: [],
   openProject: null,
   setFilter: 'all',
+  stageHold: null,
   requestedSetId: null,
 
   cue: null,
@@ -772,6 +805,7 @@ export const useProm = create<PrompterState>((set, get) => ({
     set({ openProject: project, setFilter: project ? 'project' : 'all' });
   },
   setSetFilter: (filter) => set({ setFilter: filter }),
+  setStageHold: (hold) => set({ stageHold: hold }),
   requestSet: (setId) => set({ requestedSetId: setId }),
   clearRequestedSet: () => set({ requestedSetId: null }),
 

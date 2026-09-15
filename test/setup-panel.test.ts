@@ -8,6 +8,7 @@ import {
   nextScript,
   prevScript,
   setupEdge,
+  holdsStage,
   stageSetGone,
   useProm,
   visibleSets,
@@ -283,5 +284,45 @@ describe('the PROJECT row filter (W6 fix F5)', () => {
 
     s().setOpenProject(null);
     expect(s().setFilter).toBe('all');
+  });
+});
+
+describe('a set whose live copy closes underneath it (W6 second pass S1)', () => {
+  const row = (source: 'project' | 'store'): SetSummary => ({
+    id: 'a',
+    title: 'a',
+    description: '',
+    project: 'd02-cutty',
+    scriptCount: 0,
+    source,
+    readOnly: source === 'store',
+  });
+  const closed = { reason: 'project-closed' as const, message: 'On stage: live copy from d02-cutty' };
+
+  it('holds when the row goes project → store: the words on stage are not swapped for the frozen copy', () => {
+    expect(holdsStage(null, row('project'), row('store'))).toBe(true);
+  });
+
+  it('keeps holding on later events while the project stays closed', () => {
+    expect(holdsStage(closed, row('store'), row('store'))).toBe(true);
+  });
+
+  it('refreshes again once the project reopens (store → project)', () => {
+    expect(holdsStage(closed, row('store'), row('project'))).toBe(false);
+  });
+
+  it('never holds an ordinary store set, or a project set that stays a project set', () => {
+    expect(holdsStage(null, row('store'), row('store'))).toBe(false);
+    expect(holdsStage(null, row('project'), row('project'))).toBe(false);
+    expect(holdsStage(null, undefined, row('store'))).toBe(false);
+  });
+
+  it('holding moves nothing: the set on stage is untouched', () => {
+    const onStage = s().set;
+    const before = { scriptId: s().scriptId, step: s().step };
+    s().setStageHold(closed);
+    expect(s().set).toBe(onStage);
+    expect({ scriptId: s().scriptId, step: s().step }).toEqual(before);
+    s().setStageHold(null);
   });
 });
