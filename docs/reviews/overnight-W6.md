@@ -594,3 +594,18 @@ appydave   /Users/davidcruwys/dev/video-projects/v-appydave     → d02-cutty-au
   check ran one read-only `ls -d` on each of the three project folders. No file under them was read or written.
 
 APPYNET: done — second pass FINDINGS, 0 blocking, 3 minor (F1–F7, M1–M7 all fixed)
+
+---
+
+## Swagger's gate ruling (2026-09-16 02:40)
+
+**W6 gate: PASSED** on `3b34ed1`. Reproduced by Swagger: 365/365 tests (6 door tests + R31 + the F1–F7/M1–M7 and
+S1–S3 tests), typecheck 0, `scripts/app.sh` parses. Runtime smoke (run by the Opus fix session from the GUI tmux):
+`scripts/app.sh start --brand appydave --project d03-cutty-presenter-tracking` → `context_get` reports that context
+with `membership: 'folder'` and no `context_select` call, so `FLIVIDEO_*` reaches Electron through overmind; stopped
+cleanly; the live store is byte-identical to `~/fli/lab/teletubby/backup-20260916-0055/teletubby.json` (verified by
+Swagger too). First pass 7 blocking + 7 minor (Sonnet build) → all fixed by an Opus fix round against a written brief;
+second pass 0 blocking + 3 minor → fixed. Not established: the window was not looked at (S1/S2 are store-level tests);
+the app rewrote the store with identical bytes during the smoke (mtime moved) — a no-op write on launch, worth a
+follow-up. Deferred: the export UI action's visual check; running the three export lines (David's morning call, see
+`docs/briefs/overnight-W6-teletubby-open-contract.md` §Report).
