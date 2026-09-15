@@ -532,10 +532,12 @@ export function createHandlers(): Record<string, Handler> {
 
   /* --- open context (door 3) — brand + project, W6 ------------------ */
 
-  // `context_get` and `context_select` publish the SAME body shape
-  // (`{ applied, context, refused? }`) on purpose: a caller that re-selects
-  // the context it already has back gets an identical answer to one that
-  // just asked what is currently open (open-contract §3.1, contract test 2).
+  // `context_get` and `context_select` publish the same SHAPE
+  // (`{ applied, context, refused? }`), but `applied` means different things:
+  // on `context_select` it means the context CHANGED (an identical re-select
+  // is `false`, W6 fix F6); on `context_get` it means something is open.
+  // Contract test 2 pins door 3 against door 2 on fresh sessions, where the
+  // two meanings coincide.
   handlers.context_get = async (_input, context) => {
     const report = context.openContext.get();
     return { applied: report.context !== null, ...report };
