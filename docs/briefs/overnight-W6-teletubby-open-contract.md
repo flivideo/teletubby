@@ -81,6 +81,16 @@ Fixture brand root + project in a temp dir; `HOME` and the brands file injected;
 
 Existing `npm test`, `npm run typecheck`, `npm run lint` stay green; thresholds not lowered.
 
+### Shared rulings from the W3 review (binding for every app)
+
+- **Refusal vocabulary**: the refused/failure code is one of `missing`, `unknown-brand`, `no-brand-root`,
+  `registry-unreadable`, `project-not-found`, `project-ambiguous` (with `candidates`), `not-a-project`,
+  `video-invalid`, `video-not-found`. Document the code → `@flivideo/core` kind mapping in your README section.
+- **Code references (R31)**: `--project a01` matches over members **and** plain folders: 0 → `project-not-found`,
+  exactly 1 → resolved (membership `folder` is fine), 2+ → `project-ambiguous` listing every folder name. Contract-test it.
+- **Refused launch**: previous context untouched; `refused` reported beside `context`; callers check `refused` first.
+- **UI display of refusals**: only for a launch, never for an API call from another app (that caller already has the 4xx).
+
 ## 3 · Hard rules
 
 - Tests never touch the real `~/Library/Application Support/teletubby`, `~/.config/appydave`, `~/.fli` or
