@@ -204,6 +204,15 @@ export interface ScriptSet {
    * Optional in the type because stored documents predate the field.
    */
   project?: string | null;
+  /**
+   * Set by `set_export_to_project` (W6, open-contract §4): the FliHub folder
+   * name this set's data was exported into `fli.tubby.json` for, verbatim.
+   * The app-store copy is NEVER deleted on export — this is the marker that
+   * says "the project file is the current source for this id now", so a
+   * caller reading the store directly is not misled into thinking it is live.
+   * `null`/absent means the store copy is still the only copy.
+   */
+  exportedTo?: string | null;
   scripts: Script[];
 }
 

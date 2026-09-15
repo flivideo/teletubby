@@ -104,6 +104,13 @@ export const scriptSetSchema: z.ZodType<ScriptSet> = z.object({
     .regex(PROJECT_NAME_PATTERN, 'project must be a FliHub folder name (kebab-case)')
     .max(PROJECT_NAME_MAX, `project must be at most ${PROJECT_NAME_MAX} characters`)
     .nullish(),
+  // Same shape as `project` — it names the same kind of folder, just the one
+  // this set's data was exported into, not merely attached to.
+  exportedTo: z
+    .string()
+    .regex(PROJECT_NAME_PATTERN, 'exportedTo must be a FliHub folder name (kebab-case)')
+    .max(PROJECT_NAME_MAX, `exportedTo must be at most ${PROJECT_NAME_MAX} characters`)
+    .nullish(),
   scripts: z.array(scriptSchema),
 });
 
