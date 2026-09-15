@@ -396,3 +396,201 @@ flihub/server/src/test/openContract.test.ts:192  expectStatus(ambiguous, 409);
 - **The live store's byte-identity** after Swagger's smoke start was not checked by me, by rule.
 
 APPYNET: done — FINDINGS, 7 blocking, 7 minor
+
+---
+
+## Second pass (fix round 1)
+
+Verdict: **FINDINGS (0 blocking, 3 minor)**. F1–F7 and M1–M7 are all fixed. Each has a named test, and I re-ran the
+five data-loss probes against HEAD; all five now behave. The three departures are accepted. The three new minors
+(S1–S3) do not hold the gate: two are renderer edges, and the third is a stale comment.
+
+Scope: commits `45a5cb6..d64da88` (the 14 commits after `591cf52`), HEAD `d64da88`. `git pull --rebase` reported
+"Already up to date". Reviewer session `teletubby-w6-review`, 2026-09-16. No repo file other than this one was
+edited; nothing committed; the app was not started. Probes ran through the real `src/core` via a scratch vitest
+config, using a temp `HOME`, a temp store and a temp brand root.
+
+### Each item
+
+| # | Status | Proven by (test name) |
+|---|---|---|
+| F1 | fixed-as-specified. Routing is by prior membership (`beforeIds`), never by `project` (`src/core/handlers.ts:387-405`). The store keeps its order, and new sets go last. The project file is written only on a real change (`:411-418`). | `F1 · a write never moves a set it was not already routing to fli.tubby.json ›` `renaming an unrelated set leaves attached sets in the store and writes no project file`, `editing an attached set that was never exported edits the store copy, not the project file`. Probe P1 below. |
+| F2 | fixed-as-specified. A dry run returns the untouched `storeDocument` (`:385`). | `F2 · a dry run with a context open changes nothing on disk ›` `with no project file: …byte-identical…`, `with a project file: neither the store nor the project file moves`. Probe P1b. |
+| F3 | fixed-as-specified. It refuses `conflict` when the store copy carries `exportedTo` **or** the project file holds the id, and that check runs before any write (`:806-812`). | `F3 · re-exporting never reverts the live project copy ›` `export, edit in the project, re-export → 409 and the edit survives`, `refuses when only the project file holds the id (the store copy was never marked)`. Probe P2. |
+| F4 | fixed-as-specified, with Swagger's ruling applied. All seven set-write handlers resolve through `resolveWritableSet` / `assertWritable` (`:170-190`; call sites `:725, 846, 887, 921, 975, 1159, 1173, 1192`). The two delete handlers also check before issuing a preview (`:1143`). `list_sets` shows `readOnly` and `livesIn` (`:585-586`). | `F4 · an exported set is listed read-only with no context, and never editable there ›` `rename with no context → 409; the store copy is unchanged; the brand is recorded`, `with the matching context open, the project copy is the one listed and it is editable`. Probe P3. |
+| F5 | fixed-as-specified. The window fetches `allSets: true` plus `context_get`. The chips are This project / All sets, defaulting to the project. An empty filtered list falls back to all sets with a note (`store.ts:272-282`). An Export chip appears only on a store row of the open project that is not yet exported. | `the PROJECT row filter (W6 fix F5) ›` 4 tests, including `a project with NO attached set falls back to every set with a note, never an empty list`. `[code reading + store tests: the window was not run]` |
+| F6 | fixed-as-specified. The listener never falls back to another set (`App.tsx:166-173`), and `stageSetGone` marks a vanished set. An identical re-select returns `applied: false` and does not announce (`handlers.ts:562-563`). | `F6 · a no-op re-point wakes nobody › an identical context_select fires zero change events; a real switch fires one`; `the set on stage when the list changes underneath it (W6 fix F6) › is marked gone — not swapped — …`. Probe P8. **Residual in S1.** |
+| F7 | fixed-as-specified. The refusal is recorded first, then `fail()` runs through `REFUSAL_ERROR` (`:111-118`, `:544-557`) with `details: { context, refused }`, and the codes are published in `failureModes`. | `3 · missing arguments fail 400 …`, `4 · an unknown brand (404) and an ambiguous project (409) …`, `the CLI exits non-zero on a refusal`, `the two refusals the build never exercised → 503 unavailable ›` 4 tests |
+| M1 | fixed-differently-but-acceptable. Every point is covered; test 2's shape changed (departure 1). | `1 · via argv …`, `1 · via env (FLIVIDEO_BRAND/FLIVIDEO_PROJECT …)`, `2 · door 3 on a fresh session returns the door-2 body, deep-equal, …`, `R31 · … 0 / exactly 1 / 2+ ›` 4 tests, the four 503 tests |
+| M2 | fixed-differently-but-acceptable (departure 3). The project file is written first and the store is marked after (`:819-838`). `readProjectSetsReport` drives per-set degradation. | `M2 · an unusable project file never costs a set ›` `export writes the project file FIRST: a failed write leaves the store copy unmarked`, `a corrupt project file degrades per set, and list_sets says what it could not read`. Probes P5, P6, P11. **Renderer residual in S2.** |
+| M3 | fixed-as-specified. There is one queue per `path.resolve(projectDir)`, the file is re-read inside it, and the lock order is always project then store (`project-store.ts:84-97`). Both `projectAwareUpdate` and `set_export_to_project` take it. | `M3 · concurrent writes to one project file never lose an edit ›` `two simultaneous renames of two project sets both land`, `an export racing an edit keeps both` |
+| M4 | fixed-as-specified (ruled: no change). The ruling is recorded in `docs/kdd/decisions/adr-002-typecheck-is-the-static-check-lint-is-davids-call.md`. | n/a |
+| M5 | fixed-as-specified. CLAUDE.md now says "A set enters `fli.tubby.json` ONLY through `set_export_to_project`" and "the store copy IS listed — read-only". The `## Report` section, with brand keys and the do-not-run banner, is in `docs/briefs/overnight-W6-teletubby-open-contract.md`. I checked the brand keys: `kybernesis` resolves to `…/v-kybernesis` and `appydave` to `…/v-appydave`, and the three folders exist (one `ls -d` stat of each, read-only; nothing inside them was opened). | n/a (docs) |
+| M6 | fixed-as-specified (`scripts/app.sh:132-137`). | commit `9a31f26` records both invocations exiting 2; I did not re-run them. Env passthrough through overmind remains Swagger's smoke. |
+| M7 | fixed-as-specified. `invalid` refuses `no-brand-root` with the path, reason and message (`open-context.ts:171-184`). | `M7 · an invalid ~/.fli/machine.json refuses … › context_select → 503 no-brand-root naming the parse failure; the context does not move` |
+
+### Departures, ruled
+
+**1 · M1 test 2 against F6's `applied: false`: accepted.** The brief's "deep-equal to 1" compares the two doors, and
+the new test does exactly that on equal footing:
+- door 2 runs on its own fresh core, door 3 runs over HTTP on another fresh session, and the two bodies deep-equal
+- a re-select is then asserted as `{ ...launched, applied: false }`, so the context itself is still pinned identical
+- the C2 baseline is taken before either call
+
+The old "idempotent re-select deep-equals the first" cannot survive F6, and F6 is the ruling that matters. The one
+casualty is a code comment (S3).
+
+**2 · `exportedBrand` as a sibling field, not `exportedTo: { brand, project }`: accepted.** Swagger's F4 ruling offered
+both. The sibling keeps `exportedTo` a plain folder string, so already-written stores and the published
+`list_sets.exportedTo` shape stay unchanged. The trade-off is an unenforced invariant: nothing stops `exportedBrand`
+being set while `exportedTo` is null. The only writer, `exportLocked` at `:833-834`, sets both together, and
+`assertWritable` keys on `exportedTo` alone, so a stray brand is harmless.
+
+**3 · M2: sets attached to the open project refuse 503 when its `fli.tubby.json` is unreadable: accepted.** My M2 fix
+asked that "any set not attached to the open project still answer". Refusing the attached ones is the stricter half of
+that, and it is correct:
+- the unreadable file may hold a newer copy, so serving the store copy would be the F4 stale-read hazard in another form
+- probe P11: `list_sets` answers and flags the attached row `readOnly` with `filter.unreadable`; `get_set a` → `unavailable`; `rename_set a` → `unavailable`; an unrelated `rename_set c` succeeds; the corrupt file is left byte-identical
+
+What this costs in the window is S2.
+
+### New findings
+
+#### S1 · A door-3 switch AWAY from a project silently swaps the words on stage for the frozen store copy — MINOR
+
+`src/renderer/src/App.tsx:166-173` (the listener refreshes the on-stage id whenever it is still listed) together with
+`src/core/handlers.ts:273-298` (only the open project's file is merged).
+
+- **What happens**: probe P10.
+  1. Export `a`, then edit it in the project to `live-project-edit`.
+  2. `context_select` a different project.
+  3. `list_sets` → `["a", readOnly: true, source: "store"]` and `get_set a` → title `a`, the frozen copy.
+  - In the window, `a` is still listed, so the change event runs `fetchSet(a, refresh)`. The talent keeps their
+    position, but the words under it revert to the pre-export copy. `[code reading: the window was not run]`
+- **Why it matters**: F6 was ruled "never swaps the set". The id is unchanged, but the content is older, and a
+  FliStudio re-point, not the talent, caused it. It is rarer than F6: it needs an exported set on stage and a
+  deliberate switch to another project mid-take. It is not blocking, because F4's ruling allows a non-matching
+  context to show the frozen copy.
+- **Fix**: in the listener, if the on-stage row's `source` goes from `'project'` to `'store'`, do not call `refresh`.
+  Keep the data on stage and mark it the way `stageSetGone` does ("On stage: live copy from <folder> — this project
+  is no longer open"). Test that in `setup-panel.test.ts` next to the F6 case.
+
+#### S2 · An unreadable project file blanks the whole window when the set to show is attached to that project — MINOR
+
+`src/renderer/src/App.tsx:104` (`fetchSet` → `setFailure` on any error), `:143` (startup target), `:206` (`failure`
+replaces the whole app).
+
+- **What happens**:
+  - At launch with `--project P` and a corrupt `P/fli.tubby.json`, the startup target is the remembered set or
+    `shown[0]`, and both are P's sets. `get_set` returns 503, so `setFailure` shows the full-screen `Waiting` and
+    nothing else. The panel, including the "All sets" chip, never renders.
+  - The same happens on a change event while one of P's sets is on stage.
+  - Probe P11 proves the 503. The screen effect is `[code reading]`.
+- **Why it matters**: this is better than the pre-fix state, where every read failed. But a launch still dead-ends,
+  even though other sets are readable, which is the class of problem `2f65ebc` and F5 closed.
+- **Fix**:
+  - At startup, choose the first set whose row is not `readOnly` due to unreadability. `filter.unreadable` says which
+    file.
+  - If none, show the shell with the `filter.unreadable` message rather than `setFailure`.
+  - On the change path, a failed `get_set` for the set already on stage keeps it on stage and marks it; never
+    `setFailure`.
+
+#### S3 · A comment still claims `context_get` and `context_select` publish identical bodies — MINOR
+
+`src/core/handlers.ts:535-538`.
+
+- **What happens**: after F6, `context_get` always reports `applied: context !== null` (`:541`), while an identical
+  re-select reports `applied: false`. The comment's "gets an identical answer" is no longer true, and M1's test
+  asserts the difference.
+- **Fix**: reword it: "same shape; `applied` on `context_select` means *changed*, on `context_get` it means
+  *something is open*".
+
+### Regressions
+
+- **None found.**
+- **Full suite**: 355 pass, up from 325; `open-contract.test.ts` has 30 tests, `setup-panel.test.ts` 20. Typecheck
+  exits 0.
+- **Surface**: `capability-surface.test.ts` is unchanged at 47, so `set_active_context` is still UI-only and no verb
+  moved between surfaces.
+- **Test isolation**: `git diff 591cf52..HEAD -- test/` adds no real path. The new fixtures, including `machine.json`,
+  sit under the suite's temp `HOME`.
+- **Probe artefact, not a regression**: probe P7 now throws in my probe, because it read `data.refused` on what is now
+  a 404 (F7). The same three cases are pinned by the R31 tests above.
+
+### Checks run (second pass)
+
+```
+$ pwd && git pull --rebase
+/Users/davidcruwys/dev/ad/flivideo/teletubby
+Already up to date.
+
+$ git log --oneline 591cf52..HEAD
+d64da88 docs(W6): CLAUDE.md records the F7 statuses, F6 no-op re-select, M7; test count
+6dc0c10 docs(kdd): M4 ADR-002 typecheck is the static check; F1/F2 learning; F6 recurrence
+dd49164 docs(W6): M5 correct CLAUDE.md; record the export lines with brand keys
+9a31f26 fix(W6): M6 app.sh prints usage for --brand/--project with no value
+9994557 test(W6): M1 contract tests prove what their names claim
+4c7d339 fix(W6): M7 an invalid machine.json refuses no-brand-root
+aef069a fix(W6): M3 serialise fli.tubby.json writes through one queue per project
+2cc4f40 fix(W6): M2 export writes the project file first; reads degrade per set
+1beb7af fix(W6): F5 setup panel filters by project with an all-sets toggle and export action
+93f7d0e fix(W6): F6 a change event never swaps the set on stage
+faed45b fix(W6): F7 door-3 refusals fail with the FliHub W3 statuses
+9b542c7 fix(W6): F4 exported store copies are read-only; brand recorded beside exportedTo
+74456ed fix(W6): F3 re-export refuses with conflict (409)
+76813ab fix(W6): F2 a dry run persists the untouched store document
+45a5cb6 fix(W6): F1 route writes to fli.tubby.json by id, never by project
+
+$ npm test
+ ✓ test/setup-panel.test.ts (20 tests) 18ms
+ ✓ test/capability-surface.test.ts (47 tests) 12ms
+ ✓ test/open-contract.test.ts (30 tests) 395ms
+ … (16 files)
+ Test Files  16 passed (16)
+      Tests  355 passed (355)
+
+$ npm run typecheck
+> tsc --noEmit -p tsconfig.node.json --composite false
+> tsc --noEmit -p tsconfig.web.json --composite false
+typecheck exit 0
+
+# the review's probes, re-run unchanged against HEAD d64da88 (scratch config; temp HOME/store/brand root)
+P1 rename c ok= true | store: [ 'a', 'b', 'c' ] | project file: ABSENT                          (was: store ['c'], file ['a:a','b:b'])
+P1 after restart, no context, list_sets: [ 'a', 'b', 'c' ]                                     (was: ['c'])
+P1b create_set dryRun ok= true {"applied":false,…} | store: [ 'a', 'c' ] | project file: ABSENT (was: store ['c'])
+P2 after export: store [ 'a→d02-fixture-project' ] project [ 'a:a' ]
+P2 after edit: store [ 'a→d02-fixture-project' ] project [ 'a:edited-in-project' ]
+P2 re-export ok= false conflict | project [ 'a:edited-in-project' ] | store [ 'a→d02-fixture-project' ]   (was: ok, reverted)
+P3 no-context list_sets: [{"id":"a",…,"exportedTo":"d02-fixture-project","exportedBrand":"fixture","readOnly":true,"livesIn":"d02-fixture-project/fli.tubby.json","source":"store",…}]
+P3 store exportedBrand: fixture
+P3 no-context rename ok= false conflict store title: a                                         (was: ok, 'offline-edit')
+P3 with context, get_set title: a
+P8 change events for two identical selects: 1                                                  (was: 2)
+
+# further probes
+P4 store byte-identical after selects: true
+P5 list_sets allSets with corrupt project file: {"ok":true,"data":{"sets":[{"id":"a",…,"readOnly":true,…   (was: ok:false internal)
+P6 export ok= false {"code":"internal","message":"could not read …"} | store: [ 'a' ]           (was: store marked a→…)
+P9 export b ok= true | store [ 'a→…', 'b→…' ] | project [ 'a:a', 'b:b' ]
+P10 on P title: live-project-edit | after switch to d03, listed: [["a",true,"store"]] | get_set title: a   → S1
+P11 list ok= true rows [["a",true]] unreadable? true | get_set a: unavailable | rename c ok= true | rename a: unavailable | store [ 'a', 'c' ] | file still corrupt: {not json   → departure 3, S2
+
+# Report brand keys (brands.json locations read; folders stat'ed with ls -d, contents never opened)
+kybernesis /Users/davidcruwys/dev/video-projects/v-kybernesis   → a01-kybernesis-12-videos exists
+appydave   /Users/davidcruwys/dev/video-projects/v-appydave     → d02-cutty-audio-cleanup, d03-cutty-presenter-tracking exist
+~/.fli/machine.json: absent
+```
+
+**What these checks did not establish.**
+- **The window was not run.** F5, F6, S1 and S2 rest on code reading plus the store-level tests.
+- **Probes went through `core.invoke`, not HTTP.** The F7 status codes are proven by the contract tests over HTTP,
+  not by my probes.
+- **`FLIVIDEO_*` env through overmind** into Electron is still unproven (Swagger's post-gate smoke).
+- **M3's queue is in-process only.** A second Teletubby process, or a hand edit of `fli.tubby.json`, is not
+  serialised. That is out of scope, since one app instance owns the file.
+- **Real store**: I did not compare the live store against the backup, by rule. The Report's export lines are
+  checked only as far as brand key → folder existence.
+- **Disclosure against the review brief's "never touch `/Users/davidcruwys/dev/video-projects`"**: the M5 brand-key
+  check ran one read-only `ls -d` on each of the three project folders. No file under them was read or written.
+
+APPYNET: done — second pass FINDINGS, 0 blocking, 3 minor (F1–F7, M1–M7 all fixed)
