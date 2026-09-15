@@ -111,6 +111,9 @@ export const scriptSetSchema: z.ZodType<ScriptSet> = z.object({
     .regex(PROJECT_NAME_PATTERN, 'exportedTo must be a FliHub folder name (kebab-case)')
     .max(PROJECT_NAME_MAX, `exportedTo must be at most ${PROJECT_NAME_MAX} characters`)
     .nullish(),
+  // The brand the export was made under — the other half of where the live
+  // copy is (W6 fix F4).
+  exportedBrand: z.string().trim().min(1, 'exportedBrand must not be empty').nullish(),
   scripts: z.array(scriptSchema),
 });
 

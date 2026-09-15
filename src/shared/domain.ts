@@ -213,6 +213,12 @@ export interface ScriptSet {
    * `null`/absent means the store copy is still the only copy.
    */
   exportedTo?: string | null;
+  /**
+   * The `brands.json` key the export was made under — recorded beside
+   * `exportedTo` because a folder name alone cannot locate `fli.tubby.json`
+   * on a launch with no context (W6 fix F4). `null`/absent when not exported.
+   */
+  exportedBrand?: string | null;
   scripts: Script[];
 }
 

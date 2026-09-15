@@ -360,6 +360,64 @@ describe('F3 · re-exporting never reverts the live project copy', () => {
   });
 });
 
+describe('F4 · an exported set is listed read-only with no context, and never editable there', () => {
+  it('rename with no context → 409; the store copy is unchanged; the brand is recorded', async () => {
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+    await invoke('set_export_to_project', { setId: 'export-me' });
+    const frozen = JSON.stringify(storeSet('export-me'));
+    expect(storeSet('export-me')).toMatchObject({ exportedTo: PROJECT, exportedBrand: BRAND });
+
+    // A plain launch: new core, new control server, no context.
+    const plain = restartedCore();
+    const plainDir = mkdtempSync(join(tmpdir(), 'teletubby-open-contract-plain-'));
+    const server = await startControlServer({ core: plain, userDataPath: plainDir, appVersion: 't', port: 0 });
+    try {
+      const call = async (capability: string, input: unknown) => {
+        const response = await fetch(`http://127.0.0.1:${server.port}/api/invoke`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', authorization: `Bearer ${server.token}` },
+          body: JSON.stringify({ capability, input }),
+        });
+        return { status: response.status, body: (await response.json()) as any };
+      };
+
+      const renamed = await call('rename_set', { setId: 'export-me', title: 'offline-edit' });
+      expect(renamed.status).toBe(409);
+      expect(renamed.body.error.message).toContain(`${PROJECT}/fli.tubby.json`);
+      expect(renamed.body.error.details).toEqual({ exportedTo: PROJECT, exportedBrand: BRAND });
+
+      // A preview is refused too — it must never promise a write that cannot land.
+      expect((await call('rename_set', { setId: 'export-me', title: 'x', dryRun: true })).status).toBe(409);
+      expect(JSON.stringify(storeSet('export-me'))).toBe(frozen);
+
+      // Listed — never hidden — and labelled where the live copy is.
+      const listed = await call('list_sets', {});
+      expect(listed.body.data.sets.find((s: { id: string }) => s.id === 'export-me')).toMatchObject({
+        readOnly: true,
+        livesIn: `${PROJECT}/fli.tubby.json`,
+        exportedBrand: BRAND,
+        source: 'store',
+      });
+      // Reading it for the stage still works.
+      expect((await call('get_set', { setId: 'export-me', full: true })).status).toBe(200);
+    } finally {
+      await server.close();
+      rmSync(plainDir, { recursive: true, force: true });
+    }
+  });
+
+  it('with the matching context open, the project copy is the one listed and it is editable', async () => {
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+    await invoke('set_export_to_project', { setId: 'export-me' });
+    const listed = await invoke('list_sets');
+    expect(listed.sets.find((s: { id: string }) => s.id === 'export-me')).toMatchObject({
+      readOnly: false,
+      source: 'project',
+    });
+    expect((await invoke('rename_set', { setId: 'export-me', title: 'live edit' })).applied).toBe(true);
+  });
+});
+
 describe('set_export_to_project', () => {
   it('6 · writes the project file and leaves the store copy in place, marked exportedTo', async () => {
     await invoke('context_select', { brand: BRAND, project: PROJECT });

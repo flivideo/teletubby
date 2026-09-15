@@ -338,8 +338,14 @@ and the first write to *anything* with a context open moved every attached set o
 store and dropped the store copies (W6 review F1). The one explicit move is
 `set_export_to_project { setId }`: it requires the open context to match the
 set's project, writes the project file immediately (no edit required), and marks the app-store
-copy `exportedTo: <folder>` rather than deleting it — frozen history, never shown again
-(`list_sets` and every read merge the project file's copy over the store's, by id).
+copy `exportedTo: <folder>` + `exportedBrand: <key>` rather than deleting it. With the
+matching context open, every read merges the project file's copy over the store's, by id,
+so the store copy is not shown. **With no context (or another project), the store copy IS
+listed — read-only, labelled `livesIn: <folder>/fli.tubby.json`** — never hidden, because it
+is the only copy that launch can see; the talent can still prompt from it. Every write to it
+refuses `conflict` (409), dry runs included, because an edit there would be shadowed the
+moment the project opens (W6 review F4, Swagger's ruling). A second export also refuses
+`conflict`: it would revert the live project copy (F3).
 
 ⚠️ **No automatic migration ran tonight, on purpose.** The three real sets above are still
 exactly where they were — nothing routes a set anywhere until Teletubby is actually launched

@@ -126,6 +126,37 @@ const resolveSet = (
   return set;
 };
 
+/**
+ * `resolveSet` for a WRITE. In the merged view a set carrying `exportedTo` is
+ * always the app store's frozen copy — the project's own copy is written with
+ * it cleared — so the only way to reach one is with no context open on its
+ * project (or with a project file that no longer holds it). An edit there
+ * would land on the stale copy and be shadowed the moment the project opens:
+ * a lost edit with no error (W6 fix F4). Refused, dry run included, so a
+ * preview never promises a write that cannot happen.
+ */
+const resolveWritableSet = (
+  document: RepositoryDocument,
+  setId: string | undefined,
+  context: HandlerContext,
+): ScriptSet => {
+  const set = resolveSet(document, setId, context.active);
+  assertWritable(set);
+  return set;
+};
+
+const assertWritable = (set: ScriptSet): void => {
+  if (!set.exportedTo) return;
+  const where = set.exportedBrand
+    ? `brand "${set.exportedBrand}" project "${set.exportedTo}"`
+    : `project "${set.exportedTo}"`;
+  fail(
+    'conflict',
+    `set "${set.id}" lives in ${set.exportedTo}/fli.tubby.json; open Teletubby at ${where} to edit it`,
+    { exportedTo: set.exportedTo, exportedBrand: set.exportedBrand ?? null },
+  );
+};
+
 const resolveScript = (
   set: ScriptSet,
   scriptId: string | undefined,
@@ -203,12 +234,20 @@ function mergeSets(storeSets: ScriptSet[], projectSets: ScriptSet[]): ScriptSet[
  * set also present in the project file is stale and is never shown twice.
  */
 async function effectiveDocument(context: HandlerContext): Promise<RepositoryDocument> {
+  return (await effectiveView(context)).document;
+}
+
+/** `effectiveDocument`, plus which ids came from the project file. */
+async function effectiveView(
+  context: HandlerContext,
+): Promise<{ document: RepositoryDocument; projectIds: Set<string> }> {
   const document = await context.repository.read();
   const status = context.openContext.get();
-  if (!status.context) return document;
+  if (!status.context) return { document, projectIds: new Set() };
   const projectSets = await readProjectSets(projectDirOf(status.context));
-  if (projectSets.length === 0) return document;
-  return { ...document, sets: mergeSets(document.sets, projectSets) };
+  const projectIds = new Set(projectSets.map((set) => set.id));
+  if (projectSets.length === 0) return { document, projectIds };
+  return { document: { ...document, sets: mergeSets(document.sets, projectSets) }, projectIds };
 }
 
 /**
@@ -429,7 +468,7 @@ export function createHandlers(): Record<string, Handler> {
 
   handlers.list_sets = async (input, context) => {
     const { allSets } = parse(INPUT.list_sets, input);
-    const document = await effectiveDocument(context);
+    const { document, projectIds } = await effectiveView(context);
     const status = context.openContext.get();
     const project = !allSets && status.context ? status.context.project : null;
     const sets = document.sets.filter((set) => project === null || set.project === project);
@@ -440,6 +479,13 @@ export function createHandlers(): Record<string, Handler> {
         description: set.description,
         project: set.project ?? null,
         exportedTo: set.exportedTo ?? null,
+        exportedBrand: set.exportedBrand ?? null,
+        // An exported store copy is LISTED, never hidden and never editable:
+        // with no context on its project it is the only copy this launch can
+        // see, and the talent can still prompt from it (W6 fix F4, Swagger).
+        readOnly: Boolean(set.exportedTo),
+        livesIn: set.exportedTo ? `${set.exportedTo}/fli.tubby.json` : null,
+        source: projectIds.has(set.id) ? 'project' : 'store',
         scriptCount: set.scripts.length,
       })),
       // Missing context → today's unfiltered list, with WHY reported here
@@ -574,7 +620,7 @@ export function createHandlers(): Record<string, Handler> {
       fail('invalid_input', 'nothing to do — pass a new title, a project to attach, or both');
 
     return projectAwareUpdate<unknown>(context, (document) => {
-      const set = resolveSet(document, parsed.setId, context.active);
+      const set = resolveWritableSet(document, parsed.setId, context);
 
       if (parsed.project != null && set.project && set.project !== parsed.project)
         fail(
@@ -656,13 +702,14 @@ export function createHandlers(): Record<string, Handler> {
           result: { applied: false, preview: { setId: set.id, project: openContext.project } },
         };
 
-      context.recordPrior({ exportedTo: set.exportedTo ?? null });
+      context.recordPrior({ exportedTo: set.exportedTo ?? null, exportedBrand: set.exportedBrand ?? null });
       set.exportedTo = openContext.project;
+      set.exportedBrand = openContext.brand;
       // The store copy is captured BEFORE the mark above is persisted, so the
       // exported copy in fli.tubby.json is the clean data, not `{…exportedTo}`
       // of itself — `exportedTo` describes where the app-store copy went, and
       // is meaningless on the project's own copy.
-      const exported: ScriptSet = { ...set, exportedTo: null };
+      const exported: ScriptSet = { ...set, exportedTo: null, exportedBrand: null };
       return { document, result: { applied: true, exported, projectDir: projectDirOf(openContext) } };
     }).then(async (result) => {
       const outcome = result as {
@@ -691,7 +738,7 @@ export function createHandlers(): Record<string, Handler> {
     const parsed = parse(INPUT.create_script, input);
 
     return projectAwareUpdate<unknown>(context, (document) => {
-      const set = resolveSet(document, parsed.setId, context.active);
+      const set = resolveWritableSet(document, parsed.setId, context);
       if (findScript(set, parsed.id))
         fail('conflict', `set "${set.id}" already has a script "${parsed.id}"`);
 
@@ -732,7 +779,7 @@ export function createHandlers(): Record<string, Handler> {
     const parsed = parse(INPUT.update_script, input);
 
     return projectAwareUpdate<unknown>(context, (document) => {
-      const set = resolveSet(document, parsed.setId, context.active);
+      const set = resolveWritableSet(document, parsed.setId, context);
       const script = resolveScript(set, parsed.scriptId, context.active);
       const previous = {
         title: script.title,
@@ -766,7 +813,7 @@ export function createHandlers(): Record<string, Handler> {
     const parsed = parse(INPUT.write_transcript, input);
 
     return projectAwareUpdate<unknown>(context, (document) => {
-      const set = resolveSet(document, parsed.setId, context.active);
+      const set = resolveWritableSet(document, parsed.setId, context);
       const script = resolveScript(set, parsed.scriptId, context.active);
       const existing = findTranscript(script, parsed.id);
 
@@ -820,7 +867,7 @@ export function createHandlers(): Record<string, Handler> {
     const parsed = parse(INPUT.write_trigger_set, input);
 
     return projectAwareUpdate<unknown>(context, (document) => {
-      const set = resolveSet(document, parsed.setId, context.active);
+      const set = resolveWritableSet(document, parsed.setId, context);
       const script = resolveScript(set, parsed.scriptId, context.active);
       const transcript = resolveTranscript(script, parsed.transcriptId, context.active);
       const previous = findTriggerSet(transcript, parsed.style) ?? null;
@@ -987,7 +1034,8 @@ export function createHandlers(): Record<string, Handler> {
 
   handlers.delete_trigger_set = async (input, context) => {
     const parsed = parse(INPUT.delete_trigger_set, input);
-    const { transcript } = await resolveAll(context, parsed);
+    const { set, transcript } = await resolveAll(context, parsed);
+    assertWritable(set);
     const target = findTriggerSet(transcript, parsed.style);
     if (!target)
       fail('not_found', `transcript "${transcript.id}" has no "${parsed.style}" trigger set`, {
@@ -1003,7 +1051,7 @@ export function createHandlers(): Record<string, Handler> {
 
     return guardedDelete(context, input, preview, async () =>
       projectAwareUpdate<unknown>(context, (document) => {
-        const set = resolveSet(document, parsed.setId, context.active);
+        const set = resolveWritableSet(document, parsed.setId, context);
         const script = resolveScript(set, parsed.scriptId, context.active);
         const live = resolveTranscript(script, parsed.transcriptId, context.active);
         const removed = findTriggerSet(live, parsed.style) ?? null;
@@ -1017,7 +1065,7 @@ export function createHandlers(): Record<string, Handler> {
   handlers.delete_script = async (input, context) => {
     const parsed = parse(INPUT.delete_script, input);
     const document = await effectiveDocument(context);
-    const set = resolveSet(document, parsed.setId, context.active);
+    const set = resolveWritableSet(document, parsed.setId, context);
     const script = resolveScript(set, parsed.scriptId, context.active);
 
     // Consequences, not intent. This is the whole value of the preview step —
@@ -1036,7 +1084,7 @@ export function createHandlers(): Record<string, Handler> {
 
     return guardedDelete(context, input, preview, async () =>
       projectAwareUpdate<unknown>(context, (live) => {
-        const liveSet = resolveSet(live, parsed.setId, context.active);
+        const liveSet = resolveWritableSet(live, parsed.setId, context);
         const removed = findScript(liveSet, script.id) ?? null;
         context.recordPrior(removed);
         liveSet.scripts = liveSet.scripts.filter((candidate) => candidate.id !== script.id);
