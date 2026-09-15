@@ -215,14 +215,18 @@ async function effectiveDocument(context: HandlerContext): Promise<RepositoryDoc
  * Every WRITE handler that touches `document.sets` goes through this instead
  * of `context.repository.update` directly. `fn` still only ever sees and
  * returns ONE document — the merge is transparent to it — but the RESULT is
- * split back apart before anything is persisted: a set now attached to the
- * currently open project's folder is written to `fli.tubby.json`; everything
- * else lands in the app store exactly as it always has (W6 brief §2B
- * "writing").
+ * split back apart before anything is persisted.
  *
- * Without an open context, nothing here changes behaviour at all — every set
- * stays in the store, which is what keeps this a lazy, per-edit move rather
- * than a migration nobody asked for tonight.
+ * ⚠️ THE ROUTE IS BY ID, NEVER BY `project`. A set goes back to
+ * `fli.tubby.json` only if its id was ALREADY in that file; every other set
+ * returns to the app store exactly as the handler left it. A store set enters
+ * the project file through `set_export_to_project` and nothing else (W6 fix
+ * F1). Routing by `project` moved every attached set out of the store on the
+ * first write to ANYTHING — and dropped the store copies — which is a
+ * migration the brief forbids, performed silently.
+ *
+ * Without an open context, or with a project file that holds nothing, every
+ * set stays in the store and the project file is never written.
  */
 async function projectAwareUpdate<T>(
   context: HandlerContext,
@@ -233,35 +237,42 @@ async function projectAwareUpdate<T>(
   const projectDir = openContext ? projectDirOf(openContext) : null;
   const before = projectDir ? await readProjectSets(projectDir) : [];
   const beforeIds = new Set(before.map((set) => set.id));
+  // Snapshot NOW: handlers mutate the merged sets in place, and those are the
+  // very objects in `before`, so comparing afterwards would always say "same".
+  const beforeJson = JSON.stringify(before);
 
   let after: ScriptSet[] | null = null;
 
   const result = await context.repository.update<T>((storeDocument) => {
-    // Sets `set_export_to_project` already moved out of the store are kept
-    // byte-for-byte and re-attached below — they are frozen history (marked
-    // `exportedTo`), never part of the merged view a handler edits, and never
-    // reconstructed from it.
+    // The store's copy of an id the project file holds is stale history —
+    // never part of the merged view a handler edits, and re-attached below
+    // byte-for-byte rather than reconstructed from it.
     const hidden = storeDocument.sets.filter((set) => beforeIds.has(set.id));
     const visible = storeDocument.sets.filter((set) => !beforeIds.has(set.id));
     const merged: RepositoryDocument = { ...storeDocument, sets: [...visible, ...before] };
 
     const { document: mergedAfter, result: handlerResult } = fn(merged);
 
-    if (!openContext) return { document: mergedAfter, result: handlerResult };
+    if (beforeIds.size === 0) return { document: mergedAfter, result: handlerResult };
 
     const toProject: ScriptSet[] = [];
     const toStore: ScriptSet[] = [];
     for (const set of mergedAfter.sets) {
-      (set.project === openContext.project ? toProject : toStore).push(set);
+      (beforeIds.has(set.id) ? toProject : toStore).push(set);
     }
     after = toProject;
     return { document: { ...mergedAfter, sets: [...toStore, ...hidden] }, result: handlerResult };
   });
 
-  // A dry run never mutated `mergedAfter.sets` in the first place, but must
-  // also never TOUCH the project file — writing back identical content is
-  // still a write.
-  if (projectDir && after !== null && !context.dryRun) {
+  // Only a real change to the project's own sets reaches the file. A dry run,
+  // or a write that only touched store sets, leaves it alone — writing back
+  // identical content is still a write.
+  if (
+    projectDir &&
+    after !== null &&
+    !context.dryRun &&
+    JSON.stringify(after) !== beforeJson
+  ) {
     await writeProjectSets(projectDir, openContext!.project, after);
   }
 

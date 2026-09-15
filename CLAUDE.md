@@ -328,10 +328,15 @@ result kinds:
 `@flivideo/core`'s `appFileName({ app: 'tubby' })`. The relationship: the app store
 (`userData/teletubby.json`) is the index and the home of everything that is not a project's
 (talents, rigs, the workspace — never written here); a project's `fli.tubby.json` is the
-source of truth for that project's own sets. A set attached to the CURRENTLY OPEN project
-moves to `fli.tubby.json` the next time it is written (`projectAwareUpdate` in
-`src/core/handlers.ts`) — lazily, one edit at a time, never as a batch migration. The one
-explicit move is `set_export_to_project { setId }`: it requires the open context to match the
+source of truth for that project's own sets.
+
+⚠️ **A set enters `fli.tubby.json` ONLY through `set_export_to_project` — nothing moves on an
+edit.** Writes route by id (`projectAwareUpdate` in `src/core/handlers.ts`): a set whose id is
+already in the open project's file is written back there; every other set, attached or not,
+stays in the app store exactly as the handler left it. The build first routed by `project`,
+and the first write to *anything* with a context open moved every attached set out of the
+store and dropped the store copies (W6 review F1). The one explicit move is
+`set_export_to_project { setId }`: it requires the open context to match the
 set's project, writes the project file immediately (no edit required), and marks the app-store
 copy `exportedTo: <folder>` rather than deleting it — frozen history, never shown again
 (`list_sets` and every read merge the project file's copy over the store's, by id).

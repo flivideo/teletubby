@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseOpenArgs } from '@flivideo/core';
@@ -112,6 +112,9 @@ beforeEach(async () => {
 afterEach(async () => {
   await control.close();
   rmSync(userData, { recursive: true, force: true });
+  // The fixture HOME is shared by the file; a project file one test wrote must
+  // never be the "already exported" state the next test starts from.
+  rmSync(PROJECT_FILE(), { recursive: true, force: true });
 });
 
 describe('door 2 — launch arguments resolve the same way door 3 does (C1)', () => {
@@ -220,6 +223,67 @@ describe('fli.tubby.json — the project’s own copy', () => {
     // write must not have touched it: only the project file's copy moves.
     const storeDoc = JSON.parse(readFileSync(storePath, 'utf8'));
     expect(storeDoc.sets.find((s: { id: string }) => s.id === 'attached-set')?.title).toBe('Attached');
+  });
+});
+
+/* ------------------------------------------------------------------ *
+ * The W6 fix round (docs/reviews/overnight-W6.md) — each test is the
+ * reviewer's probe, turned into a regression that fails on the old code.
+ * ------------------------------------------------------------------ */
+
+const bare = (id: string, project: string | null) => ({
+  id,
+  title: id,
+  description: '',
+  project,
+  exportedTo: null,
+  scripts: [],
+});
+
+const PROJECT_DIR = (): string => join(home, 'video-projects', 'v-fixture', PROJECT);
+const PROJECT_FILE = (): string => join(PROJECT_DIR(), 'fli.tubby.json');
+
+const replaceStoreSets = async (sets: unknown[]): Promise<void> => {
+  await core.repository.update((document) => ({
+    document: { ...document, sets: sets as never },
+    result: undefined,
+  }));
+};
+
+/** A "restart": a new core on the same store file, with no context open. */
+const restartedCore = (): Core => createCore({ repository: new FileRepository(storePath) });
+
+const storeSet = (id: string): any =>
+  JSON.parse(readFileSync(storePath, 'utf8')).sets.find((s: { id: string }) => s.id === id);
+
+describe('F1 · a write never moves a set it was not already routing to fli.tubby.json', () => {
+  it('renaming an unrelated set leaves attached sets in the store and writes no project file', async () => {
+    await replaceStoreSets([bare('a', PROJECT), bare('b', PROJECT), bare('c', null)]);
+    const a = JSON.stringify(storeSet('a'));
+    const b = JSON.stringify(storeSet('b'));
+
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+    const renamed = await invoke('rename_set', { setId: 'c', title: 'c renamed' });
+    expect(renamed.applied).toBe(true);
+
+    expect(JSON.stringify(storeSet('a'))).toBe(a);
+    expect(JSON.stringify(storeSet('b'))).toBe(b);
+    expect(existsSync(PROJECT_FILE())).toBe(false);
+
+    const listed = await restartedCore().invoke('list_sets', {}, { principal: 'agent' });
+    expect(listed.ok && (listed.data as any).sets.map((s: { id: string }) => s.id).sort()).toEqual([
+      'a',
+      'b',
+      'c',
+    ]);
+  });
+
+  it('editing an attached set that was never exported edits the store copy, not the project file', async () => {
+    await replaceStoreSets([bare('a', PROJECT)]);
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+    await invoke('rename_set', { setId: 'a', title: 'edited' });
+    expect(storeSet('a').title).toBe('edited');
+    expect(existsSync(PROJECT_FILE())).toBe(false);
   });
 });
 
