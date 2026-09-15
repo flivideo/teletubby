@@ -4,6 +4,8 @@ category: correctness
 severity: high
 date: 2026-08-31
 status: fixed
+story_reference: live-edit refresh (2026-08-31), W6 fix F6 (2026-09-16)
+recurrence_count: 2
 files:
   - src/renderer/src/store.ts
   - test/prompter-navigation.test.ts
@@ -55,3 +57,12 @@ Check for the no-op first; restore only what actually moved.
 
 Corollary for reviews: when a fix edits the machinery that protects an invariant, run that
 invariant's pinned tests before believing the fix — they encode the last time it was violated.
+
+## Recurrences
+
+- **2026-09-16, W6 fix F6**: an identical `context_select` (a no-op re-point from FliStudio)
+  still announced a change. The window re-fetched a now-filtered set list, missed the set on
+  stage, and fell back to `sets[0]`, a different set in front of the talent. Fixed by the no-op
+  path (`applied: false` when the resolved context equals the held one) and by never falling
+  back to another set.
+

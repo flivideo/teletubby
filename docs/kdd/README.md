@@ -41,8 +41,9 @@ Seeded 2026-08-19 from the first build session. Every entry below was paid for t
 | [Absence rendering as success](learnings/absence-rendering-as-success.md) | correctness | high | Rule 6 passed on an empty term list; an unauthored trigger set lit the end card; a dropped CLI argument said *not found*; `process.exit()` truncated a successful payload mid-pipe so the write's own caller parsed it as a failure. **Recurrence 4 — past the promotion bar, human to rule.** (2026-08-30, +2026-09-04) |
 | [An occluded Electron window cannot be screenshotted for proof](learnings/an-occluded-electron-window-cannot-be-screenshotted-for-proof.md) | tooling | medium | Identical pixels before and after an HMR that changed the page. Stale frame, failed render and nothing-to-change look the same; only a focused window or a human proves it. (2026-08-30) |
 | [The store has no file watcher — safe only while writes go through the API](learnings/the-store-has-no-file-watcher-safe-only-while-writes-go-through-the-api.md) | architecture | medium | The running app never re-reads `teletubby.json`; live updates exist because `onChange` fires inside the writing process. One direct disk edit = silent divergence. A convention, not an enforcement. (2026-08-31) |
-| [A fix to a restore path can itself be a move](learnings/a-fix-to-a-restore-path-can-itself-be-a-move.md) | correctness | high | Re-seating to the paragraph's first trigger yanked the talent back three beats on every agent edit — drift caused by the anti-drift fix. Every restore needs a no-op path: is the current state already right? (2026-08-31) |
+| [A fix to a restore path can itself be a move](learnings/a-fix-to-a-restore-path-can-itself-be-a-move.md) | correctness | high | Re-seating to the paragraph's first trigger yanked the talent back three beats on every agent edit — drift caused by the anti-drift fix. Every restore needs a no-op path: is the current state already right? (2026-08-31, **+W6 F6 2026-09-16 — recurrence 2**) |
 | [Chrome inside the loaded branch makes every empty state a dead end](learnings/chrome-inside-the-loaded-branch-makes-every-empty-state-a-dead-end.md) | frontend | high | An empty project unmounted every control (rail, panel, footer lived in the script-loaded branch) — and the remember-effect persisted the empty set, so the app relaunched INTO its own dead end. Shell renders always; only the lanes need a script. (2026-09-10) |
+| [Route a merged write back by prior membership, never by attribute](learnings/route-a-merged-write-back-by-prior-membership-never-by-attribute.md) | correctness | critical | Splitting the fli.tubby.json ∪ store view back by `set.project` moved every attached set out of the store on ANY write, and a dry run persisted the split, so a preview erased a set. Route by the id already in the file; moving is its own verb. (2026-09-16) |
 | [System evidence cannot answer a workflow question](learnings/system-evidence-cannot-answer-a-workflow-question.md) | process | high | Project UX designed entirely from verified system facts — code, disk, APIs — and no one asked David how he works. "The worst user experience I've seen." Contract questions ≠ workflow questions; for the latter the human is the only primary source. (2026-09-02) |
 
 ## Decisions
@@ -50,6 +51,7 @@ Seeded 2026-08-19 from the first build session. Every entry below was paid for t
 | ADR | Title | Status |
 |---|---|---|
 | [001](decisions/adr-001-rebuild-on-appytron-rather-than-extend-the-artifact.md) | Rebuild on AppyTron rather than extend the working artifact | accepted |
+| [002](decisions/adr-002-typecheck-is-the-static-check-lint-is-davids-call.md) | Typecheck is the static check; a lint config is David's call | accepted |
 
 ---
 
