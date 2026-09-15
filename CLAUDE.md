@@ -283,6 +283,64 @@ Recording is not ours and never will be: the talent drives Ecamm, FliHub watches
 and queues the takes. Script editing arrives by making the app **drivable** by an agent, not
 by growing an editor — see the North Star.
 
+### The open contract — brand and project (W6, 2026-09-16)
+
+Teletubby now accepts the same `{ brand, project }` context every FliVideo app is meant to
+(`flivideo/flistudio/docs/open-contract.md` §3, §3.1 RULED). Both doors set the SAME
+session-scoped context, never a sticky setting — restarting the app loses it, on purpose (C2):
+
+- **Door 2 — launch args.** `scripts/app.sh start --brand <key> --project <folder>` exports
+  `FLIVIDEO_BRAND` / `FLIVIDEO_PROJECT`; main parses them with `@flivideo/core`'s `parseOpenArgs`
+  and resolves at startup. `--brand`/`--project` only take effect on a FRESH start — an already
+  running app ignores them (use door 3 instead).
+- **Door 3 — control API / CLI, no restart (C4).** `context_select { brand, project }` and
+  `context_get` are ordinary capabilities, reachable exactly like any other verb:
+  `teletubby call context_select --input '{"brand":"appydave","project":"d02-cutty-audio-cleanup"}'`.
+  Both doors call the SAME resolver (`src/core/open-context.ts`), so drift between them is a
+  test bug, not a design one (👤 David's own framing, open-contract §3.1).
+- **A refusal never moves the context.** `context_select` on a bad brand/ambiguous project
+  leaves whatever was open alone and reports why in `refused`; `list_sets` falls back to
+  today's unfiltered list and says `filter.missing` when nothing was ever set.
+
+⚠️ **Teletubby is LOOSER than `@flivideo/core`'s own `resolveOpenContext`.** That helper
+requires a valid `fli.studio.json` (FliStudio's identity file — not yet written into any real
+project as of this ruling: `a01-kybernesis-12-videos`, `d02-cutty-audio-cleanup` and
+`d03-cutty-presenter-tracking` all lack one) and refuses a bare folder as `not-a-project`.
+Teletubby's sets have linked to a FliHub folder **name** since before identity files existed
+(`ScriptSet.project`, unchanged by this work), so a folder fli-core calls `not-a-project` is
+accepted here as `membership: 'folder'` instead of refused — deliberately, not an oversight.
+The refusal codes actually surfaced (`src/core/open-context.ts`), mapped onto fli-core's own
+result kinds:
+
+| Code (this app) | `@flivideo/core` source |
+|---|---|
+| `missing` | `parseOpenArgs`'s `missing[]` — brand and/or project absent |
+| `unknown-brand` | `readBrands` had no matching key |
+| `no-brand-root` | `resolveBrandRoot` returned `null`, or the listing was `unscanned` |
+| `registry-unreadable` | `readBrands` returned `null` or `{kind:'invalid'}` |
+| `project-not-found` | no folder matched, by name or by code, in members **or** other folders |
+| `project-ambiguous` | 2+ folders share a code (R31, extended over plain folders — the W3 review's shared ruling) |
+
+`video-invalid` / `video-not-found` never appear — Teletubby has no video concept.
+`not-a-project` never appears either, for the reason above: it becomes a success.
+
+**`fli.tubby.json`** — the project's own copy of its script sets, written via
+`@flivideo/core`'s `appFileName({ app: 'tubby' })`. The relationship: the app store
+(`userData/teletubby.json`) is the index and the home of everything that is not a project's
+(talents, rigs, the workspace — never written here); a project's `fli.tubby.json` is the
+source of truth for that project's own sets. A set attached to the CURRENTLY OPEN project
+moves to `fli.tubby.json` the next time it is written (`projectAwareUpdate` in
+`src/core/handlers.ts`) — lazily, one edit at a time, never as a batch migration. The one
+explicit move is `set_export_to_project { setId }`: it requires the open context to match the
+set's project, writes the project file immediately (no edit required), and marks the app-store
+copy `exportedTo: <folder>` rather than deleting it — frozen history, never shown again
+(`list_sets` and every read merge the project file's copy over the store's, by id).
+
+⚠️ **No automatic migration ran tonight, on purpose.** The three real sets above are still
+exactly where they were — nothing routes a set anywhere until Teletubby is actually launched
+or `context_select`ed onto its matching project. See the W6 build report for the exact
+`context_select` + `set_export_to_project` CLI lines for each.
+
 ---
 
 ## The capability core — read this before adding any feature
