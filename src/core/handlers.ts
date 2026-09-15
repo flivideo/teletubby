@@ -41,13 +41,19 @@ import {
   type Rig,
   type RigLayout,
 } from '@shared/rig';
-import { CAPABILITIES, type CapabilityMeta, type Principal } from '@shared/capabilities';
+import {
+  CAPABILITIES,
+  type CapabilityMeta,
+  type ErrorCode,
+  type Principal,
+} from '@shared/capabilities';
 import type { ActiveContextHolder } from './active-context.js';
 import { scoreAgainst } from './cadence.js';
 import {
   projectDirOf,
   resolveOpenArgs,
   type OpenContextHolder,
+  type OpenRefusalCode,
 } from './open-context.js';
 import { projectFilePath, readProjectSets, writeProjectSets } from './project-store.js';
 import type { Repository, RepositoryDocument } from './repository.js';
@@ -92,6 +98,16 @@ const parse = <T>(schema: z.ZodType<T>, input: unknown): T => {
 
 
 
+
+/** Open-contract refusal code → capability error (and so HTTP status). Shared with FliHub W3. */
+const REFUSAL_ERROR: Record<OpenRefusalCode, ErrorCode> = {
+  missing: 'invalid_input', // 400
+  'unknown-brand': 'not_found', // 404
+  'project-not-found': 'not_found', // 404
+  'project-ambiguous': 'conflict', // 409
+  'no-brand-root': 'unavailable', // 503
+  'registry-unreadable': 'unavailable', // 503
+};
 
 /* ------------------------------------------------------------------ *
  * Resolution — with ambient context as the default argument
@@ -457,11 +473,18 @@ export function createHandlers(): Record<string, Handler> {
   handlers.context_select = async (input, context) => {
     const parsed = parse(INPUT.context_select, input);
     const resolution = await resolveOpenArgs(parsed);
+    // Recorded FIRST, so `context_get` and `list_sets.filter.missing` still
+    // show the refusal — and the previous context stands (C3).
     const report = context.openContext.apply(resolution);
-    // `applied` also gates the change event (core/index.ts `didApply`): a
-    // refusal must never wake every window to re-fetch a set list that did
-    // not move.
-    return { applied: resolution.kind === 'resolved', ...report };
+    if (resolution.kind === 'refused') {
+      // A refusal is a FAILURE on the wire, the same status FliHub (W3) sends
+      // for the same code — FliStudio's launch buttons branch on status, and a
+      // 200 here would read as "switched" (W6 fix F7).
+      const { code, message } = resolution.refusal;
+      fail(REFUSAL_ERROR[code], message, { context: report.context, refused: report.refused });
+    }
+    // `applied` also gates the change event (core/index.ts `didApply`).
+    return { applied: true, ...report };
   };
 
   /* --- reading ----------------------------------------------------- */

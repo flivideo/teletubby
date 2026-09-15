@@ -212,10 +212,13 @@ export const CAPABILITIES: readonly CapabilityMeta[] = [
       idempotent: true,
       supportsDryRun: false,
       supportsIdempotencyKey: false,
-      // A domain refusal (unknown brand, ambiguous project, …) travels in the
-      // success payload's `refused` field, the same way fli-core's own
-      // resolvers report it — only a malformed call throws.
-      failureModes: ['invalid_input'],
+      // A refusal FAILS, with `details: { context, refused }` — the same
+      // statuses FliHub (W3) returns: missing → invalid_input (400),
+      // unknown-brand / project-not-found → not_found (404),
+      // project-ambiguous → conflict (409), no-brand-root /
+      // registry-unreadable → unavailable (503). The refusal is still recorded,
+      // so context_get shows it.
+      failureModes: ['invalid_input', 'not_found', 'conflict', 'unavailable'],
     },
   ),
 

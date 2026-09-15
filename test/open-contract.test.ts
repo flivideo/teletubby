@@ -1,5 +1,6 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { execFile } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseOpenArgs } from '@flivideo/core';
@@ -151,11 +152,15 @@ describe('door 2 — launch arguments resolve the same way door 3 does (C1)', ()
 });
 
 describe('missing and refused (C3) — the previous context is never disturbed', () => {
-  it('3 · missing arguments report why, and list_sets stays unfiltered', async () => {
-    const empty = await invoke('context_select', {});
-    expect(empty.applied).toBe(false);
-    expect(empty.refused).toMatchObject({ code: 'missing', missing: ['brand', 'project'] });
-    expect(empty.context).toBeNull();
+  it('3 · missing arguments fail 400 with the refusal, and list_sets stays unfiltered', async () => {
+    const empty = await post('context_select', {});
+    expect(empty.status).toBe(400);
+    expect(empty.body.error.code).toBe('invalid_input');
+    expect(empty.body.error.details.refused).toMatchObject({ code: 'missing', missing: ['brand', 'project'] });
+    expect(empty.body.error.details.context).toBeNull();
+
+    // Still recorded, so the holder reports it.
+    expect((await invoke('context_get')).refused?.code).toBe('missing');
 
     const listed = await invoke('list_sets');
     expect(listed.sets.map((s: { id: string }) => s.id).sort()).toEqual([
@@ -163,30 +168,59 @@ describe('missing and refused (C3) — the previous context is never disturbed',
       'export-me',
       'other-set',
     ]);
-    expect(listed.filter).toEqual({ project: null, allSets: false, missing: ['brand', 'project'] });
+    expect(listed.filter).toMatchObject({ project: null, allSets: false, missing: ['brand', 'project'] });
   });
 
-  it('4 · an unknown brand and an ambiguous project both refuse without moving the context', async () => {
+  it('4 · an unknown brand (404) and an ambiguous project (409) refuse without moving the context', async () => {
     const good = await invoke('context_select', { brand: BRAND, project: PROJECT });
     expect(good.applied).toBe(true);
 
-    const unknownBrand = await invoke('context_select', { brand: 'no-such-brand', project: PROJECT });
-    expect(unknownBrand.applied).toBe(false);
-    expect(unknownBrand.refused?.code).toBe('unknown-brand');
-    expect(unknownBrand.context).toEqual(good.context);
+    const unknownBrand = await post('context_select', { brand: 'no-such-brand', project: PROJECT });
+    expect(unknownBrand.status).toBe(404);
+    expect(unknownBrand.body.error.code).toBe('not_found');
+    expect(unknownBrand.body.error.details.refused.code).toBe('unknown-brand');
+    expect(unknownBrand.body.error.details.context).toEqual(good.context);
 
     // "d02" matches BOTH fixture folders by code (R31, extended over plain folders).
-    const ambiguous = await invoke('context_select', { brand: BRAND, project: 'd02' });
-    expect(ambiguous.applied).toBe(false);
-    expect(ambiguous.refused?.code).toBe('project-ambiguous');
-    expect(ambiguous.refused?.candidates?.sort()).toEqual([AMBIGUOUS_CODE_A, AMBIGUOUS_CODE_B].sort());
-    expect(ambiguous.context).toEqual(good.context);
+    const ambiguous = await post('context_select', { brand: BRAND, project: 'd02' });
+    expect(ambiguous.status).toBe(409);
+    expect(ambiguous.body.error.code).toBe('conflict');
+    expect(ambiguous.body.error.details.refused.code).toBe('project-ambiguous');
+    expect(ambiguous.body.error.details.refused.candidates.sort()).toEqual(
+      [AMBIGUOUS_CODE_A, AMBIGUOUS_CODE_B].sort(),
+    );
+    expect(ambiguous.body.error.details.context).toEqual(good.context);
 
     // And a third call confirms the CONTEXT itself was never touched — even
     // though context_get now also surfaces the most recent refusal reason.
     const current = await invoke('context_get');
     expect(current.context).toEqual(good.context);
     expect(current.refused?.code).toBe('project-ambiguous');
+  });
+
+  it('the CLI exits non-zero on a refusal', async () => {
+    const run = await new Promise<{ status: number | null; stdout: string; stderr: string }>((resolve) => {
+      // Async, never spawnSync: the control server answering this call lives
+      // in THIS process, and a blocked event loop would deadlock it.
+      execFile(
+        process.execPath,
+        ['bin/teletubby.mjs', 'call', 'context_select', '--input', JSON.stringify({ brand: 'no-such-brand', project: PROJECT })],
+        {
+          encoding: 'utf8',
+          timeout: 10_000,
+          env: {
+            ...process.env,
+            TELETUBBY_URL: `http://127.0.0.1:${control.port}`,
+            TELETUBBY_TOKEN: control.token,
+            TELETUBBY_CONTROL_FILE: join(userData, 'no-such-control.json'),
+          },
+        },
+        (error, stdout, stderr) =>
+          resolve({ status: error ? ((error as { code?: number }).code ?? 1) : 0, stdout, stderr }),
+      );
+    });
+    expect(run.status).not.toBe(0);
+    expect(run.stdout + run.stderr).toContain('unknown-brand');
   });
 });
 
