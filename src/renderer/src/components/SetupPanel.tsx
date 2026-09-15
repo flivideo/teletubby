@@ -1,7 +1,15 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { CAMERA_SIDES, RECORDING_SET, TEXT_PRESETS } from '@shared/rig';
-import { ZONE_LABEL, layoutOf, rigModified, setupEdge, stageSetGone, useProm } from '../store';
+import {
+  ZONE_LABEL,
+  layoutOf,
+  rigModified,
+  setupEdge,
+  stageSetGone,
+  useProm,
+  visibleSets,
+} from '../store';
 import { Chip } from './Controls';
 import RigAdmin from './RigAdmin';
 import type { Rig } from '@shared/rig';
@@ -27,6 +35,11 @@ function ProjectAdmin(): JSX.Element {
   const set = useProm((s) => s.set);
   const requestSet = useProm((s) => s.requestSet);
   const gone = useProm(stageSetGone);
+  const openProject = useProm((s) => s.openProject);
+  const filter = useProm((s) => s.setFilter);
+  const setSetFilter = useProm((s) => s.setSetFilter);
+  const shown = visibleSets(sets, openProject, filter);
+  const onStage = sets.find((entry) => entry.id === set?.id);
   const [mode, setMode] = useState<'idle' | 'create' | 'rename'>('idle');
   const [folder, setFolder] = useState('');
   const [title, setTitle] = useState('');
@@ -73,24 +86,71 @@ function ProjectAdmin(): JSX.Element {
     setError(null);
   };
 
+  /**
+   * EXPORT — the one explicit move of a store set into its project's
+   * fli.tubby.json (W6). Offered only on a row whose project IS the open one
+   * and whose data still lives in the store; the core refuses anything else
+   * (and a second export), and its refusal shows verbatim below.
+   */
+  const exportSet = async (setId: string): Promise<void> => {
+    const result = await window.appytron.invoke({
+      capability: 'set_export_to_project',
+      input: { setId },
+    });
+    setError(result.ok ? null : result.error.message);
+  };
+
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      {sets.map((entry) => (
-        <Chip
-          key={entry.id}
-          on={entry.id === set?.id}
-          title={entry.project ?? `${entry.title} — no FliHub project attached yet`}
-          onClick={() => {
-            if (entry.id !== set?.id) requestSet(entry.id);
-          }}
-        >
-          {entry.project && (
-            <span className="mr-1.5 font-mono normal-case tracking-normal">
-              {entry.project.split('-', 1)[0].toUpperCase()}
-            </span>
-          )}
-          {entry.title}
-        </Chip>
+      {/* This project / all sets — only meaningful once a project is open. */}
+      {openProject && (
+        <div className="flex w-full items-center gap-1.5">
+          <Chip on={filter === 'project'} onClick={() => setSetFilter('project')}>
+            This project
+          </Chip>
+          <Chip on={filter === 'all'} onClick={() => setSetFilter('all')}>
+            All sets
+          </Chip>
+        </div>
+      )}
+      {shown.note && <span className="w-full font-body text-xs text-muted">{shown.note}</span>}
+
+      {shown.sets.map((entry) => (
+        <Fragment key={entry.id}>
+          <Chip
+            on={entry.id === set?.id}
+            title={
+              entry.readOnly
+                ? `Read-only here — lives in ${entry.livesIn}`
+                : (entry.project ?? `${entry.title} — no FliHub project attached yet`)
+            }
+            onClick={() => {
+              if (entry.id !== set?.id) requestSet(entry.id);
+            }}
+          >
+            {entry.project && (
+              <span className="mr-1.5 font-mono normal-case tracking-normal">
+                {entry.project.split('-', 1)[0].toUpperCase()}
+              </span>
+            )}
+            {entry.title}
+            {entry.readOnly && (
+              <span className="ml-1.5 font-mono text-[0.6rem] normal-case opacity-60">read-only</span>
+            )}
+          </Chip>
+          {openProject &&
+            entry.project === openProject &&
+            entry.source !== 'project' &&
+            !entry.exportedTo && (
+              <Chip
+                on={false}
+                title={`Write this set into ${openProject}/fli.tubby.json — the store copy is kept`}
+                onClick={() => void exportSet(entry.id)}
+              >
+                Export ↧
+              </Chip>
+            )}
+        </Fragment>
       ))}
 
       {mode === 'create' && (
@@ -160,7 +220,7 @@ function ProjectAdmin(): JSX.Element {
           >
             + New project…
           </Chip>
-          {set && (
+          {set && !onStage?.readOnly && (
             <Chip
               on={false}
               onClick={() => {

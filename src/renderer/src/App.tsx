@@ -19,6 +19,7 @@ import {
   prevScript,
   rankOf,
   useProm,
+  visibleSets,
   zoneOrder,
   type RecordingZone,
 } from './store';
@@ -84,6 +85,16 @@ export default function App(): JSX.Element {
       return result.data.sets;
     };
 
+    // Which project the session is pointed at, so the panel can default its
+    // filter to it. The context is the core's; this only mirrors it.
+    const fetchContext = async (): Promise<void> => {
+      const result = await window.appytron.invoke<{ context: { project: string } | null }>({
+        capability: 'context_get',
+      });
+      if (cancelled || !result.ok) return;
+      useProm.getState().setOpenProject(result.data.context?.project ?? null);
+    };
+
     const fetchSet = async (setId: string, apply: (set: ScriptSet) => void): Promise<void> => {
       const full = await window.appytron.invoke<ScriptSet>({
         capability: 'get_set',
@@ -117,14 +128,20 @@ export default function App(): JSX.Element {
     // invisible while one project existed and wrong the day there were two.
     void (async () => {
       await fetchRigs(({ rigs, workspace }) => loadRigs(rigs, workspace));
+      await fetchContext();
       const sets = await fetchSets();
       if (!sets || cancelled) return;
+      // Only a store with NO sets is a failure. A project with none attached
+      // falls back to every set (visibleSets) — never this screen (W6 fix F5).
       if (sets.length === 0) {
         setFailure('No script sets in the store.');
         return;
       }
-      const remembered = useProm.getState().pendingPosition?.setId;
-      const target = sets.find((entry) => entry.id === remembered)?.id ?? sets[0].id;
+      const state = useProm.getState();
+      const remembered = state.pendingPosition?.setId;
+      const shown = visibleSets(sets, state.openProject, state.setFilter).sets;
+      const target =
+        sets.find((entry) => entry.id === remembered)?.id ?? shown[0]?.id ?? sets[0].id;
       await fetchSet(target, load);
     })();
 
@@ -144,6 +161,7 @@ export default function App(): JSX.Element {
     const unsubscribe = window.appytron.onControlChanged(() => {
       void fetchRigs(({ rigs }) => setRigs(rigs));
       void (async () => {
+        await fetchContext();
         const sets = await fetchSets();
         if (!sets || cancelled) return;
         const current = useProm.getState().set;

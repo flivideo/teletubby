@@ -10,6 +10,7 @@ import {
   setupEdge,
   stageSetGone,
   useProm,
+  visibleSets,
   type SetSummary,
 } from '../src/renderer/src/store';
 
@@ -243,5 +244,44 @@ describe('the set on stage when the list changes underneath it (W6 fix F6)', () 
   it('an empty list (nothing fetched yet) is not "gone"', () => {
     s().setSets([]);
     expect(stageSetGone(s())).toBe(false);
+  });
+});
+
+describe('the PROJECT row filter (W6 fix F5)', () => {
+  const row = (id: string, project: string | null): SetSummary => ({
+    id,
+    title: id,
+    description: '',
+    project,
+    scriptCount: 0,
+  });
+  const all = [row('a', 'd02-cutty'), row('b', 'a01-kyber'), row('c', null)];
+
+  it('with no project open, shows every set', () => {
+    expect(visibleSets(all, null, 'project')).toEqual({ sets: all, note: null });
+  });
+
+  it('with a project open, shows only its sets — and "all sets" is one chip away', () => {
+    expect(visibleSets(all, 'd02-cutty', 'project').sets.map((e) => e.id)).toEqual(['a']);
+    expect(visibleSets(all, 'd02-cutty', 'all').sets).toEqual(all);
+  });
+
+  it('a project with NO attached set falls back to every set with a note, never an empty list', () => {
+    const shown = visibleSets(all, 'z99-empty-project', 'project');
+    expect(shown.sets).toEqual(all);
+    expect(shown.note).toContain('z99-empty-project');
+  });
+
+  it('defaults to this project when a context arrives, and keeps the talent’s choice on a refresh', () => {
+    useProm.setState({ openProject: null, setFilter: 'all' });
+    s().setOpenProject('d02-cutty');
+    expect(s().setFilter).toBe('project');
+
+    s().setSetFilter('all');
+    s().setOpenProject('d02-cutty'); // a change event re-reads the same context
+    expect(s().setFilter).toBe('all');
+
+    s().setOpenProject(null);
+    expect(s().setFilter).toBe('all');
   });
 });

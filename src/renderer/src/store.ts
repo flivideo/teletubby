@@ -223,6 +223,12 @@ interface PrompterState {
    */
   sets: SetSummary[];
   setSets: (sets: SetSummary[]) => void;
+  /** The session's open project (W6 `context_get`), or null. Never persisted, like the context itself. */
+  openProject: string | null;
+  /** Records the open project; a CHANGE of project resets the filter to it. */
+  setOpenProject: (project: string | null) => void;
+  setFilter: SetFilter;
+  setSetFilter: (filter: SetFilter) => void;
   requestedSetId: string | null;
   requestSet: (setId: string) => void;
   clearRequestedSet: () => void;
@@ -244,6 +250,35 @@ export interface SetSummary {
   /** The FliHub folder name, verbatim, or null for an unattached set. */
   project: string | null;
   scriptCount: number;
+  /** Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy. */
+  exportedTo?: string | null;
+  /** An exported store copy seen without its project open — listed, never editable. */
+  readOnly?: boolean;
+  livesIn?: string | null;
+  /** Where this row's data was read from: the open project's fli.tubby.json, or the app store. */
+  source?: 'project' | 'store';
+}
+
+export type SetFilter = 'project' | 'all';
+
+/**
+ * Which sets the setup panel's PROJECT row shows (W6 fix F5).
+ *
+ * With a project open the default is that project's sets, and "all sets" is
+ * one chip away — picking a set is the talent's, so the panel must be able to
+ * reach every one. A project with NO attached set is never a dead end: the
+ * list falls back to every set and says why, rather than rendering nothing.
+ */
+export function visibleSets(
+  sets: SetSummary[],
+  openProject: string | null,
+  filter: SetFilter,
+): { sets: SetSummary[]; note: string | null } {
+  if (!openProject || filter === 'all') return { sets, note: null };
+  const attached = sets.filter((entry) => entry.project === openProject);
+  if (attached.length === 0 && sets.length > 0)
+    return { sets, note: `No set attached to ${openProject} — showing all sets.` };
+  return { sets: attached, note: null };
 }
 
 /** A transcript with no authored trigger set cannot be stepped at all. */
@@ -300,6 +335,8 @@ export const useProm = create<PrompterState>((set, get) => ({
   pendingPosition: null,
   freshTranscripts: {},
   sets: [],
+  openProject: null,
+  setFilter: 'all',
   requestedSetId: null,
 
   cue: null,
@@ -730,6 +767,11 @@ export const useProm = create<PrompterState>((set, get) => ({
   setRigs: (rigs) => set({ rigs }),
 
   setSets: (sets) => set({ sets }),
+  setOpenProject: (project) => {
+    if (project === get().openProject) return;
+    set({ openProject: project, setFilter: project ? 'project' : 'all' });
+  },
+  setSetFilter: (filter) => set({ setFilter: filter }),
   requestSet: (setId) => set({ requestedSetId: setId }),
   clearRequestedSet: () => set({ requestedSetId: null }),
 
