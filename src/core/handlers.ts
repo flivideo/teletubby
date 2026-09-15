@@ -618,6 +618,9 @@ export function createHandlers(): Record<string, Handler> {
         'no open context — point Teletubby at the set\'s project first (context_select)',
       );
     const openContext = status.context;
+    const alreadyInProject = (await readProjectSets(projectDirOf(openContext))).some(
+      (candidate) => candidate.id === parsed.setId,
+    );
 
     return context.repository.update<unknown>((document) => {
       const set = document.sets.find((candidate) => candidate.id === parsed.setId);
@@ -625,6 +628,16 @@ export function createHandlers(): Record<string, Handler> {
         fail('not_found', `no set "${parsed.setId}" in the app store`, {
           available: document.sets.map((s) => s.id),
         });
+      // A second export would copy the STALE store data over the live project
+      // copy — a silent revert of every edit made since (W6 fix F3). Refused,
+      // never the default; nothing here offers a same-id overwrite.
+      if (set.exportedTo || alreadyInProject)
+        fail(
+          'conflict',
+          `set "${set.id}" is already exported to "${set.exportedTo ?? openContext.project}"; ` +
+            `the project copy (fli.tubby.json) is live`,
+          { exportedTo: set.exportedTo ?? openContext.project, inProjectFile: alreadyInProject },
+        );
       if (!set.project)
         fail(
           'invalid_input',

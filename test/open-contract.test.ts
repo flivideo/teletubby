@@ -337,6 +337,29 @@ describe('F2 · a dry run with a context open changes nothing on disk', () => {
   });
 });
 
+describe('F3 · re-exporting never reverts the live project copy', () => {
+  it('export, edit in the project, re-export → 409 and the edit survives', async () => {
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+    expect((await invoke('set_export_to_project', { setId: 'export-me' })).applied).toBe(true);
+    await invoke('rename_set', { setId: 'export-me', title: 'edited-in-project' });
+
+    const again = await post('set_export_to_project', { setId: 'export-me' });
+    expect(again.status).toBe(409);
+    expect(again.body.error.code).toBe('conflict');
+
+    const onDisk = await readProjectSets(PROJECT_DIR());
+    expect(onDisk.find((s) => s.id === 'export-me')?.title).toBe('edited-in-project');
+  });
+
+  it('refuses when only the project file holds the id (the store copy was never marked)', async () => {
+    await writeProjectSets(PROJECT_DIR(), PROJECT, [bare('attached-set', PROJECT)]);
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+    const refused = await post('set_export_to_project', { setId: 'attached-set' });
+    expect(refused.status).toBe(409);
+    expect(storeSet('attached-set').exportedTo).toBeNull();
+  });
+});
+
 describe('set_export_to_project', () => {
   it('6 · writes the project file and leaves the store copy in place, marked exportedTo', async () => {
     await invoke('context_select', { brand: BRAND, project: PROJECT });
