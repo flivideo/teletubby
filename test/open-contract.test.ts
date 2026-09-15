@@ -539,6 +539,24 @@ describe('M3 · concurrent writes to one project file never lose an edit', () =>
   });
 });
 
+describe('M7 · an invalid ~/.fli/machine.json refuses rather than silently using the registry root', () => {
+  it('context_select → 503 no-brand-root naming the parse failure; the context does not move', async () => {
+    const good = await invoke('context_select', { brand: BRAND, project: PROJECT });
+    const machineDir = join(home, '.fli');
+    mkdirSync(machineDir, { recursive: true });
+    writeFileSync(join(machineDir, 'machine.json'), '{ not json');
+    try {
+      const refused = await post('context_select', { brand: BRAND, project: AMBIGUOUS_CODE_B });
+      expect(refused.status).toBe(503);
+      expect(refused.body.error.details.refused.code).toBe('no-brand-root');
+      expect(refused.body.error.message).toContain('machine.json');
+      expect(refused.body.error.details.context).toEqual(good.context);
+    } finally {
+      rmSync(machineDir, { recursive: true, force: true });
+    }
+  });
+});
+
 describe('set_export_to_project', () => {
   it('6 · writes the project file and leaves the store copy in place, marked exportedTo', async () => {
     await invoke('context_select', { brand: BRAND, project: PROJECT });

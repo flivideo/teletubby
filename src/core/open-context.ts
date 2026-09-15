@@ -168,7 +168,20 @@ export async function resolveOpenArgs(
   }
 
   const machineResult = await readMachineSettings(options.home ? { home: options.home } : {});
-  const machine = machineResult.kind === 'valid' ? machineResult.value : null;
+  // A machine.json that exists and cannot be used REFUSES (C3). Dropping it
+  // silently would also drop its `brandRoots` override — an external drive —
+  // and resolve to the registry root: the wrong folder, with no word said
+  // (W6 fix M7). Absent is fine; fli-core reports that as defaults.
+  if (machineResult.kind === 'invalid') {
+    return {
+      kind: 'refused',
+      refusal: {
+        code: 'no-brand-root',
+        message: `${machineResult.path} ${machineResult.reason}: ${machineResult.message}`,
+      },
+    };
+  }
+  const machine = machineResult.value;
   const root = resolveBrandRoot(brand, machine, options.home ? { home: options.home } : {});
   if (root === null || !path.isAbsolute(root)) {
     return {
