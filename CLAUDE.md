@@ -347,10 +347,12 @@ refuses `conflict` (409), dry runs included, because an edit there would be shad
 moment the project opens (W6 review F4, Swagger's ruling). A second export also refuses
 `conflict`: it would revert the live project copy (F3).
 
-⚠️ **No automatic migration ran tonight, on purpose.** The three real sets above are still
-exactly where they were — nothing routes a set anywhere until Teletubby is actually launched
-or `context_select`ed onto its matching project. See the W6 build report for the exact
-`context_select` + `set_export_to_project` CLI lines for each.
+⚠️ **No automatic migration, ever.** The three real sets are still exactly where they were,
+and opening a context moves nothing: only an explicit `set_export_to_project` puts a set in
+a project file. The export lines for each — **with their brand keys**, which `ScriptSet`
+did not record before the fix round — are in
+[docs/briefs/overnight-W6-teletubby-open-contract.md § Report](docs/briefs/overnight-W6-teletubby-open-contract.md#report),
+marked *do not run until F1–F4 are gated*.
 
 ---
 

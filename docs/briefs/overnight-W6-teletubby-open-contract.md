@@ -108,3 +108,44 @@ Existing `npm test`, `npm run typecheck`, `npm run lint` stay green; thresholds 
 4. The backup path of the real store (or "no store file existed").
 5. The three real sets and the export line for each. **Deferred**, **Decisions**, **anything this brief got wrong**.
 6. One line: `APPYNET: done — <doors, filter, fli.tubby, export; tests>` or `APPYNET: blocked — <why>`.
+
+## Report
+
+*Added by the W6 fix round (`teletubby-w6-fix`, 2026-09-16), per review M5.*
+
+### The three real sets — export lines
+
+> ⛔ **DO NOT RUN until F1–F4 of `docs/reviews/overnight-W6.md` are gated by Swagger.**
+> The fixes are on `main`; the gate is not a code change, it is Swagger reproducing them. The
+> real store's backup is `~/fli/lab/teletubby/backup-20260916-0055/teletubby.json`. The app
+> must be running (the surface lives in its process); each pair is one context switch and one
+> export, and **each export is one-way** — afterwards the store copy is read-only everywhere
+> except with that project open.
+
+Brand keys were resolved on the M4 Mini on 2026-09-16 from `~/.config/appydave/brands.json`
+(`locations.video_projects`, A5 home rewrite; no `~/.fli/machine.json` exists): each folder
+was found under exactly one brand root.
+
+| Set | Brand | Project folder |
+|---|---|---|
+| `kybernesis-phase-1` | `kybernesis` | `a01-kybernesis-12-videos` |
+| `cutty-audio-cleanup` | `appydave` | `d02-cutty-audio-cleanup` |
+| `cutty-presenter-tracking` | `appydave` | `d03-cutty-presenter-tracking` |
+
+```bash
+# kybernesis-phase-1
+teletubby call context_select --input '{"brand":"kybernesis","project":"a01-kybernesis-12-videos"}'
+teletubby call set_export_to_project --input '{"setId":"kybernesis-phase-1"}'
+
+# cutty-audio-cleanup
+teletubby call context_select --input '{"brand":"appydave","project":"d02-cutty-audio-cleanup"}'
+teletubby call set_export_to_project --input '{"setId":"cutty-audio-cleanup"}'
+
+# cutty-presenter-tracking
+teletubby call context_select --input '{"brand":"appydave","project":"d03-cutty-presenter-tracking"}'
+teletubby call set_export_to_project --input '{"setId":"cutty-presenter-tracking"}'
+```
+
+Add `"dryRun":true` to an export's input to preview it first. A second run of the same
+export refuses `409 conflict` (F3) rather than reverting the project copy.
+
