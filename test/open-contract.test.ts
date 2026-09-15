@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseOpenArgs } from '@flivideo/core';
 import { FileRepository, readProjectSets, writeProjectSets, type Core, createCore } from '@core/index';
+import { KYBERNESIS_PHASE_1 } from '@shared/script-set';
 import { startControlServer, type ControlServerHandle } from '../src/main/control-server';
 
 /**
@@ -284,6 +285,55 @@ describe('F1 · a write never moves a set it was not already routing to fli.tubb
     await invoke('rename_set', { setId: 'a', title: 'edited' });
     expect(storeSet('a').title).toBe('edited');
     expect(existsSync(PROJECT_FILE())).toBe(false);
+  });
+});
+
+describe('F2 · a dry run with a context open changes nothing on disk', () => {
+  const phase1 = (): any => ({ ...JSON.parse(JSON.stringify(KYBERNESIS_PHASE_1)), project: PROJECT });
+  const triggerPreview = {
+    setId: 'kybernesis-phase-1',
+    scriptId: 'kybernesis-phase-1/02',
+    transcriptId: 'tom-original',
+    style: 'near-verbatim',
+    // Every paragraph covered, in order — the same map capabilities.test.ts authors.
+    triggers: [
+      { text: "you've got an AI assistant at work", paragraphId: 'p1' },
+      { text: 'a full agent system', paragraphId: 'p2' },
+      { text: 'one problem genuinely worth solving', paragraphId: 'p3' },
+      { text: 'start small without thinking small', paragraphId: 'p4' },
+    ],
+    dryRun: true,
+  };
+
+  it('with no project file: the store is byte-identical and no project file appears', async () => {
+    await replaceStoreSets([phase1()]);
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+    const before = readFileSync(storePath, 'utf8');
+
+    const created = await invoke('create_set', { id: 'new-set', title: 'New', project: PROJECT, dryRun: true });
+    expect(created.applied).toBe(false);
+    const previewed = await invoke('write_trigger_set', triggerPreview);
+    expect(previewed.applied).toBe(false);
+
+    expect(readFileSync(storePath, 'utf8')).toBe(before);
+    expect(existsSync(PROJECT_FILE())).toBe(false);
+  });
+
+  it('with a project file: neither the store nor the project file moves', async () => {
+    // The store still holds a stale copy of the id the project file owns, AHEAD
+    // of an unrelated set — the split used to re-order (and, before F1, drop)
+    // exactly this shape even on a preview.
+    await replaceStoreSets([phase1(), bare('c', null)]);
+    await writeProjectSets(PROJECT_DIR(), PROJECT, [phase1()]);
+    await invoke('context_select', { brand: BRAND, project: PROJECT });
+    const store = readFileSync(storePath, 'utf8');
+    const project = readFileSync(PROJECT_FILE(), 'utf8');
+
+    expect((await invoke('write_trigger_set', triggerPreview)).applied).toBe(false);
+    expect((await invoke('rename_set', { setId: 'c', title: 'x', dryRun: true })).applied).toBe(false);
+
+    expect(readFileSync(storePath, 'utf8')).toBe(store);
+    expect(readFileSync(PROJECT_FILE(), 'utf8')).toBe(project);
   });
 });
 

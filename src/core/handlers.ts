@@ -247,21 +247,36 @@ async function projectAwareUpdate<T>(
     // The store's copy of an id the project file holds is stale history —
     // never part of the merged view a handler edits, and re-attached below
     // byte-for-byte rather than reconstructed from it.
-    const hidden = storeDocument.sets.filter((set) => beforeIds.has(set.id));
     const visible = storeDocument.sets.filter((set) => !beforeIds.has(set.id));
     const merged: RepositoryDocument = { ...storeDocument, sets: [...visible, ...before] };
 
     const { document: mergedAfter, result: handlerResult } = fn(merged);
 
+    // A preview changes nothing — so it persists the store document it was
+    // handed, untouched, and never the split (W6 fix F2). The split on this
+    // path is what erased a set outright from a call whose contract is "change
+    // nothing".
+    if (context.dryRun) return { document: storeDocument, result: handlerResult };
+
     if (beforeIds.size === 0) return { document: mergedAfter, result: handlerResult };
 
     const toProject: ScriptSet[] = [];
-    const toStore: ScriptSet[] = [];
+    const edited = new Map<string, ScriptSet>();
     for (const set of mergedAfter.sets) {
-      (beforeIds.has(set.id) ? toProject : toStore).push(set);
+      if (beforeIds.has(set.id)) toProject.push(set);
+      else edited.set(set.id, set);
     }
     after = toProject;
-    return { document: { ...mergedAfter, sets: [...toStore, ...hidden] }, result: handlerResult };
+    // Store order is kept: each store set is replaced in place by its edited
+    // version (or kept, if the project file shadows it); new sets go last.
+    const storeSets = storeDocument.sets.flatMap((set) => {
+      if (beforeIds.has(set.id)) return [set];
+      const next = edited.get(set.id);
+      return next ? [next] : [];
+    });
+    const storeIds = new Set(storeDocument.sets.map((set) => set.id));
+    const added = [...edited.values()].filter((set) => !storeIds.has(set.id));
+    return { document: { ...mergedAfter, sets: [...storeSets, ...added] }, result: handlerResult };
   });
 
   // Only a real change to the project's own sets reaches the file. A dry run,
