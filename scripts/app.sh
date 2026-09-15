@@ -129,8 +129,12 @@ CMD="${1:-start}"
 # start that actually spawns the process — see the note in cmd_start.
 while [ $# -gt 0 ]; do
   case "$1" in
-    --brand)   FLIVIDEO_BRAND="$2"; shift 2 ;;
-    --project) FLIVIDEO_PROJECT="$2"; shift 2 ;;
+    # A flag with no value used to die on `set -u` ("$2: unbound variable")
+    # instead of printing the usage line (W6 fix M6).
+    --brand)   [ $# -ge 2 ] || { echo "usage: scripts/app.sh start --brand <key> --project <folder>"; exit 2; }
+               FLIVIDEO_BRAND="$2"; shift 2 ;;
+    --project) [ $# -ge 2 ] || { echo "usage: scripts/app.sh start --brand <key> --project <folder>"; exit 2; }
+               FLIVIDEO_PROJECT="$2"; shift 2 ;;
     *) echo "unknown argument: $1"; exit 2 ;;
   esac
 done
