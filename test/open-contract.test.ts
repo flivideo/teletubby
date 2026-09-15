@@ -584,7 +584,11 @@ describe('M2 · an unusable project file never costs a set', () => {
     const listed = await invoke('list_sets', { allSets: true });
     expect(listed.sets.map((s: { id: string }) => s.id).sort()).toEqual(['attached-set', 'export-me', 'other-set']);
     expect(listed.filter.unreadable.file).toBe(PROJECT_FILE());
-    expect(listed.sets.find((s: { id: string }) => s.id === 'attached-set').readOnly).toBe(true);
+    expect(listed.sets.find((s: { id: string }) => s.id === 'attached-set')).toMatchObject({
+      readOnly: true,
+      unreadable: true,
+    });
+    expect(listed.sets.find((s: { id: string }) => s.id === 'other-set').unreadable).toBe(false);
     expect(listed.sets.find((s: { id: string }) => s.id === 'other-set').readOnly).toBe(false);
 
     // A set the file cannot own answers, reads and writes alike…

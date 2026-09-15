@@ -585,6 +585,10 @@ export function createHandlers(): Record<string, Handler> {
         // with no context on its project it is the only copy this launch can
         // see, and the talent can still prompt from it (W6 fix F4, Swagger).
         readOnly: Boolean(set.exportedTo) || Boolean((set as MaybeUnreadable)[UNREADABLE]),
+        // Distinct from readOnly: an exported copy can still be READ for the
+        // stage; this row cannot (get_set → unavailable). The window picks its
+        // opening set by it (W6 second pass S2).
+        unreadable: Boolean((set as MaybeUnreadable)[UNREADABLE]),
         livesIn: set.exportedTo ? `${set.exportedTo}/fli.tubby.json` : null,
         source: projectIds.has(set.id) ? 'project' : 'store',
         scriptCount: set.scripts.length,

@@ -9,6 +9,7 @@ import {
   prevScript,
   setupEdge,
   holdsStage,
+  pickOpeningSet,
   stageSetGone,
   useProm,
   visibleSets,
@@ -324,5 +325,42 @@ describe('a set whose live copy closes underneath it (W6 second pass S1)', () =>
     expect(s().set).toBe(onStage);
     expect({ scriptId: s().scriptId, step: s().step }).toEqual(before);
     s().setStageHold(null);
+  });
+});
+
+describe('opening on a readable set when the project file is unreadable (W6 second pass S2)', () => {
+  const row = (id: string, project: string | null, unreadable = false): SetSummary => ({
+    id,
+    title: id,
+    description: '',
+    project,
+    scriptCount: 0,
+    unreadable,
+    readOnly: unreadable,
+  });
+  const sets = [row('p1', 'd02-cutty', true), row('p2', 'd02-cutty', true), row('free', null)];
+  const shown = sets.filter((entry) => entry.project === 'd02-cutty');
+
+  it('skips a remembered set the core will refuse, and every unreadable row in the shown list', () => {
+    expect(pickOpeningSet(sets, shown, 'p1')).toBe('free');
+  });
+
+  it('still opens the remembered set when it is readable', () => {
+    expect(pickOpeningSet(sets, shown, 'free')).toBe('free');
+  });
+
+  it('prefers the first readable row the panel shows', () => {
+    const mixed = [row('p1', 'd02-cutty', true), row('p3', 'd02-cutty'), row('free', null)];
+    expect(pickOpeningSet(mixed, mixed.slice(0, 2), null)).toBe('p3');
+  });
+
+  it('returns null — the shell, not a failure screen — when nothing is readable', () => {
+    expect(pickOpeningSet(shown, shown, 'p1')).toBeNull();
+  });
+
+  it('the store carries the unreadable file so the panel can name it', () => {
+    s().setUnreadableFile({ file: '/x/d02-cutty/fli.tubby.json', message: 'not valid JSON' });
+    expect(s().unreadableFile?.file).toBe('/x/d02-cutty/fli.tubby.json');
+    s().setUnreadableFile(null);
   });
 });

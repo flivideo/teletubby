@@ -36,6 +36,7 @@ function ProjectAdmin(): JSX.Element {
   const requestSet = useProm((s) => s.requestSet);
   const gone = useProm(stageSetGone);
   const stageHold = useProm((s) => s.stageHold);
+  const unreadableFile = useProm((s) => s.unreadableFile);
   const openProject = useProm((s) => s.openProject);
   const filter = useProm((s) => s.setFilter);
   const setSetFilter = useProm((s) => s.setSetFilter);
@@ -234,6 +235,12 @@ function ProjectAdmin(): JSX.Element {
             </Chip>
           )}
         </>
+      )}
+
+      {unreadableFile && (
+        <span className="w-full font-body text-xs text-sequence">
+          Cannot read {unreadableFile.file} — its sets are unavailable: {unreadableFile.message}
+        </span>
       )}
 
       {stageHold && (

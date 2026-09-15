@@ -232,6 +232,9 @@ interface PrompterState {
   /** Non-null while a change event is holding the on-stage data (W6 S1/S2). */
   stageHold: StageHold | null;
   setStageHold: (hold: StageHold | null) => void;
+  /** The open project's fli.tubby.json when it cannot be read, else null. */
+  unreadableFile: UnreadableFile | null;
+  setUnreadableFile: (file: UnreadableFile | null) => void;
   requestedSetId: string | null;
   requestSet: (setId: string) => void;
   clearRequestedSet: () => void;
@@ -260,6 +263,33 @@ export interface SetSummary {
   livesIn?: string | null;
   /** Where this row's data was read from: the open project's fli.tubby.json, or the app store. */
   source?: 'project' | 'store';
+  /** The open project's fli.tubby.json cannot be read, and this set may live there — get_set refuses it. */
+  unreadable?: boolean;
+}
+
+/** `list_sets.filter.unreadable` — the project file that could not be read, named. */
+export interface UnreadableFile {
+  file: string;
+  message: string;
+}
+
+/**
+ * Which set the window opens on (W6 second pass S2): the remembered one, else
+ * the first in the panel's shown list, else the first anywhere — but only a
+ * READABLE row, ever. A set the core will refuse (`unreadable`) as the opening
+ * target blanked the whole window while other sets were fine. `null` means no
+ * set can be read at all: the caller shows the shell, never a failure screen.
+ */
+export function pickOpeningSet(
+  sets: SetSummary[],
+  shown: SetSummary[],
+  remembered: string | null | undefined,
+): string | null {
+  const readable = (entry: SetSummary | undefined): entry is SetSummary =>
+    Boolean(entry && !entry.unreadable);
+  const rememberedRow = sets.find((entry) => entry.id === remembered);
+  if (readable(rememberedRow)) return rememberedRow.id;
+  return shown.find(readable)?.id ?? sets.find(readable)?.id ?? null;
 }
 
 export type SetFilter = 'project' | 'all';
@@ -370,6 +400,7 @@ export const useProm = create<PrompterState>((set, get) => ({
   openProject: null,
   setFilter: 'all',
   stageHold: null,
+  unreadableFile: null,
   requestedSetId: null,
 
   cue: null,
@@ -806,6 +837,7 @@ export const useProm = create<PrompterState>((set, get) => ({
   },
   setSetFilter: (filter) => set({ setFilter: filter }),
   setStageHold: (hold) => set({ stageHold: hold }),
+  setUnreadableFile: (file) => set({ unreadableFile: file }),
   requestSet: (setId) => set({ requestedSetId: setId }),
   clearRequestedSet: () => set({ requestedSetId: null }),
 

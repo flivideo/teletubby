@@ -19,6 +19,8 @@ import {
   prevScript,
   rankOf,
   holdsStage,
+  pickOpeningSet,
+  type UnreadableFile,
   useProm,
   visibleSets,
   zoneOrder,
@@ -53,6 +55,8 @@ export default function App(): JSX.Element {
   const loadRigs = useProm((s) => s.loadRigs);
   const setRigs = useProm((s) => s.setRigs);
   const [failure, setFailure] = useState<string | null>(null);
+  // No set can be read at all (W6 S2): the shell, not a failure screen.
+  const [shell, setShell] = useState(false);
 
   /**
    * The renderer is a CLIENT of the capability core, exactly like an agent —
@@ -73,7 +77,10 @@ export default function App(): JSX.Element {
       // allSets: the panel filters by project itself. Fetching the FILTERED
       // list is how a context_select made the set on stage look "gone" and
       // pulled a different one in front of the talent (W6 fix F6).
-      const result = await window.appytron.invoke<{ sets: SetSummary[] }>({
+      const result = await window.appytron.invoke<{
+        sets: SetSummary[];
+        filter?: { unreadable?: UnreadableFile | null };
+      }>({
         capability: 'list_sets',
         input: { allSets: true },
       });
@@ -83,6 +90,7 @@ export default function App(): JSX.Element {
         return null;
       }
       useProm.getState().setSets(result.data.sets);
+      useProm.getState().setUnreadableFile(result.data.filter?.unreadable ?? null);
       return result.data.sets;
     };
 
@@ -96,14 +104,20 @@ export default function App(): JSX.Element {
       useProm.getState().setOpenProject(result.data.context?.project ?? null);
     };
 
-    const fetchSet = async (setId: string, apply: (set: ScriptSet) => void): Promise<void> => {
+    const fetchSet = async (
+      setId: string,
+      apply: (set: ScriptSet) => void,
+      // Default: the failure screen. The change path passes its own, because
+      // a set already on stage must never be torn down by a failed re-read.
+      onFail: (message: string) => void = setFailure,
+    ): Promise<void> => {
       const full = await window.appytron.invoke<ScriptSet>({
         capability: 'get_set',
         input: { setId, full: true },
       });
       if (cancelled) return;
       if (!full.ok) {
-        setFailure(full.error.message);
+        onFail(full.error.message);
         return;
       }
       setFailure(null);
@@ -139,10 +153,14 @@ export default function App(): JSX.Element {
         return;
       }
       const state = useProm.getState();
-      const remembered = state.pendingPosition?.setId;
       const shown = visibleSets(sets, state.openProject, state.setFilter).sets;
-      const target =
-        sets.find((entry) => entry.id === remembered)?.id ?? shown[0]?.id ?? sets[0].id;
+      // Only a READABLE set opens (W6 S2). None readable → the shell, with
+      // the unreadable file named and the panel open to pick from.
+      const target = pickOpeningSet(sets, shown, state.pendingPosition?.setId);
+      if (!target) {
+        setShell(true);
+        return;
+      }
       await fetchSet(target, load);
     })();
 
@@ -184,13 +202,29 @@ export default function App(): JSX.Element {
               });
             return;
           }
-          await fetchSet(current.id, (fresh) => {
-            useProm.getState().setStageHold(null);
-            refresh(fresh);
-          });
+          await fetchSet(
+            current.id,
+            (fresh) => {
+              useProm.getState().setStageHold(null);
+              refresh(fresh);
+            },
+            // A failed re-read keeps what is on stage and marks it — never the
+            // failure screen in front of a talent mid-take (W6 S2).
+            (message) =>
+              useProm.getState().setStageHold({
+                reason: 'unreadable',
+                message: `On stage: ${current.title} — kept, it could not be re-read: ${message}`,
+              }),
+          );
           return;
         }
-        if (sets[0]) await fetchSet(sets[0].id, load);
+        const state2 = useProm.getState();
+        const target = pickOpeningSet(
+          sets,
+          visibleSets(sets, state2.openProject, state2.setFilter).sets,
+          null,
+        );
+        if (target) await fetchSet(target, load);
       })();
     });
 
@@ -229,8 +263,40 @@ export default function App(): JSX.Element {
   }, [requestedSetId, load]);
 
   if (failure) return <Waiting message={failure} failed />;
+  if (!set && shell) return <UnreadableShell />;
   if (!set) return <Waiting message="Loading the set…" />;
   return <Stage />;
+}
+
+/**
+ * Nothing readable to open (W6 second pass S2) — the open project's
+ * fli.tubby.json is unreadable and every set left belongs to it. Still a
+ * shell, never a dead end: the drag rail, the file named, and the setup panel
+ * open so the talent can pick a set (or see why they cannot).
+ */
+function UnreadableShell(): JSX.Element {
+  const unreadable = useProm((s) => s.unreadableFile);
+  const setupOpen = useProm((s) => s.setupOpen);
+  const toggleSetup = useProm((s) => s.toggleSetup);
+  useEffect(() => {
+    if (!setupOpen) toggleSetup();
+    // Once, on arrival — closing it afterwards is the talent's.
+  }, []);
+  return (
+    <div className="flex h-screen flex-col bg-canvas text-ink">
+      <div className="tt-drag h-7 shrink-0 border-b border-edge bg-panel" />
+      <div className="flex min-h-0 flex-1">
+        <div className="flex flex-1 items-center justify-center px-10 text-center">
+          <p className="font-body text-script text-ink">
+            {unreadable
+              ? `No set can be opened: ${unreadable.file} cannot be read (${unreadable.message}).`
+              : 'No set can be opened.'}
+          </p>
+        </div>
+        <SetupPanel />
+      </div>
+    </div>
+  );
 }
 
 /**
