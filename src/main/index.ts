@@ -1,5 +1,6 @@
 import { app } from 'electron';
 import { join } from 'node:path';
+import { parseOpenArgs } from '@flivideo/core';
 import { IPC, type AppInfo, type ControlStatus, type InvokePayload } from '@shared/ipc';
 import type { InvokeResult } from '@shared/capabilities';
 import { KYBERNESIS_PHASE_1, TALENTS } from '@shared/script-set';
@@ -107,6 +108,16 @@ const desktop = createConsole({
     const seeded = await seed(repository, [KYBERNESIS_PHASE_1], TALENTS);
     if (seeded.setsAdded.length > 0 || seeded.talentsAdded.length > 0)
       logger.info(seeded, 'seeded store');
+
+    // Door 2 (open-contract §3.1, C1): the SAME helper `context_select` (door
+    // 3) uses, so launch and a later switch resolve identically. Missing or
+    // unresolvable is reported, never a crash — the window still opens and the
+    // person picks a set the way they do today (spec §11 #7).
+    const openArgs = parseOpenArgs(process.argv, process.env);
+    const contextReport = await core.invoke('context_select', openArgs.context, {
+      principal: 'agent',
+    });
+    logger.info(contextReport, 'open context resolved at startup');
 
     try {
       control = await startControlServer({

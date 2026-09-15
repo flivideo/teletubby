@@ -44,12 +44,20 @@ import {
 import { CAPABILITIES, type CapabilityMeta, type Principal } from '@shared/capabilities';
 import type { ActiveContextHolder } from './active-context.js';
 import { scoreAgainst } from './cadence.js';
+import {
+  projectDirOf,
+  resolveOpenArgs,
+  type OpenContextHolder,
+} from './open-context.js';
+import { projectFilePath, readProjectSets, writeProjectSets } from './project-store.js';
 import type { Repository, RepositoryDocument } from './repository.js';
 import { ConfirmationLedger, fail, fingerprint } from './safety.js';
 
 export interface HandlerContext {
   repository: Repository;
   active: ActiveContextHolder;
+  /** The session's brand/project context (W6, door 2 + door 3). Never persisted. */
+  openContext: OpenContextHolder;
   confirmations: ConfirmationLedger;
   principal: Principal;
   capability: CapabilityMeta;
@@ -164,12 +172,101 @@ const resolveAll = async (
   context: HandlerContext,
   ids: { setId?: string; scriptId?: string; transcriptId?: string },
 ): Promise<Resolved> => {
-  const document = await context.repository.read();
+  const document = await effectiveDocument(context);
   const set = resolveSet(document, ids.setId, context.active);
   const script = resolveScript(set, ids.scriptId, context.active);
   const transcript = resolveTranscript(script, ids.transcriptId, context.active);
   return { document, set, script, transcript };
 };
+
+/* ------------------------------------------------------------------ *
+ * fli.tubby.json — the open project's OWN sets, merged over the store
+ * ------------------------------------------------------------------ *
+ *
+ * Only the CURRENTLY OPEN project's file is ever read. A set attached to a
+ * DIFFERENT project than the one open right now stays exactly where it is in
+ * the app store — this is what keeps tonight's real sets un-migrated (W6
+ * brief §2B "export, not migrate") without a special case: nothing routes a
+ * set anywhere until Teletubby is actually pointed at its project.
+ */
+
+/** Store sets with the project file's same-id sets removed, plus the project file's sets appended (they win). */
+function mergeSets(storeSets: ScriptSet[], projectSets: ScriptSet[]): ScriptSet[] {
+  if (projectSets.length === 0) return storeSets;
+  const projectIds = new Set(projectSets.map((set) => set.id));
+  return [...storeSets.filter((set) => !projectIds.has(set.id)), ...projectSets];
+}
+
+/**
+ * The document every READ handler sees: the app store, with the open
+ * project's `fli.tubby.json` (if any) merged over it. The store's copy of a
+ * set also present in the project file is stale and is never shown twice.
+ */
+async function effectiveDocument(context: HandlerContext): Promise<RepositoryDocument> {
+  const document = await context.repository.read();
+  const status = context.openContext.get();
+  if (!status.context) return document;
+  const projectSets = await readProjectSets(projectDirOf(status.context));
+  if (projectSets.length === 0) return document;
+  return { ...document, sets: mergeSets(document.sets, projectSets) };
+}
+
+/**
+ * Every WRITE handler that touches `document.sets` goes through this instead
+ * of `context.repository.update` directly. `fn` still only ever sees and
+ * returns ONE document — the merge is transparent to it — but the RESULT is
+ * split back apart before anything is persisted: a set now attached to the
+ * currently open project's folder is written to `fli.tubby.json`; everything
+ * else lands in the app store exactly as it always has (W6 brief §2B
+ * "writing").
+ *
+ * Without an open context, nothing here changes behaviour at all — every set
+ * stays in the store, which is what keeps this a lazy, per-edit move rather
+ * than a migration nobody asked for tonight.
+ */
+async function projectAwareUpdate<T>(
+  context: HandlerContext,
+  fn: (document: RepositoryDocument) => { document: RepositoryDocument; result: T },
+): Promise<T> {
+  const status = context.openContext.get();
+  const openContext = status.context;
+  const projectDir = openContext ? projectDirOf(openContext) : null;
+  const before = projectDir ? await readProjectSets(projectDir) : [];
+  const beforeIds = new Set(before.map((set) => set.id));
+
+  let after: ScriptSet[] | null = null;
+
+  const result = await context.repository.update<T>((storeDocument) => {
+    // Sets `set_export_to_project` already moved out of the store are kept
+    // byte-for-byte and re-attached below — they are frozen history (marked
+    // `exportedTo`), never part of the merged view a handler edits, and never
+    // reconstructed from it.
+    const hidden = storeDocument.sets.filter((set) => beforeIds.has(set.id));
+    const visible = storeDocument.sets.filter((set) => !beforeIds.has(set.id));
+    const merged: RepositoryDocument = { ...storeDocument, sets: [...visible, ...before] };
+
+    const { document: mergedAfter, result: handlerResult } = fn(merged);
+
+    if (!openContext) return { document: mergedAfter, result: handlerResult };
+
+    const toProject: ScriptSet[] = [];
+    const toStore: ScriptSet[] = [];
+    for (const set of mergedAfter.sets) {
+      (set.project === openContext.project ? toProject : toStore).push(set);
+    }
+    after = toProject;
+    return { document: { ...mergedAfter, sets: [...toStore, ...hidden] }, result: handlerResult };
+  });
+
+  // A dry run never mutated `mergedAfter.sets` in the first place, but must
+  // also never TOUCH the project file — writing back identical content is
+  // still a write.
+  if (projectDir && after !== null && !context.dryRun) {
+    await writeProjectSets(projectDir, openContext!.project, after);
+  }
+
+  return result;
+}
 
 /* ------------------------------------------------------------------ *
  * Projections — what a caller gets back
@@ -281,24 +378,57 @@ export function createHandlers(): Record<string, Handler> {
     return context.active.set(parsed as never);
   };
 
+  /* --- open context (door 3) — brand + project, W6 ------------------ */
+
+  // `context_get` and `context_select` publish the SAME body shape
+  // (`{ applied, context, refused? }`) on purpose: a caller that re-selects
+  // the context it already has back gets an identical answer to one that
+  // just asked what is currently open (open-contract §3.1, contract test 2).
+  handlers.context_get = async (_input, context) => {
+    const report = context.openContext.get();
+    return { applied: report.context !== null, ...report };
+  };
+
+  handlers.context_select = async (input, context) => {
+    const parsed = parse(INPUT.context_select, input);
+    const resolution = await resolveOpenArgs(parsed);
+    const report = context.openContext.apply(resolution);
+    // `applied` also gates the change event (core/index.ts `didApply`): a
+    // refusal must never wake every window to re-fetch a set list that did
+    // not move.
+    return { applied: resolution.kind === 'resolved', ...report };
+  };
+
   /* --- reading ----------------------------------------------------- */
 
-  handlers.list_sets = async (_input, context) => {
-    const document = await context.repository.read();
+  handlers.list_sets = async (input, context) => {
+    const { allSets } = parse(INPUT.list_sets, input);
+    const document = await effectiveDocument(context);
+    const status = context.openContext.get();
+    const project = !allSets && status.context ? status.context.project : null;
+    const sets = document.sets.filter((set) => project === null || set.project === project);
     return {
-      sets: document.sets.map((set) => ({
+      sets: sets.map((set) => ({
         id: set.id,
         title: set.title,
         description: set.description,
         project: set.project ?? null,
+        exportedTo: set.exportedTo ?? null,
         scriptCount: set.scripts.length,
       })),
+      // Missing context → today's unfiltered list, with WHY reported here
+      // rather than left for the caller to infer from an empty filter.
+      filter: {
+        project,
+        allSets: Boolean(allSets),
+        missing: status.refused?.code === 'missing' ? (status.refused.missing ?? []) : [],
+      },
     };
   };
 
   handlers.get_set = async (input, context) => {
     const { setId, full } = parse(INPUT.get_set, input);
-    const document = await context.repository.read();
+    const document = await effectiveDocument(context);
     const set = resolveSet(document, setId, context.active);
     // Summary by default — that is what makes twelve scripts scannable in one
     // sitting (§6). A caller that has to RENDER the set asks for `full`; making
@@ -308,7 +438,7 @@ export function createHandlers(): Record<string, Handler> {
 
   handlers.get_script = async (input, context) => {
     const { setId, scriptId } = parse(INPUT.get_script, input);
-    const document = await context.repository.read();
+    const document = await effectiveDocument(context);
     const set = resolveSet(document, setId, context.active);
     return {
       setId: set.id,
@@ -388,11 +518,12 @@ export function createHandlers(): Record<string, Handler> {
       title: parsed.title,
       description: parsed.description ?? '',
       project: parsed.project ?? null,
+      exportedTo: null,
       scripts: [],
     };
     assertShape(scriptSetSchema, set, 'set');
 
-    return context.repository.update<unknown>((document) => {
+    return projectAwareUpdate<unknown>(context, (document) => {
       if (document.sets.some((existing) => existing.id === set.id))
         fail('conflict', `a set "${set.id}" already exists`);
       if (context.dryRun) return { document, result: { applied: false, preview: { set } } };
@@ -416,7 +547,7 @@ export function createHandlers(): Record<string, Handler> {
     if (parsed.title === undefined && parsed.project == null)
       fail('invalid_input', 'nothing to do — pass a new title, a project to attach, or both');
 
-    return context.repository.update<unknown>((document) => {
+    return projectAwareUpdate<unknown>(context, (document) => {
       const set = resolveSet(document, parsed.setId, context.active);
 
       if (parsed.project != null && set.project && set.project !== parsed.project)
@@ -444,10 +575,83 @@ export function createHandlers(): Record<string, Handler> {
     });
   };
 
+  /**
+   * Write, not migrate. Requires the open context to name the SAME project the
+   * set already carries — Teletubby has no other way to know which directory
+   * `fli.tubby.json` belongs in, and it never guesses one from `set.project`
+   * alone (roadmap §3 W6, brief §2B "export, not migrate"). Never deletes the
+   * store copy: it is marked `exportedTo` instead, so `list_sets` stops
+   * showing it a second time (`mergeSets`) without losing the history.
+   */
+  handlers.set_export_to_project = async (input, context) => {
+    const parsed = parse(INPUT.set_export_to_project, input);
+    const status = context.openContext.get();
+    if (!status.context)
+      fail(
+        'invalid_input',
+        'no open context — point Teletubby at the set\'s project first (context_select)',
+      );
+    const openContext = status.context;
+
+    return context.repository.update<unknown>((document) => {
+      const set = document.sets.find((candidate) => candidate.id === parsed.setId);
+      if (!set)
+        fail('not_found', `no set "${parsed.setId}" in the app store`, {
+          available: document.sets.map((s) => s.id),
+        });
+      if (!set.project)
+        fail(
+          'invalid_input',
+          `set "${set.id}" is not attached to a project — attach one with rename_set first`,
+        );
+      if (set.project !== openContext.project)
+        fail(
+          'invalid_input',
+          `set "${set.id}" is attached to "${set.project}", but Teletubby is open on ` +
+            `"${openContext.project}" — open Teletubby at "${set.project}" to export it`,
+        );
+
+      if (context.dryRun)
+        return {
+          document,
+          result: { applied: false, preview: { setId: set.id, project: openContext.project } },
+        };
+
+      context.recordPrior({ exportedTo: set.exportedTo ?? null });
+      set.exportedTo = openContext.project;
+      // The store copy is captured BEFORE the mark above is persisted, so the
+      // exported copy in fli.tubby.json is the clean data, not `{…exportedTo}`
+      // of itself — `exportedTo` describes where the app-store copy went, and
+      // is meaningless on the project's own copy.
+      const exported: ScriptSet = { ...set, exportedTo: null };
+      return { document, result: { applied: true, exported, projectDir: projectDirOf(openContext) } };
+    }).then(async (result) => {
+      const outcome = result as {
+        applied: boolean;
+        exported?: ScriptSet;
+        projectDir?: string;
+        preview?: unknown;
+      };
+      if (!outcome.applied || !outcome.exported || !outcome.projectDir) return outcome;
+
+      const existing = await readProjectSets(outcome.projectDir);
+      const next = [
+        ...existing.filter((candidate) => candidate.id !== outcome.exported!.id),
+        outcome.exported,
+      ];
+      await writeProjectSets(outcome.projectDir, openContext.project, next);
+      return {
+        applied: true,
+        set: outcome.exported,
+        projectFile: projectFilePath(outcome.projectDir),
+      };
+    });
+  };
+
   handlers.create_script = async (input, context) => {
     const parsed = parse(INPUT.create_script, input);
 
-    return context.repository.update<unknown>((document) => {
+    return projectAwareUpdate<unknown>(context, (document) => {
       const set = resolveSet(document, parsed.setId, context.active);
       if (findScript(set, parsed.id))
         fail('conflict', `set "${set.id}" already has a script "${parsed.id}"`);
@@ -488,7 +692,7 @@ export function createHandlers(): Record<string, Handler> {
   handlers.update_script = async (input, context) => {
     const parsed = parse(INPUT.update_script, input);
 
-    return context.repository.update<unknown>((document) => {
+    return projectAwareUpdate<unknown>(context, (document) => {
       const set = resolveSet(document, parsed.setId, context.active);
       const script = resolveScript(set, parsed.scriptId, context.active);
       const previous = {
@@ -522,7 +726,7 @@ export function createHandlers(): Record<string, Handler> {
   handlers.write_transcript = async (input, context) => {
     const parsed = parse(INPUT.write_transcript, input);
 
-    return context.repository.update<unknown>((document) => {
+    return projectAwareUpdate<unknown>(context, (document) => {
       const set = resolveSet(document, parsed.setId, context.active);
       const script = resolveScript(set, parsed.scriptId, context.active);
       const existing = findTranscript(script, parsed.id);
@@ -576,7 +780,7 @@ export function createHandlers(): Record<string, Handler> {
   handlers.write_trigger_set = async (input, context) => {
     const parsed = parse(INPUT.write_trigger_set, input);
 
-    return context.repository.update<unknown>((document) => {
+    return projectAwareUpdate<unknown>(context, (document) => {
       const set = resolveSet(document, parsed.setId, context.active);
       const script = resolveScript(set, parsed.scriptId, context.active);
       const transcript = resolveTranscript(script, parsed.transcriptId, context.active);
@@ -759,7 +963,7 @@ export function createHandlers(): Record<string, Handler> {
     };
 
     return guardedDelete(context, input, preview, async () =>
-      context.repository.update((document) => {
+      projectAwareUpdate<unknown>(context, (document) => {
         const set = resolveSet(document, parsed.setId, context.active);
         const script = resolveScript(set, parsed.scriptId, context.active);
         const live = resolveTranscript(script, parsed.transcriptId, context.active);
@@ -773,7 +977,7 @@ export function createHandlers(): Record<string, Handler> {
 
   handlers.delete_script = async (input, context) => {
     const parsed = parse(INPUT.delete_script, input);
-    const document = await context.repository.read();
+    const document = await effectiveDocument(context);
     const set = resolveSet(document, parsed.setId, context.active);
     const script = resolveScript(set, parsed.scriptId, context.active);
 
@@ -792,7 +996,7 @@ export function createHandlers(): Record<string, Handler> {
     };
 
     return guardedDelete(context, input, preview, async () =>
-      context.repository.update((live) => {
+      projectAwareUpdate<unknown>(context, (live) => {
         const liveSet = resolveSet(live, parsed.setId, context.active);
         const removed = findScript(liveSet, script.id) ?? null;
         context.recordPrior(removed);

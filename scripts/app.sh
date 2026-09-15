@@ -31,6 +31,10 @@ clear_stale_socket() {
 cmd_start() {
   if healthy; then
     echo "Already running and healthy — nothing to do."
+    if [ -n "${FLIVIDEO_BRAND:-}" ] || [ -n "${FLIVIDEO_PROJECT:-}" ]; then
+      echo "  (--brand/--project only take effect on a fresh start; to re-point a" \
+           "running app, use: node bin/teletubby.mjs call context_select --input '{\"brand\":\"...\",\"project\":\"...\"}')"
+    fi
     cmd_status
     return 0
   fi
@@ -116,12 +120,28 @@ cmd_logs_tail() {
   tail -n 40 "$LOG"
 }
 
-case "${1:-start}" in
+CMD="${1:-start}"
+[ $# -gt 0 ] && shift
+
+# Door 2 (open-contract §3): --brand/--project become FLIVIDEO_BRAND/
+# FLIVIDEO_PROJECT so a FRESH overmind start hands them to the app the same
+# way the CLI/API's `context_select` (door 3) does. Only takes effect on a
+# start that actually spawns the process — see the note in cmd_start.
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --brand)   FLIVIDEO_BRAND="$2"; shift 2 ;;
+    --project) FLIVIDEO_PROJECT="$2"; shift 2 ;;
+    *) echo "unknown argument: $1"; exit 2 ;;
+  esac
+done
+export FLIVIDEO_BRAND FLIVIDEO_PROJECT
+
+case "$CMD" in
   start)   cmd_start ;;
   stop)    cmd_stop ;;
   restart) cmd_stop; cmd_start ;;
   status)  cmd_status ;;
   logs)    [ -f "$LOG" ] && tail -f "$LOG" || echo "No log at $LOG — has it been started?" ;;
   tail)    cmd_logs_tail ;;
-  *) echo "usage: scripts/app.sh {start|stop|restart|status|logs|tail}"; exit 2 ;;
+  *) echo "usage: scripts/app.sh {start|stop|restart|status|logs|tail} [--brand <key> --project <folder>]"; exit 2 ;;
 esac

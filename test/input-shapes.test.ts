@@ -68,8 +68,13 @@ describe('every published verb carries an input array — absence is impossible'
   });
 
   it('a verb that takes nothing says so with an EMPTY array, not a missing key', async () => {
-    expect((await entry('list_sets')).input).toEqual([]);
     expect((await entry('list_talents')).input).toEqual([]);
+    expect((await entry('context_get')).input).toEqual([]);
+  });
+
+  it('list_sets publishes its allSets filter override', async () => {
+    const { input } = await entry('list_sets');
+    expect(field(input, 'allSets')).toMatchObject({ required: false, type: 'boolean' });
   });
 });
 

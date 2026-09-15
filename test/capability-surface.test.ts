@@ -26,6 +26,8 @@ import { createHandlers } from '@core/handlers';
 
 const UI_SURFACE = [
   'approve_pending',
+  'context_get',
+  'context_select',
   'create_script',
   'create_set',
   'delete_rig',
@@ -48,6 +50,7 @@ const UI_SURFACE = [
   'save_rig',
   'score_transcript',
   'set_active_context',
+  'set_export_to_project',
   'update_script',
   'upsert_talent',
   'write_transcript',
@@ -60,6 +63,8 @@ const UI_SURFACE = [
  * a computed list would silently absorb the next mistake.
  */
 const AGENT_SURFACE = [
+  'context_get',
+  'context_select',
   'create_script',
   'create_set',
   'delete_rig',
@@ -79,6 +84,7 @@ const AGENT_SURFACE = [
   'rename_set',
   'save_rig',
   'score_transcript',
+  'set_export_to_project',
   'update_script',
   'upsert_talent',
   'write_transcript',

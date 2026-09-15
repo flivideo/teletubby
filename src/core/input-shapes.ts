@@ -84,6 +84,18 @@ export const INPUT: Record<string, z.ZodObject<z.ZodRawShape>> = {
         step: z.number().int().nonnegative().nullish(),
       }),
 
+  context_select: z.object({
+        brand: z.string().min(1).optional(),
+        project: z.string().min(1).optional(),
+      }),
+
+  list_sets: z.object({
+        allSets: z
+          .boolean()
+          .optional()
+          .describe('show every set, ignoring the open project context'),
+      }),
+
   get_set: z.object({ setId: slug.optional(), full: z.boolean().optional() }),
 
   get_script: z.object({ setId: slug.optional(), scriptId: slug.optional() }),
@@ -259,6 +271,8 @@ export const INPUT: Record<string, z.ZodObject<z.ZodRawShape>> = {
         scriptId: slug.optional(),
         ...commandEnvelope,
       }),
+
+  set_export_to_project: z.object({ setId: slug, ...commandEnvelope }),
 
   approve_pending: z.object({ pendingId: z.string().min(1) }),
 

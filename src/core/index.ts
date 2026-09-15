@@ -22,6 +22,7 @@
 import type { CapabilityMeta, InvokeResult, Principal } from '@shared/capabilities';
 import { ActiveContextHolder } from './active-context.js';
 import { createHandlers, type Handler, type HandlerContext } from './handlers.js';
+import { OpenContextHolder } from './open-context.js';
 import type { Repository } from './repository.js';
 import {
   AuditLog,
@@ -71,6 +72,8 @@ export interface Core {
   onChange(listener: (event: ChangeEvent) => void): () => void;
   /** The renderer's own selection state, so the UI can drive it directly. */
   readonly active: ActiveContextHolder;
+  /** The session's brand/project context (W6) — set by door 2 or `context_select`, never persisted. */
+  readonly openContext: OpenContextHolder;
   readonly audit: AuditLog;
   readonly repository: Repository;
 }
@@ -78,6 +81,7 @@ export interface Core {
 export function createCore(options: CoreOptions): Core {
   const clock = options.clock ?? systemClock;
   const active = new ActiveContextHolder(clock);
+  const openContext = new OpenContextHolder();
   const confirmations = new ConfirmationLedger(clock);
   const idempotency = new IdempotencyLedger(clock);
   const limiter = new RateLimiter(clock);
@@ -146,6 +150,7 @@ export function createCore(options: CoreOptions): Core {
       const context: HandlerContext = {
         repository: options.repository,
         active,
+        openContext,
         confirmations,
         principal,
         capability,
@@ -203,6 +208,7 @@ export function createCore(options: CoreOptions): Core {
       return () => listeners.delete(listener);
     },
     active,
+    openContext,
     audit,
     repository: options.repository,
   };
@@ -222,5 +228,8 @@ export { scoreAgainst, measure } from './cadence.js';
 export type { CadenceScore, CadenceRule, CadenceMeasurements } from './cadence.js';
 export { ActiveContextHolder, ACTIVE_CONTEXT_TTL_MS } from './active-context.js';
 export type { ActiveContext } from './active-context.js';
+export { OpenContextHolder, resolveOpenArgs, projectDirOf } from './open-context.js';
+export type { OpenContext, OpenRefusal, OpenRefusalCode, OpenResolution, ContextReport } from './open-context.js';
+export { readProjectSets, writeProjectSets, projectFilePath, PROJECT_FILE_NAME } from './project-store.js';
 export { CONFIRMATION_TTL_MS } from './safety.js';
 export type { AuditEntry } from './safety.js';

@@ -192,8 +192,38 @@ export const CAPABILITIES: readonly CapabilityMeta[] = [
     },
   ),
 
+  /* --- open context (door 3) — brand + project, W6 -------------------
+   *
+   * Both doors set the SAME session-scoped context (C1, C2): launch
+   * arguments at startup, and `context_select` here while running, with no
+   * restart (C4). Neither principal is withheld — unlike `set_active_context`
+   * (the human's in-app selection), aiming Teletubby at a project is exactly
+   * what FliStudio's launch/switch buttons are for (open-contract §3.1, D11).
+   */
+  query(
+    'context_get',
+    'The brand and project Teletubby is currently pointed at, if any — the same shape context_select returns.',
+    { failureModes: [] },
+  ),
+  command(
+    'context_select',
+    'Point Teletubby at a brand and project (door 3). Sets the SESSION context only — never written to the store (C2) — and is what list_sets filters by. Refuses and says why rather than falling back to the previous project (C3); a refusal leaves the previous context untouched.',
+    {
+      idempotent: true,
+      supportsDryRun: false,
+      supportsIdempotencyKey: false,
+      // A domain refusal (unknown brand, ambiguous project, …) travels in the
+      // success payload's `refused` field, the same way fli-core's own
+      // resolvers report it — only a malformed call throws.
+      failureModes: ['invalid_input'],
+    },
+  ),
+
   /* --- reading ----------------------------------------------------- */
-  query('list_sets', 'The script sets available — the set is the unit, not the script.'),
+  query(
+    'list_sets',
+    'The script sets available — the set is the unit, not the script. Filtered to the open project once a context is set (pass allSets to see everything).',
+  ),
   query('get_set', 'One set with a summary per script, scannable in one sitting.'),
   query('get_script', 'One script with all its transcripts and trigger sets.'),
   query('get_transcript', 'One transcript: topics, paragraphs, and its trigger sets.'),
@@ -219,6 +249,11 @@ export const CAPABILITIES: readonly CapabilityMeta[] = [
     {
       failureModes: [...WRITE_FAILURES],
     },
+  ),
+  command(
+    'set_export_to_project',
+    "Write a set's data into its project's fli.tubby.json (W6). Requires the open context to match the set's project. Never deletes the app-store copy — it is marked exportedTo instead, so a caller reading the store directly is not misled into thinking it is still live.",
+    { failureModes: [...WRITE_FAILURES] },
   ),
   command('create_script', 'Add a script to a set, optionally with its provenance transcript.'),
   command(
