@@ -1,15 +1,40 @@
-import { app } from 'electron';
+import { app, screen } from 'electron';
 import { join } from 'node:path';
-import { parseOpenArgs } from '@flivideo/core';
+import { loadWindow, parseOpenArgs, placeWindow, trackWindow, windowKey } from '@flivideo/core';
 import { IPC, type AppInfo, type ControlStatus, type InvokePayload } from '@shared/ipc';
 import type { InvokeResult } from '@shared/capabilities';
 import { KYBERNESIS_PHASE_1, TALENTS } from '@shared/script-set';
 import { FileRepository, createCore, seed, type Core } from '../core/index.js';
 import { startControlServer, type ControlServerHandle } from './control-server.js';
 import { createConsole } from './create-console.js';
+import type { WindowManager } from './window-manager.js';
 
 let core: Core | null = null;
 let control: ControlServerHandle | null = null;
+
+/**
+ * The prompter reopens where David left it — same monitor, position and size —
+ * through the ONE helper FliCut and FliCast use too (fli-core v0.4.0, ruled
+ * 2026-09-22). The store is `~/.fli/window-state.json` in the account's real
+ * home. A monitor that has gone → centred on the primary display, never
+ * off-screen. Restored BEFORE show, so there is no flash at the default spot.
+ */
+const PROMPTER_KEY = windowKey('teletubby', 'prompter');
+
+function openPrompter(windows: WindowManager): void {
+  const primaryId = screen.getPrimaryDisplay().id;
+  const displays = screen.getAllDisplays().map((d) => ({
+    id: d.id,
+    workArea: d.workArea,
+    primary: d.id === primaryId,
+  }));
+  // Wide by default — three columns need the horizontal room, and this is a
+  // surface you drive from across the room, not a utility panel.
+  const at = placeWindow(loadWindow(PROMPTER_KEY), displays, { width: 1440, height: 900 });
+  const win = windows.create({ x: at.x, y: at.y, width: at.width, height: at.height });
+  if (at.maximized) win.maximize();
+  trackWindow(win, PROMPTER_KEY, { displayIdOf: (b) => screen.getDisplayMatching(b).id });
+}
 
 const desktop = createConsole({
   name: 'teletubby',
@@ -75,6 +100,18 @@ const desktop = createConsole({
   },
 
   async onReady({ windows, logger }) {
+    // macOS re-runs onReady on `activate` (dock click with no window open).
+    // Only the WINDOW is missing then. Re-running the rest built a second core
+    // over the same store, re-resolved the launch context and tried to bind
+    // 7111 again — which fails, so `control` went null while the OLD server
+    // kept answering agents from the OLD core: the window and the agent on
+    // two different cores (found 2026-09-22).
+    if (core) {
+      openPrompter(windows);
+      logger.info('prompter window reopened');
+      return;
+    }
+
     const userData = app.getPath('userData');
 
     // The generated set is the SEED, not the live copy. Seeding never
@@ -134,9 +171,7 @@ const desktop = createConsole({
       logger.error({ error }, 'control surface failed to start — the app is UI-only this session');
     }
 
-    // Wide by default — three columns need the horizontal room, and this is a
-    // surface you drive from across the room, not a utility panel.
-    windows.create({ width: 1440, height: 900 });
+    openPrompter(windows);
     logger.info('prompter window opened');
   },
 });

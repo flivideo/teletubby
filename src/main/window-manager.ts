@@ -4,6 +4,11 @@ import { BrowserWindow, shell } from 'electron';
 export interface WindowOptions {
   width?: number;
   height?: number;
+  /** Omitted → Electron centres the window. Pass both to restore a saved spot. */
+  x?: number;
+  y?: number;
+  minWidth?: number;
+  minHeight?: number;
   title?: string;
 }
 
@@ -19,6 +24,10 @@ export class WindowManager {
     const win = new BrowserWindow({
       width: options.width ?? 1200,
       height: options.height ?? 800,
+      x: options.x,
+      y: options.y,
+      minWidth: options.minWidth,
+      minHeight: options.minHeight,
       show: false,
       title: options.title,
       titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
