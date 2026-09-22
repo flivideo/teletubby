@@ -18,6 +18,7 @@ import {
   nextScript,
   prevScript,
   rankOf,
+  emptyProjectOf,
   holdsStage,
   pickOpeningSet,
   type UnreadableFile,
@@ -153,6 +154,12 @@ export default function App(): JSX.Element {
         return;
       }
       const state = useProm.getState();
+      // A project with nothing attached opens EMPTY, not on the remembered
+      // set — that was another project's script under this one's name.
+      if (emptyProjectOf(sets, state.openProject)) {
+        setShell(true);
+        return;
+      }
       const shown = visibleSets(sets, state.openProject, state.setFilter).sets;
       // Only a READABLE set opens (W6 S2). None readable → the shell, with
       // the unreadable file named and the panel open to pick from.
@@ -219,6 +226,12 @@ export default function App(): JSX.Element {
           return;
         }
         const state2 = useProm.getState();
+        // Same rule as launch: an empty stage is filled only from the open
+        // project's own sets, never by the fallback list.
+        if (emptyProjectOf(sets, state2.openProject)) {
+          setShell(true);
+          return;
+        }
         const target = pickOpeningSet(
           sets,
           visibleSets(sets, state2.openProject, state2.setFilter).sets,
@@ -263,19 +276,26 @@ export default function App(): JSX.Element {
   }, [requestedSetId, load]);
 
   if (failure) return <Waiting message={failure} failed />;
-  if (!set && shell) return <UnreadableShell />;
+  if (!set && shell) return <EmptyShell />;
   if (!set) return <Waiting message="Loading the set…" />;
   return <Stage />;
 }
 
 /**
- * Nothing readable to open (W6 second pass S2) — the open project's
- * fli.tubby.json is unreadable and every set left belongs to it. Still a
- * shell, never a dead end: the drag rail, the file named, and the setup panel
- * open so the talent can pick a set (or see why they cannot).
+ * Nothing to open — two reasons, one shell:
+ *
+ *   · the open project has NO set attached (David, 2026-09-22): say so, and
+ *     leave every other set one click away in the panel. Auto-loading the
+ *     remembered set here put D03's script on stage under D01's name.
+ *   · nothing readable (W6 second pass S2) — the open project's
+ *     fli.tubby.json is unreadable and every set left belongs to it.
+ *
+ * Still a shell, never a dead end: the drag rail, the reason named, and the
+ * setup panel open so the talent can pick a set (or see why they cannot).
  */
-function UnreadableShell(): JSX.Element {
+function EmptyShell(): JSX.Element {
   const unreadable = useProm((s) => s.unreadableFile);
+  const emptyProject = useProm((s) => emptyProjectOf(s.sets, s.openProject));
   const setupOpen = useProm((s) => s.setupOpen);
   const toggleSetup = useProm((s) => s.toggleSetup);
   useEffect(() => {
@@ -290,7 +310,9 @@ function UnreadableShell(): JSX.Element {
           <p className="font-body text-script text-ink">
             {unreadable
               ? `No set can be opened: ${unreadable.file} cannot be read (${unreadable.message}).`
-              : 'No set can be opened.'}
+              : emptyProject
+                ? `No script for ${emptyProject} yet.`
+                : 'No set can be opened.'}
           </p>
         </div>
         <SetupPanel />

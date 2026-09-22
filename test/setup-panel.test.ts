@@ -9,6 +9,7 @@ import {
   prevScript,
   setupEdge,
   holdsStage,
+  emptyProjectOf,
   pickOpeningSet,
   stageSetGone,
   useProm,
@@ -325,6 +326,39 @@ describe('a set whose live copy closes underneath it (W6 second pass S1)', () =>
     expect(s().set).toBe(onStage);
     expect({ scriptId: s().scriptId, step: s().step }).toEqual(before);
     s().setStageHold(null);
+  });
+});
+
+describe('a project with no set attached opens EMPTY, not on the remembered set (2026-09-22)', () => {
+  const row = (id: string, project: string | null): SetSummary => ({
+    id,
+    title: id,
+    description: '',
+    project,
+    scriptCount: 0,
+  });
+  const store = [
+    row('kybernesis-phase-1', 'a01-kybernesis-12-videos'),
+    row('cutty-presenter-tracking', 'd03-cutty-presenter-tracking'),
+  ];
+
+  it('names the empty project, so launch shows "No script for <project> yet" instead of D03 under D01', () => {
+    expect(emptyProjectOf(store, 'd01-flivideo-tour')).toBe('d01-flivideo-tour');
+  });
+
+  it('is not empty when any set belongs to the open project', () => {
+    expect(emptyProjectOf(store, 'd03-cutty-presenter-tracking')).toBeNull();
+  });
+
+  it('with no context open there is no empty project — the remembered set still opens', () => {
+    expect(emptyProjectOf(store, null)).toBeNull();
+    expect(pickOpeningSet(store, store, 'cutty-presenter-tracking')).toBe('cutty-presenter-tracking');
+  });
+
+  it('never a dead end: the panel still lists every set, one click away', () => {
+    const shown = visibleSets(store, 'd01-flivideo-tour', 'project');
+    expect(shown.sets).toEqual(store);
+    expect(shown.note).toContain('d01-flivideo-tour');
   });
 });
 

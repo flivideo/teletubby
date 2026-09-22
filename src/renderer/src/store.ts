@@ -292,6 +292,24 @@ export function pickOpeningSet(
   return shown.find(readable)?.id ?? sets.find(readable)?.id ?? null;
 }
 
+/**
+ * The open project, when it has NO set attached — `null` otherwise (no
+ * context, or at least one set belongs to it).
+ *
+ * On launch that project opens on an honest empty stage, never on the
+ * remembered set. Auto-loading it put another project's words in front of the
+ * talent under this project's name: D01 opened on D03's Cutty script with a
+ * D01 footer (David, 2026-09-22). The panel still lists every set one click
+ * away (`visibleSets`), so this is a state of the shell, never a dead end.
+ */
+export function emptyProjectOf(
+  sets: SetSummary[],
+  openProject: string | null,
+): string | null {
+  if (!openProject) return null;
+  return sets.some((entry) => entry.project === openProject) ? null : openProject;
+}
+
 export type SetFilter = 'project' | 'all';
 
 /**

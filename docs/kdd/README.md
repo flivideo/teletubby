@@ -52,6 +52,7 @@ Seeded 2026-08-19 from the first build session. Every entry below was paid for t
 |---|---|---|
 | [001](decisions/adr-001-rebuild-on-appytron-rather-than-extend-the-artifact.md) | Rebuild on AppyTron rather than extend the working artifact | accepted |
 | [002](decisions/adr-002-typecheck-is-the-static-check-lint-is-davids-call.md) | Typecheck is the static check; a lint config is David's call | accepted |
+| [003](decisions/adr-003-an-empty-project-opens-empty-not-on-the-remembered-set.md) | An empty project opens empty, not on the remembered set | accepted |
 
 ---
 
