@@ -187,6 +187,29 @@ export interface Script {
  * into code+name fields here would be a second truth that drifts the first
  * time FliHub's rule changes.
  */
+/**
+ * PROJECT IDENTITY IS THE CODE (flivideo-orch ruling, d04 run 2026-09-23 —
+ * the same rule FliTools keys on). A folder is renamed (`d04-d04-autopilot-
+ * test` → `d04-autopilot-test`); its code (`d04`) is not. So `project` is
+ * still STORED as the full folder name, but two names are the same project
+ * when their codes match. Names with no code (a plain folder) match only
+ * exactly.
+ *
+ * The code rule mirrors `@flivideo/core`'s `ProjectCode` (one lowercase
+ * letter + two digits) — mirrored, because this file must stay
+ * dependency-free for the renderer; `test/project-identity.test.ts` pins the
+ * two against each other.
+ */
+export const projectCodeOf = (name: string | null | undefined): string | null =>
+  /^([a-z]\d{2})-[a-z0-9]/.exec(name ?? '')?.[1] ?? null;
+
+export const sameProject = (a: string | null | undefined, b: string | null | undefined): boolean => {
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const code = projectCodeOf(a);
+  return code !== null && code === projectCodeOf(b);
+};
+
 export const PROJECT_NAME_PATTERN = /^[a-z0-9.]+(-[a-z0-9.]+)*$/;
 export const PROJECT_NAME_MAX = 50;
 

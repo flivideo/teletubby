@@ -175,7 +175,7 @@
         "gaps": 0,
         "mirrored": 17,
         "not_read": 8,
-        "not_schema_bearing": 2
+        "not_schema_bearing": 4
       },
       "src/shared/ipc.ts": {
         "declared": 6,
@@ -202,9 +202,9 @@
     "gaps": 3,
     "mirrored": 112,
     "not_read": 46,
-    "not_schema_bearing": 39,
+    "not_schema_bearing": 41,
     "not_schema_bearing_by_family": {
-      "function": 30,
+      "function": 32,
       "function type": 2,
       "literal constant": 7
     }
@@ -690,7 +690,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 70
+        "line": 71
       },
       "authority": "`as const` array `ZONES`, typed from by `typeof ZONES[number]` - a single declaring symbol",
       "grade": "declared",
@@ -699,35 +699,35 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 70
+            "line": 71
           },
           "value": "major"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 70
+            "line": 71
           },
           "value": "minor"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 70
+            "line": 71
           },
           "value": "triggers"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 70
+            "line": 71
           },
           "value": "paragraph"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 70
+            "line": 71
           },
           "value": "transcript"
         }
@@ -736,7 +736,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 279
+        "line": 280
       },
       "authority": "literal union type of `source` - a single declaring symbol",
       "doc": "Where this row's data was read from: the open project's fli.tubby.json, or the app store.",
@@ -746,14 +746,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 279
+            "line": 280
           },
           "value": "project"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 279
+            "line": 280
           },
           "value": "store"
         }
@@ -762,7 +762,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 338
+        "line": 339
       },
       "authority": "literal union type alias `SetFilter` - a single declaring symbol",
       "grade": "declared",
@@ -771,14 +771,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 338
+            "line": 339
           },
           "value": "project"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 338
+            "line": 339
           },
           "value": "all"
         }
@@ -787,7 +787,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 346
+        "line": 347
       },
       "authority": "literal union type of `reason` - a single declaring symbol",
       "grade": "declared",
@@ -796,14 +796,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 346
+            "line": 347
           },
           "value": "project-closed"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 346
+            "line": 347
           },
           "value": "unreadable"
         }
@@ -812,7 +812,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 1200
+        "line": 1201
       },
       "authority": "literal union type alias `Rank` - a single declaring symbol",
       "grade": "declared",
@@ -821,14 +821,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 1200
+            "line": 1201
           },
           "value": "driven"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 1200
+            "line": 1201
           },
           "value": "follower"
         }
@@ -1531,7 +1531,7 @@
       "target": "src/renderer/src/App.zone (switch)"
     }
   ],
-  "generated": "2026-09-23T14:16:08+00:00",
+  "generated": "2026-09-23T15:39:46+00:00",
   "ignored_derived": [
     {
       "anchor": {
@@ -1920,9 +1920,9 @@
     },
     {
       "anchor": {
-        "end_line": 100,
+        "end_line": 101,
         "file": "src/core/handlers.ts",
-        "line": 79
+        "line": 80
       },
       "bases": [],
       "doc": null,
@@ -1931,7 +1931,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 81
+            "line": 82
           },
           "default": null,
           "doc": "The host process, for the lifecycle verbs. Absent headless.",
@@ -1941,7 +1941,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 83
+            "line": 84
           },
           "default": null,
           "doc": "The latest agent request for what is on stage (d04 preflight).",
@@ -1951,7 +1951,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 85
+            "line": 86
           },
           "default": null,
           "doc": "When the talent last moved \u2014 what \"busy\" means.",
@@ -1961,7 +1961,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 87
+            "line": 88
           },
           "default": null,
           "doc": "Who is calling, by name (`human:prompter`, `agent:claude`, `cli`).",
@@ -1971,7 +1971,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 88
+            "line": 89
           },
           "default": null,
           "name": "repository",
@@ -1980,7 +1980,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 89
+            "line": 90
           },
           "default": null,
           "name": "active",
@@ -1989,7 +1989,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 91
+            "line": 92
           },
           "default": null,
           "doc": "The session's brand/project context (W6, door 2 + door 3). Never persisted.",
@@ -1999,7 +1999,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 92
+            "line": 93
           },
           "default": null,
           "name": "confirmations",
@@ -2008,7 +2008,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 93
+            "line": 94
           },
           "default": null,
           "name": "principal",
@@ -2017,7 +2017,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 94
+            "line": 95
           },
           "default": null,
           "name": "capability",
@@ -2026,7 +2026,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 96
+            "line": 97
           },
           "default": null,
           "doc": "True when the caller asked for a preview rather than an act.",
@@ -2036,7 +2036,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 97
+            "line": 98
           },
           "default": null,
           "name": "confirmationId",
@@ -2045,7 +2045,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 99
+            "line": 100
           },
           "default": null,
           "doc": "Hand the prior state to the audit log. Call it before you overwrite.",
@@ -2059,9 +2059,9 @@
     },
     {
       "anchor": {
-        "end_line": 146,
+        "end_line": 147,
         "file": "src/core/handlers.ts",
-        "line": 141
+        "line": 142
       },
       "bases": [],
       "doc": null,
@@ -2070,7 +2070,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 142
+            "line": 143
           },
           "default": null,
           "name": "document",
@@ -2079,7 +2079,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 143
+            "line": 144
           },
           "default": null,
           "name": "set",
@@ -2088,7 +2088,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 144
+            "line": 145
           },
           "default": null,
           "name": "script",
@@ -2097,7 +2097,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 145
+            "line": 146
           },
           "default": null,
           "name": "transcript",
@@ -2111,7 +2111,7 @@
     {
       "anchor": {
         "file": "src/core/handlers.ts",
-        "line": 325
+        "line": 341
       },
       "bases": [
         "ScriptSet"
@@ -4540,9 +4540,9 @@
     },
     {
       "anchor": {
-        "end_line": 101,
+        "end_line": 102,
         "file": "src/renderer/src/store.ts",
-        "line": 96
+        "line": 97
       },
       "bases": [],
       "doc": null,
@@ -4551,7 +4551,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 97
+            "line": 98
           },
           "default": null,
           "name": "label",
@@ -4560,7 +4560,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 98
+            "line": 99
           },
           "default": null,
           "name": "title",
@@ -4569,7 +4569,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 100
+            "line": 101
           },
           "default": null,
           "doc": "Changes on every cue so the component can restart its dismiss timer.",
@@ -4583,9 +4583,9 @@
     },
     {
       "anchor": {
-        "end_line": 257,
+        "end_line": 258,
         "file": "src/renderer/src/store.ts",
-        "line": 103
+        "line": 104
       },
       "bases": [],
       "doc": null,
@@ -4594,7 +4594,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 105
+            "line": 106
           },
           "default": null,
           "doc": "Null until the control API answers. The UI shows a waiting state, not an error.",
@@ -4604,7 +4604,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 106
+            "line": 107
           },
           "default": null,
           "name": "scriptId",
@@ -4613,7 +4613,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 107
+            "line": 108
           },
           "default": null,
           "name": "transcriptId",
@@ -4622,7 +4622,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 108
+            "line": 109
           },
           "default": null,
           "name": "style",
@@ -4631,7 +4631,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 111
+            "line": 112
           },
           "default": null,
           "doc": "Index into the ACTIVE trigger set. THE position \u2014 everything derives from it.",
@@ -4641,7 +4641,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 113
+            "line": 114
           },
           "default": null,
           "name": "visible",
@@ -4650,7 +4650,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 114
+            "line": 115
           },
           "default": null,
           "name": "driven",
@@ -4659,7 +4659,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 120
+            "line": 121
           },
           "default": null,
           "doc": "Flex weight per zone, adjusted by dragging a divider. Relative, not pixels,",
@@ -4669,7 +4669,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 121
+            "line": 122
           },
           "default": null,
           "name": "camera",
@@ -4678,7 +4678,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 123
+            "line": 124
           },
           "default": null,
           "doc": "The full-transcript skim surface. Overlays; never displaces (see below).",
@@ -4688,7 +4688,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 124
+            "line": 125
           },
           "default": null,
           "name": "transcriptEdge",
@@ -4697,7 +4697,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 141
+            "line": 142
           },
           "default": null,
           "doc": "The setup panel \u2014 everything that BUILDS an arrangement, in one slide-out.",
@@ -4707,7 +4707,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 143
+            "line": 144
           },
           "default": null,
           "name": "mirror",
@@ -4716,7 +4716,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 144
+            "line": 145
           },
           "default": null,
           "name": "focus",
@@ -4725,7 +4725,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 145
+            "line": 146
           },
           "default": null,
           "name": "text",
@@ -4734,7 +4734,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 155
+            "line": 156
           },
           "default": null,
           "doc": "Named arrangements, and the one currently applied.",
@@ -4744,7 +4744,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 156
+            "line": 157
           },
           "default": null,
           "name": "rigId",
@@ -4753,7 +4753,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 165
+            "line": 166
           },
           "default": null,
           "doc": "Whether the stored workspace has actually been read.",
@@ -4763,7 +4763,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 172
+            "line": 173
           },
           "default": null,
           "doc": "Whether a stored arrangement was actually applied \u2014 as opposed to the app",
@@ -4773,7 +4773,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 180
+            "line": 181
           },
           "default": null,
           "doc": "The saved position, held between `loadRigs` (which recalls it) and `load`",
@@ -4783,7 +4783,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 191
+            "line": 192
           },
           "default": null,
           "doc": "Transcripts that arrived or changed since the talent last looked at them \u2014",
@@ -4793,7 +4793,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 193
+            "line": 194
           },
           "default": null,
           "name": "cue",
@@ -4802,7 +4802,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 195
+            "line": 196
           },
           "default": null,
           "doc": "Increments each time a step was refused at the boundary, to replay the nudge.",
@@ -4812,7 +4812,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 197
+            "line": 198
           },
           "default": null,
           "name": "load",
@@ -4821,7 +4821,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 198
+            "line": 199
           },
           "default": null,
           "name": "refresh",
@@ -4830,7 +4830,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 199
+            "line": 200
           },
           "default": null,
           "name": "stepNext",
@@ -4839,7 +4839,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 200
+            "line": 201
           },
           "default": null,
           "name": "stepPrev",
@@ -4848,7 +4848,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 201
+            "line": 202
           },
           "default": null,
           "name": "selectScript",
@@ -4857,7 +4857,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 202
+            "line": 203
           },
           "default": null,
           "name": "goToNextScript",
@@ -4866,7 +4866,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 203
+            "line": 204
           },
           "default": null,
           "name": "goToPrevScript",
@@ -4875,7 +4875,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 204
+            "line": 205
           },
           "default": null,
           "name": "selectTranscript",
@@ -4884,7 +4884,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 205
+            "line": 206
           },
           "default": null,
           "name": "selectStyle",
@@ -4893,7 +4893,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 206
+            "line": 207
           },
           "default": null,
           "name": "toggleZone",
@@ -4902,7 +4902,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 207
+            "line": 208
           },
           "default": null,
           "name": "setDriven",
@@ -4911,7 +4911,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 208
+            "line": 209
           },
           "default": null,
           "name": "setCamera",
@@ -4920,7 +4920,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 209
+            "line": 210
           },
           "default": null,
           "name": "resizeZones",
@@ -4929,7 +4929,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 210
+            "line": 211
           },
           "default": null,
           "name": "toggleTranscript",
@@ -4938,7 +4938,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 211
+            "line": 212
           },
           "default": null,
           "name": "toggleSetup",
@@ -4947,7 +4947,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 212
+            "line": 213
           },
           "default": null,
           "name": "closeSetup",
@@ -4956,7 +4956,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 213
+            "line": 214
           },
           "default": null,
           "name": "toggleMirror",
@@ -4965,7 +4965,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 214
+            "line": 215
           },
           "default": null,
           "name": "toggleFocus",
@@ -4974,7 +4974,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 215
+            "line": 216
           },
           "default": null,
           "name": "setText",
@@ -4983,7 +4983,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 216
+            "line": 217
           },
           "default": null,
           "name": "loadRigs",
@@ -4992,7 +4992,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 217
+            "line": 218
           },
           "default": null,
           "name": "setRigs",
@@ -5001,7 +5001,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 224
+            "line": 225
           },
           "default": null,
           "doc": "Every set (project) in the store, as summaries \u2014 for the setup panel's",
@@ -5011,7 +5011,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 225
+            "line": 226
           },
           "default": null,
           "name": "setSets",
@@ -5020,7 +5020,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 227
+            "line": 228
           },
           "default": null,
           "doc": "The session's open project (W6 `context_get`), or null. Never persisted, like the context itself.",
@@ -5030,7 +5030,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 229
+            "line": 230
           },
           "default": null,
           "doc": "Records the open project; a CHANGE of project resets the filter to it.",
@@ -5040,7 +5040,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 230
+            "line": 231
           },
           "default": null,
           "name": "setFilter",
@@ -5049,7 +5049,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 231
+            "line": 232
           },
           "default": null,
           "name": "setSetFilter",
@@ -5058,7 +5058,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 233
+            "line": 234
           },
           "default": null,
           "doc": "Non-null while a change event is holding the on-stage data (W6 S1/S2).",
@@ -5068,7 +5068,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 234
+            "line": 235
           },
           "default": null,
           "name": "setStageHold",
@@ -5077,7 +5077,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 236
+            "line": 237
           },
           "default": null,
           "doc": "The open project's fli.tubby.json when it cannot be read, else null.",
@@ -5087,7 +5087,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 237
+            "line": 238
           },
           "default": null,
           "name": "setUnreadableFile",
@@ -5096,7 +5096,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 238
+            "line": 239
           },
           "default": null,
           "name": "requestedSetId",
@@ -5105,7 +5105,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 239
+            "line": 240
           },
           "default": null,
           "name": "requestSet",
@@ -5114,7 +5114,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 240
+            "line": 241
           },
           "default": null,
           "name": "clearRequestedSet",
@@ -5123,7 +5123,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 246
+            "line": 247
           },
           "default": null,
           "doc": "The script to land on once `requestedSetId` has loaded \u2014 set only by an",
@@ -5133,7 +5133,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 252
+            "line": 253
           },
           "default": null,
           "doc": "Apply an agent's stage request. Same set \u2192 just the script; another set",
@@ -5143,7 +5143,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 253
+            "line": 254
           },
           "default": null,
           "name": "applyRig",
@@ -5152,7 +5152,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 254
+            "line": 255
           },
           "default": null,
           "name": "adoptRig",
@@ -5161,7 +5161,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 255
+            "line": 256
           },
           "default": null,
           "name": "forgetRig",
@@ -5170,7 +5170,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 256
+            "line": 257
           },
           "default": null,
           "name": "dismissCue",
@@ -5183,9 +5183,9 @@
     },
     {
       "anchor": {
-        "end_line": 282,
+        "end_line": 283,
         "file": "src/renderer/src/store.ts",
-        "line": 264
+        "line": 265
       },
       "bases": [],
       "doc": "What `list_sets` answers with \u2014 a project row for the setup panel.",
@@ -5194,7 +5194,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 265
+            "line": 266
           },
           "default": null,
           "name": "id",
@@ -5203,7 +5203,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 266
+            "line": 267
           },
           "default": null,
           "name": "title",
@@ -5212,7 +5212,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 267
+            "line": 268
           },
           "default": null,
           "name": "description",
@@ -5221,7 +5221,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 269
+            "line": 270
           },
           "default": null,
           "doc": "The FliHub folder name, verbatim, or null for an unattached set.",
@@ -5231,7 +5231,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 270
+            "line": 271
           },
           "default": null,
           "name": "scriptCount",
@@ -5240,7 +5240,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 272
+            "line": 273
           },
           "default": null,
           "doc": "Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy.",
@@ -5250,7 +5250,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 274
+            "line": 275
           },
           "default": null,
           "doc": "An exported store copy seen without its project open \u2014 listed, never editable.",
@@ -5260,7 +5260,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 275
+            "line": 276
           },
           "default": null,
           "name": "livesIn",
@@ -5269,7 +5269,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 277
+            "line": 278
           },
           "default": null,
           "doc": "A project's on-demand named scripts (`write_script`) \u2014 listed by name, newest first.",
@@ -5279,7 +5279,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 279
+            "line": 280
           },
           "default": null,
           "doc": "Where this row's data was read from: the open project's fli.tubby.json, or the app store.",
@@ -5289,7 +5289,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 281
+            "line": 282
           },
           "default": null,
           "doc": "The open project's fli.tubby.json cannot be read, and this set may live there \u2014 get_set refuses it.",
@@ -5303,9 +5303,9 @@
     },
     {
       "anchor": {
-        "end_line": 288,
+        "end_line": 289,
         "file": "src/renderer/src/store.ts",
-        "line": 285
+        "line": 286
       },
       "bases": [],
       "doc": "`list_sets.filter.unreadable` \u2014 the project file that could not be read, named.",
@@ -5314,7 +5314,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 286
+            "line": 287
           },
           "default": null,
           "name": "file",
@@ -5323,7 +5323,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 287
+            "line": 288
           },
           "default": null,
           "name": "message",
@@ -5336,9 +5336,9 @@
     },
     {
       "anchor": {
-        "end_line": 348,
+        "end_line": 349,
         "file": "src/renderer/src/store.ts",
-        "line": 345
+        "line": 346
       },
       "bases": [],
       "doc": "Why the set on stage is being HELD rather than refreshed \u2014 shown by the",
@@ -5347,7 +5347,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 346
+            "line": 347
           },
           "default": null,
           "name": "reason",
@@ -5356,7 +5356,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 347
+            "line": 348
           },
           "default": null,
           "name": "message",
@@ -6927,9 +6927,9 @@
     },
     {
       "anchor": {
-        "end_line": 236,
+        "end_line": 259,
         "file": "src/shared/domain.ts",
-        "line": 193
+        "line": 216
       },
       "bases": [],
       "doc": null,
@@ -6938,7 +6938,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 194
+            "line": 217
           },
           "default": null,
           "name": "id",
@@ -6947,7 +6947,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 195
+            "line": 218
           },
           "default": null,
           "name": "title",
@@ -6956,7 +6956,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 196
+            "line": 219
           },
           "default": null,
           "name": "description",
@@ -6965,7 +6965,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 213
+            "line": 236
           },
           "default": null,
           "doc": "THE FLIHUB PROJECT this set's scripts record into \u2014 the folder name",
@@ -6975,7 +6975,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 222
+            "line": 245
           },
           "default": null,
           "doc": "Set by `set_export_to_project` (W6, open-contract \u00a74): the FliHub folder",
@@ -6985,7 +6985,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 228
+            "line": 251
           },
           "default": null,
           "doc": "The `brands.json` key the export was made under \u2014 recorded beside",
@@ -6995,7 +6995,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 234
+            "line": 257
           },
           "default": null,
           "doc": "A project's on-demand scripts (`write_script`, B585): many small NAMED",
@@ -7005,7 +7005,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 235
+            "line": 258
           },
           "default": null,
           "name": "scripts",
@@ -7018,9 +7018,9 @@
     },
     {
       "anchor": {
-        "end_line": 268,
+        "end_line": 291,
         "file": "src/shared/domain.ts",
-        "line": 251
+        "line": 274
       },
       "bases": [],
       "doc": "The eight deterministic threshold rules from",
@@ -7029,7 +7029,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 252
+            "line": 275
           },
           "default": null,
           "name": "wordsMin",
@@ -7038,7 +7038,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 253
+            "line": 276
           },
           "default": null,
           "name": "wordsMax",
@@ -7047,7 +7047,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 255
+            "line": 278
           },
           "default": null,
           "doc": "Mean words per breath group. David \u2248 11.5; Tom writes \u2248 7.",
@@ -7057,7 +7057,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 257
+            "line": 280
           },
           "default": null,
           "doc": "Internal punctuation breaks per 100 words.",
@@ -7067,7 +7067,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 259
+            "line": 282
           },
           "default": null,
           "doc": "Sentence-length standard deviation \u2014 flat rhythm reads as written.",
@@ -7077,7 +7077,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 261
+            "line": 284
           },
           "default": null,
           "doc": "Em-dash appositives. Zero, for this talent.",
@@ -7087,7 +7087,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 263
+            "line": 286
           },
           "default": null,
           "doc": "Words that do not belong in this talent's voice, as regex-safe literals.",
@@ -7097,7 +7097,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 265
+            "line": 288
           },
           "default": null,
           "doc": "Channel bookends that must not appear inside a script body.",
@@ -7107,7 +7107,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 267
+            "line": 290
           },
           "default": null,
           "doc": "Where these numbers were measured. Never guess this field.",
@@ -7121,9 +7121,9 @@
     },
     {
       "anchor": {
-        "end_line": 274,
+        "end_line": 297,
         "file": "src/shared/domain.ts",
-        "line": 270
+        "line": 293
       },
       "bases": [],
       "doc": null,
@@ -7132,7 +7132,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 271
+            "line": 294
           },
           "default": null,
           "name": "id",
@@ -7141,7 +7141,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 272
+            "line": 295
           },
           "default": null,
           "name": "name",
@@ -7150,7 +7150,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 273
+            "line": 296
           },
           "default": null,
           "name": "envelope",
@@ -7163,9 +7163,9 @@
     },
     {
       "anchor": {
-        "end_line": 284,
+        "end_line": 307,
         "file": "src/shared/domain.ts",
-        "line": 281
+        "line": 304
       },
       "bases": [],
       "doc": "A validation problem, phrased so an agent can act on it.",
@@ -7174,7 +7174,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 282
+            "line": 305
           },
           "default": null,
           "name": "path",
@@ -7183,7 +7183,7 @@
         {
           "anchor": {
             "file": "src/shared/domain.ts",
-            "line": 283
+            "line": 306
           },
           "default": null,
           "name": "message",
@@ -7672,7 +7672,7 @@
     }
   ],
   "target": {
-    "commit": "8d366640c144aefab9c9e188a812ecfc0a3dba9e",
+    "commit": "6e3f2dacf848d3864b335fbaa9ea114c1d630d40",
     "root": "..",
     "stack": "typescript"
   },
@@ -7924,7 +7924,7 @@
       "census": true,
       "family": "object constant",
       "looked_at": [
-        "src/renderer/src/store.ts:88"
+        "src/renderer/src/store.ts:89"
       ],
       "reason": "declared but not read: object constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/renderer/src/store.ZONE_LABEL` - declared but not read"
@@ -7933,7 +7933,7 @@
       "census": true,
       "family": "const built by a call (helper or non-zod call)",
       "looked_at": [
-        "src/renderer/src/store.ts:420"
+        "src/renderer/src/store.ts:421"
       ],
       "reason": "declared but not read: const built by a call (helper or non-zod call). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/renderer/src/store.useProm` - declared but not read"

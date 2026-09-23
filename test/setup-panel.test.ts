@@ -456,3 +456,13 @@ describe('an agent’s stage request, applied by the window (d04 preflight)', ()
     expect(s().scriptId).toBe(before);
   });
 });
+
+describe('the window after a project folder rename (code is identity)', () => {
+  const row = (id: string, project: string | null): SetSummary => ({ id, title: id, description: '', project, scriptCount: 2 });
+  const store = [row('d04-d04-autopilot-test-scripts', 'd04-d04-autopilot-test'), row('other', 'd03-cutty')];
+
+  it('still sees the set as the open project’s — never "No script yet"', () => {
+    expect(emptyProjectOf(store, 'd04-autopilot-test')).toBeNull();
+    expect(pickOpeningSet(store, store, null, 'd04-autopilot-test')).toBe('d04-d04-autopilot-test-scripts');
+  });
+});

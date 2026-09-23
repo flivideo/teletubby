@@ -70,3 +70,19 @@ Delivered as C5 of deliver-2026-09-23-B584-B585, recommended by d01-work and tak
   edits** scripts in a teleprompter. Writing them is a future app, **Scribe** (stage 1 of the suite;
   David's correction, relayed 2026-09-23). `write_script` is the door a writer such as Scribe, or
   an AI conversation, hands its text through. Also not built: grouping the picker by video.
+
+## Amendment — 2026-09-23 (d04 live run)
+
+- **Project identity is the CODE** (`d04`), not the folder name (flivideo-orch ruling, the same rule
+  FliTools uses). `project` is still stored as the full folder name, but every match goes through
+  `sameProject` in `src/shared/domain.ts`: the list filter, the window's "this project's sets", the
+  export check and `write_script`'s `project`. A plain folder with no code matches only exactly.
+- **A set inside a project's `fli.tubby.json` belongs to that project**, whatever name it recorded.
+  The file moves with the folder. The recorded name is corrected on the next real write of that set.
+- **`write_script` finds the on-demand set by its flag**, not its derived id. After a rename, the id
+  still names the old folder (ids are identity and are never rewritten), and new scripts join that
+  same set.
+- **`n` is position, newest first, and it shifts.** Each new script takes `n: 1`. `write_script`
+  therefore also returns `order`, the whole set as it stands after the write, so a caller never
+  reconciles a stale `n` from an earlier reply. `id` is the identity.
+

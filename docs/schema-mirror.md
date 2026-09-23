@@ -3,7 +3,7 @@
 > Generated from the code, not written about it. Do not hand-edit — every line below is anchored to a `file:line` and is re-derived on every run. `verify_mirror.py` fails when this page no longer matches its JSON. To record a gap the extractor cannot find, use `docs/schema-mirror.known-gaps.json`.
 
 - **stack** `typescript` · **extractor** `extract_typescript.py`
-- **commit** `8d366640c144` · **generated** 2026-09-23T14:16:08+00:00
+- **commit** `6e3f2dacf848` · **generated** 2026-09-23T15:39:46+00:00
 - **scope** include `*.ts`, `*.tsx` · exclude `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx`, `*.stories.tsx`, `*.config.ts`, `*/test/*`, `*/tests/*`, `*/__tests__/*`, `*/e2e/*`, `*/__mocks__/*`, `*/fixtures/*`, `*.d.ts`, `*/dist/*`, `*/build/*`, `*/out/*`
 - **zod bound** in 0 file(s) by a direct import, 6 through a re-export, 0 by call shape only
 
@@ -19,7 +19,7 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 
 - `src/core/active-context.ts` — `ActiveSelection` :29
 - `src/core/cadence.ts` — `CadenceMeasurements` :29 · `CadenceRule` :44 · `CadenceScore` :62
-- `src/core/handlers.ts` — `HandlerContext` :79 · `Resolved` :141 · `MaybeUnreadable` :325
+- `src/core/handlers.ts` — `HandlerContext` :80 · `Resolved` :142 · `MaybeUnreadable` :341
 - `src/core/index.ts` — `CoreOptions` :49 · `LifecycleHooks` :64 · `InvokeOptions` :75 · `ChangeEvent` :97 · `Core` :103
 - `src/core/input-shapes.ts` — `slug` :25 · `projectName` :28 · `paragraphInput` :34 · `minorInput` :39 · `majorInput` :45 · `layoutInput` :56 · `triggerInput` :71 · `InputField` :332
 - `src/core/open-context.ts` — `OPEN_REFUSAL_CODES` (set) :35 · `OpenRefusal` :45 · `OpenContext` :54 · `OpenResolution` :65 · `ResolveOpenArgsOptions` :69 · `ContextReport` :239
@@ -38,10 +38,10 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 - `src/main/window-manager.ts` — `WindowOptions` :4
 - `src/renderer/src/App.tsx` — `zone (switch)` (set) :758
 - `src/renderer/src/components/CadencePanel.tsx` — `Rule` :23 · `Score` :31
-- `src/renderer/src/store.ts` — `ZONES` (set) :70 · `CueCard` :96 · `PrompterState` :103 · `SetSummary` :264 · `UnreadableFile` :285 · `SetFilter` (set) :338 · `StageHold` :345 · `Rank` (set) :1200
+- `src/renderer/src/store.ts` — `ZONES` (set) :71 · `CueCard` :97 · `PrompterState` :104 · `SetSummary` :265 · `UnreadableFile` :286 · `SetFilter` (set) :339 · `StageHold` :346 · `Rank` (set) :1201
 - `src/shared/capabilities.ts` — `PRINCIPALS` (set) :36 · `SIDE_EFFECTS` (set) :43 · `CapabilityKind` (set) :51 · `ERROR_CODES` (set) :59 · `CapabilityMeta` :75 · `InvokeRequest` :406 · `CapabilityError` :413 · `InvokeResult` :422
 - `src/shared/domain-schema.ts` — `paragraphSchema` :47 · `minorTopicSchema` :52 · `majorTopicSchema` :58 · `triggerSchema` :64 · `triggerSetSchema` :70 · `transcriptSchema` :77 · `scriptSchema` :87 · `scriptSetSchema` :102 · `cadenceEnvelopeSchema` :127 · `talentSchema` :139 · `rigLayoutSchema` :149 · `rigSchema` :164 · `workspaceSchema` :170
-- `src/shared/domain.ts` — `TRANSCRIPT_KINDS` (set) :65 · `TRIGGER_STYLES` (set) :80 · `AUTHORSHIPS` (set) :91 · `Paragraph` :98 · `MinorTopic` :105 · `MajorTopic` :112 · `Trigger` :127 · `TriggerSet` :133 · `Transcript` :141 · `Script` :159 · `ScriptSet` :193 · `CadenceEnvelope` :251 · `Talent` :270 · `DomainViolation` :281
+- `src/shared/domain.ts` — `TRANSCRIPT_KINDS` (set) :65 · `TRIGGER_STYLES` (set) :80 · `AUTHORSHIPS` (set) :91 · `Paragraph` :98 · `MinorTopic` :105 · `MajorTopic` :112 · `Trigger` :127 · `TriggerSet` :133 · `Transcript` :141 · `Script` :159 · `ScriptSet` :216 · `CadenceEnvelope` :274 · `Talent` :293 · `DomainViolation` :304
 - `src/shared/ipc.ts` — `AppInfo` :35 · `ControlStatus` :44 · `ControlChanged` :55 · `InvokePayload` :61 · `AppytronApi` :68
 - `src/shared/rig.ts` — `RECORDING_SET` (set) :47 · `CAMERA_SIDES` (set) :51 · `TEXT_PRESETS` (set) :55 · `RigLayout` :69 · `Rig` :83 · `WorkspacePosition` :118 · `Workspace` :126
 
@@ -66,7 +66,7 @@ These constructs are outside what this extractor reads **on every run, in every 
 **161** top-level declarations counted = **112** mirrored + **3** listed as gaps + **46** declared but not read.
 
 Counted: every top-level interface, enum, class and type alias (exported or not) and every exported constant, in the files in scope.
-Not counted, as not schema-bearing: 30 functions, 2 function types, 7 literal constants.
+Not counted, as not schema-bearing: 32 functions, 2 function types, 7 literal constants.
 
 | file | declared | mirrored | gaps | not read |
 |---|---|---|---|---|
@@ -177,19 +177,19 @@ Stable key, so a UI can flag one rule without matching on prose.
 | `downloaded` | `src/main/updater.ts:5` |
 | `error` | `src/main/updater.ts:5` |
 
-### `src/renderer/src/store.ZONES` — `src/renderer/src/store.ts:70`
+### `src/renderer/src/store.ZONES` — `src/renderer/src/store.ts:71`
 
 *`as const` array `ZONES`, typed from by `typeof ZONES[number]` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `major` | `src/renderer/src/store.ts:70` |
-| `minor` | `src/renderer/src/store.ts:70` |
-| `triggers` | `src/renderer/src/store.ts:70` |
-| `paragraph` | `src/renderer/src/store.ts:70` |
-| `transcript` | `src/renderer/src/store.ts:70` |
+| `major` | `src/renderer/src/store.ts:71` |
+| `minor` | `src/renderer/src/store.ts:71` |
+| `triggers` | `src/renderer/src/store.ts:71` |
+| `paragraph` | `src/renderer/src/store.ts:71` |
+| `transcript` | `src/renderer/src/store.ts:71` |
 
-### `src/renderer/src/store.SetSummary.source` — `src/renderer/src/store.ts:279`
+### `src/renderer/src/store.SetSummary.source` — `src/renderer/src/store.ts:280`
 
 Where this row's data was read from: the open project's fli.tubby.json, or the app store.
 
@@ -197,35 +197,35 @@ Where this row's data was read from: the open project's fli.tubby.json, or the a
 
 | value | declared at |
 |---|---|
-| `project` | `src/renderer/src/store.ts:279` |
-| `store` | `src/renderer/src/store.ts:279` |
+| `project` | `src/renderer/src/store.ts:280` |
+| `store` | `src/renderer/src/store.ts:280` |
 
-### `src/renderer/src/store.SetFilter` — `src/renderer/src/store.ts:338`
+### `src/renderer/src/store.SetFilter` — `src/renderer/src/store.ts:339`
 
 *literal union type alias `SetFilter` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `project` | `src/renderer/src/store.ts:338` |
-| `all` | `src/renderer/src/store.ts:338` |
+| `project` | `src/renderer/src/store.ts:339` |
+| `all` | `src/renderer/src/store.ts:339` |
 
-### `src/renderer/src/store.StageHold.reason` — `src/renderer/src/store.ts:346`
+### `src/renderer/src/store.StageHold.reason` — `src/renderer/src/store.ts:347`
 
 *literal union type of `reason` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `project-closed` | `src/renderer/src/store.ts:346` |
-| `unreadable` | `src/renderer/src/store.ts:346` |
+| `project-closed` | `src/renderer/src/store.ts:347` |
+| `unreadable` | `src/renderer/src/store.ts:347` |
 
-### `src/renderer/src/store.Rank` — `src/renderer/src/store.ts:1200`
+### `src/renderer/src/store.Rank` — `src/renderer/src/store.ts:1201`
 
 *literal union type alias `Rank` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `driven` | `src/renderer/src/store.ts:1200` |
-| `follower` | `src/renderer/src/store.ts:1200` |
+| `driven` | `src/renderer/src/store.ts:1201` |
+| `follower` | `src/renderer/src/store.ts:1201` |
 
 ### `src/shared/capabilities.PRINCIPALS` — `src/shared/capabilities.ts:36`
 
@@ -540,34 +540,34 @@ Each set below was read out of the real authority — control flow, membership t
 | `rules` | `CadenceRule[] → src/core/cadence.CadenceRule` | — | `src/core/cadence.ts:65` |  |
 | `envelopeSource` | `string` | — | `src/core/cadence.ts:67` | Which envelope this was judged against. Never anonymous. |
 
-### `src/core/handlers.HandlerContext` — interface — `src/core/handlers.ts:79-100`
+### `src/core/handlers.HandlerContext` — interface — `src/core/handlers.ts:80-101`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `lifecycle` | `?: LifecycleHooks → src/core/index.LifecycleHooks` | — | `src/core/handlers.ts:81` | The host process, for the lifecycle verbs. Absent headless. |
-| `stage` | `StageRequests` | — | `src/core/handlers.ts:83` | The latest agent request for what is on stage (d04 preflight). |
-| `activity` | `TalentActivity` | — | `src/core/handlers.ts:85` | When the talent last moved — what "busy" means. |
-| `principalName` | `string` | — | `src/core/handlers.ts:87` | Who is calling, by name (`human:prompter`, `agent:claude`, `cli`). |
-| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/handlers.ts:88` |  |
-| `active` | `ActiveContextHolder` | — | `src/core/handlers.ts:89` |  |
-| `openContext` | `OpenContextHolder` | — | `src/core/handlers.ts:91` | The session's brand/project context (W6, door 2 + door 3). Never persisted. |
-| `confirmations` | `ConfirmationLedger` | — | `src/core/handlers.ts:92` |  |
-| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/handlers.ts:93` |  |
-| `capability` | `CapabilityMeta → CapabilityMeta (@shared/capabilities)` | — | `src/core/handlers.ts:94` |  |
-| `dryRun` | `boolean` | — | `src/core/handlers.ts:96` | True when the caller asked for a preview rather than an act. |
-| `confirmationId` | `?: string` | — | `src/core/handlers.ts:97` |  |
-| `recordPrior` | `(prior: unknown) => void` | — | `src/core/handlers.ts:99` | Hand the prior state to the audit log. Call it before you overwrite. |
+| `lifecycle` | `?: LifecycleHooks → src/core/index.LifecycleHooks` | — | `src/core/handlers.ts:82` | The host process, for the lifecycle verbs. Absent headless. |
+| `stage` | `StageRequests` | — | `src/core/handlers.ts:84` | The latest agent request for what is on stage (d04 preflight). |
+| `activity` | `TalentActivity` | — | `src/core/handlers.ts:86` | When the talent last moved — what "busy" means. |
+| `principalName` | `string` | — | `src/core/handlers.ts:88` | Who is calling, by name (`human:prompter`, `agent:claude`, `cli`). |
+| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/handlers.ts:89` |  |
+| `active` | `ActiveContextHolder` | — | `src/core/handlers.ts:90` |  |
+| `openContext` | `OpenContextHolder` | — | `src/core/handlers.ts:92` | The session's brand/project context (W6, door 2 + door 3). Never persisted. |
+| `confirmations` | `ConfirmationLedger` | — | `src/core/handlers.ts:93` |  |
+| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/handlers.ts:94` |  |
+| `capability` | `CapabilityMeta → CapabilityMeta (@shared/capabilities)` | — | `src/core/handlers.ts:95` |  |
+| `dryRun` | `boolean` | — | `src/core/handlers.ts:97` | True when the caller asked for a preview rather than an act. |
+| `confirmationId` | `?: string` | — | `src/core/handlers.ts:98` |  |
+| `recordPrior` | `(prior: unknown) => void` | — | `src/core/handlers.ts:100` | Hand the prior state to the audit log. Call it before you overwrite. |
 
-### `src/core/handlers.Resolved` — interface — `src/core/handlers.ts:141-146`
+### `src/core/handlers.Resolved` — interface — `src/core/handlers.ts:142-147`
 
 | field | type | default | at |
 |---|---|---|---|
-| `document` | `RepositoryDocument → src/core/repository.RepositoryDocument` | — | `src/core/handlers.ts:142` |
-| `set` | `ScriptSet → ScriptSet (@shared/domain)` | — | `src/core/handlers.ts:143` |
-| `script` | `Script → Script (@shared/domain)` | — | `src/core/handlers.ts:144` |
-| `transcript` | `Transcript → Transcript (@shared/domain)` | — | `src/core/handlers.ts:145` |
+| `document` | `RepositoryDocument → src/core/repository.RepositoryDocument` | — | `src/core/handlers.ts:143` |
+| `set` | `ScriptSet → ScriptSet (@shared/domain)` | — | `src/core/handlers.ts:144` |
+| `script` | `Script → Script (@shared/domain)` | — | `src/core/handlers.ts:145` |
+| `transcript` | `Transcript → Transcript (@shared/domain)` | — | `src/core/handlers.ts:146` |
 
-### `src/core/handlers.MaybeUnreadable` — type — `src/core/handlers.ts:325`
+### `src/core/handlers.MaybeUnreadable` — type — `src/core/handlers.ts:341`
 
 *extends* `ScriptSet`
 
@@ -1007,117 +1007,117 @@ WHAT "CADENCE" ACTUALLY MEANS, shown in the app.
 | `rules` | `Rule[] → src/renderer/src/components/CadencePanel.Rule` | — | `src/renderer/src/components/CadencePanel.tsx:33` |
 | `envelopeSource` | `string` | — | `src/renderer/src/components/CadencePanel.tsx:34` |
 
-### `src/renderer/src/store.CueCard` — interface — `src/renderer/src/store.ts:96-101`
+### `src/renderer/src/store.CueCard` — interface — `src/renderer/src/store.ts:97-102`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `label` | `string` | — | `src/renderer/src/store.ts:97` |  |
-| `title` | `string` | — | `src/renderer/src/store.ts:98` |  |
-| `token` | `number` | — | `src/renderer/src/store.ts:100` | Changes on every cue so the component can restart its dismiss timer. |
+| `label` | `string` | — | `src/renderer/src/store.ts:98` |  |
+| `title` | `string` | — | `src/renderer/src/store.ts:99` |  |
+| `token` | `number` | — | `src/renderer/src/store.ts:101` | Changes on every cue so the component can restart its dismiss timer. |
 
-### `src/renderer/src/store.PrompterState` — interface — `src/renderer/src/store.ts:103-257`
+### `src/renderer/src/store.PrompterState` — interface — `src/renderer/src/store.ts:104-258`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `set` | `ScriptSet \| null → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:105` | Null until the control API answers. The UI shows a waiting state, not an error. |
-| `scriptId` | `string \| null` | — | `src/renderer/src/store.ts:106` |  |
-| `transcriptId` | `string \| null` | — | `src/renderer/src/store.ts:107` |  |
-| `style` | `TriggerStyle \| null → TriggerStyle (@shared/domain)` | — | `src/renderer/src/store.ts:108` |  |
-| `step` | `number` | — | `src/renderer/src/store.ts:111` | Index into the ACTIVE trigger set. THE position — everything derives from it. |
-| `visible` | `RecordingZone[] → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:113` |  |
-| `driven` | `RecordingZone → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:114` |  |
-| `weights` | `Record<RecordingZone, number> → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:120` | Flex weight per zone, adjusted by dragging a divider. Relative, not pixels, |
-| `camera` | `CameraSide → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:121` |  |
-| `transcriptOpen` | `boolean` | — | `src/renderer/src/store.ts:123` | The full-transcript skim surface. Overlays; never displaces (see below). |
-| `transcriptEdge` | `CameraSide → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:124` |  |
-| `setupOpen` | `boolean` | — | `src/renderer/src/store.ts:141` | The setup panel — everything that BUILDS an arrangement, in one slide-out. |
-| `mirror` | `boolean` | — | `src/renderer/src/store.ts:143` |  |
-| `focus` | `boolean` | — | `src/renderer/src/store.ts:144` |  |
-| `text` | `TextPreset → TextPreset (@shared/rig)` | — | `src/renderer/src/store.ts:145` |  |
-| `rigs` | `Rig[] → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:155` | Named arrangements, and the one currently applied. |
-| `rigId` | `string \| null` | — | `src/renderer/src/store.ts:156` |  |
-| `rigsLoaded` | `boolean` | — | `src/renderer/src/store.ts:165` | Whether the stored workspace has actually been read. |
-| `restoredLayout` | `boolean` | — | `src/renderer/src/store.ts:172` | Whether a stored arrangement was actually applied — as opposed to the app |
-| `pendingPosition` | `WorkspacePosition \| null → WorkspacePosition (@shared/rig)` | — | `src/renderer/src/store.ts:180` | The saved position, held between `loadRigs` (which recalls it) and `load` |
-| `freshTranscripts` | `Record<string, string[]>` | — | `src/renderer/src/store.ts:191` | Transcripts that arrived or changed since the talent last looked at them — |
-| `cue` | `CueCard \| null → src/renderer/src/store.CueCard` | — | `src/renderer/src/store.ts:193` |  |
-| `nudge` | `number` | — | `src/renderer/src/store.ts:195` | Increments each time a step was refused at the boundary, to replay the nudge. |
-| `load` | `(set: ScriptSet) => void → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:197` |  |
-| `refresh` | `(set: ScriptSet) => void → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:198` |  |
-| `stepNext` | `() => void` | — | `src/renderer/src/store.ts:199` |  |
-| `stepPrev` | `() => void` | — | `src/renderer/src/store.ts:200` |  |
-| `selectScript` | `(scriptId: string) => void` | — | `src/renderer/src/store.ts:201` |  |
-| `goToNextScript` | `() => void` | — | `src/renderer/src/store.ts:202` |  |
-| `goToPrevScript` | `() => void` | — | `src/renderer/src/store.ts:203` |  |
-| `selectTranscript` | `(transcriptId: string) => void` | — | `src/renderer/src/store.ts:204` |  |
-| `selectStyle` | `(style: TriggerStyle) => void → TriggerStyle (@shared/domain)` | — | `src/renderer/src/store.ts:205` |  |
-| `toggleZone` | `(zone: RecordingZone) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:206` |  |
-| `setDriven` | `(zone: RecordingZone) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:207` |  |
-| `setCamera` | `(side: CameraSide) => void → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:208` |  |
-| `resizeZones` | `(left: RecordingZone, right: RecordingZone, deltaPx: number) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:209` |  |
-| `toggleTranscript` | `() => void` | — | `src/renderer/src/store.ts:210` |  |
-| `toggleSetup` | `() => void` | — | `src/renderer/src/store.ts:211` |  |
-| `closeSetup` | `() => void` | — | `src/renderer/src/store.ts:212` |  |
-| `toggleMirror` | `() => void` | — | `src/renderer/src/store.ts:213` |  |
-| `toggleFocus` | `() => void` | — | `src/renderer/src/store.ts:214` |  |
-| `setText` | `(preset: TextPreset) => void → TextPreset (@shared/rig)` | — | `src/renderer/src/store.ts:215` |  |
-| `loadRigs` | `(rigs: Rig[], workspace: Workspace) => void → Rig (@shared/rig), Workspace (@shared/rig)` | — | `src/renderer/src/store.ts:216` |  |
-| `setRigs` | `(rigs: Rig[]) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:217` |  |
-| `sets` | `SetSummary[] → src/renderer/src/store.SetSummary` | — | `src/renderer/src/store.ts:224` | Every set (project) in the store, as summaries — for the setup panel's |
-| `setSets` | `(sets: SetSummary[]) => void → src/renderer/src/store.SetSummary` | — | `src/renderer/src/store.ts:225` |  |
-| `openProject` | `string \| null` | — | `src/renderer/src/store.ts:227` | The session's open project (W6 `context_get`), or null. Never persisted, like the context itself. |
-| `setOpenProject` | `(project: string \| null) => void` | — | `src/renderer/src/store.ts:229` | Records the open project; a CHANGE of project resets the filter to it. |
-| `setFilter` | `SetFilter → src/renderer/src/store.SetFilter` | — | `src/renderer/src/store.ts:230` |  |
-| `setSetFilter` | `(filter: SetFilter) => void → src/renderer/src/store.SetFilter` | — | `src/renderer/src/store.ts:231` |  |
-| `stageHold` | `StageHold \| null → src/renderer/src/store.StageHold` | — | `src/renderer/src/store.ts:233` | Non-null while a change event is holding the on-stage data (W6 S1/S2). |
-| `setStageHold` | `(hold: StageHold \| null) => void → src/renderer/src/store.StageHold` | — | `src/renderer/src/store.ts:234` |  |
-| `unreadableFile` | `UnreadableFile \| null → src/renderer/src/store.UnreadableFile` | — | `src/renderer/src/store.ts:236` | The open project's fli.tubby.json when it cannot be read, else null. |
-| `setUnreadableFile` | `(file: UnreadableFile \| null) => void → src/renderer/src/store.UnreadableFile` | — | `src/renderer/src/store.ts:237` |  |
-| `requestedSetId` | `string \| null` | — | `src/renderer/src/store.ts:238` |  |
-| `requestSet` | `(setId: string) => void` | — | `src/renderer/src/store.ts:239` |  |
-| `clearRequestedSet` | `() => void` | — | `src/renderer/src/store.ts:240` |  |
-| `requestedScriptId` | `string \| null` | — | `src/renderer/src/store.ts:246` | The script to land on once `requestedSetId` has loaded — set only by an |
-| `applyStageRequest` | `(setId: string, scriptId: string \| null) => void` | — | `src/renderer/src/store.ts:252` | Apply an agent's stage request. Same set → just the script; another set |
-| `applyRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:253` |  |
-| `adoptRig` | `(rig: Rig) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:254` |  |
-| `forgetRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:255` |  |
-| `dismissCue` | `() => void` | — | `src/renderer/src/store.ts:256` |  |
+| `set` | `ScriptSet \| null → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:106` | Null until the control API answers. The UI shows a waiting state, not an error. |
+| `scriptId` | `string \| null` | — | `src/renderer/src/store.ts:107` |  |
+| `transcriptId` | `string \| null` | — | `src/renderer/src/store.ts:108` |  |
+| `style` | `TriggerStyle \| null → TriggerStyle (@shared/domain)` | — | `src/renderer/src/store.ts:109` |  |
+| `step` | `number` | — | `src/renderer/src/store.ts:112` | Index into the ACTIVE trigger set. THE position — everything derives from it. |
+| `visible` | `RecordingZone[] → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:114` |  |
+| `driven` | `RecordingZone → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:115` |  |
+| `weights` | `Record<RecordingZone, number> → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:121` | Flex weight per zone, adjusted by dragging a divider. Relative, not pixels, |
+| `camera` | `CameraSide → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:122` |  |
+| `transcriptOpen` | `boolean` | — | `src/renderer/src/store.ts:124` | The full-transcript skim surface. Overlays; never displaces (see below). |
+| `transcriptEdge` | `CameraSide → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:125` |  |
+| `setupOpen` | `boolean` | — | `src/renderer/src/store.ts:142` | The setup panel — everything that BUILDS an arrangement, in one slide-out. |
+| `mirror` | `boolean` | — | `src/renderer/src/store.ts:144` |  |
+| `focus` | `boolean` | — | `src/renderer/src/store.ts:145` |  |
+| `text` | `TextPreset → TextPreset (@shared/rig)` | — | `src/renderer/src/store.ts:146` |  |
+| `rigs` | `Rig[] → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:156` | Named arrangements, and the one currently applied. |
+| `rigId` | `string \| null` | — | `src/renderer/src/store.ts:157` |  |
+| `rigsLoaded` | `boolean` | — | `src/renderer/src/store.ts:166` | Whether the stored workspace has actually been read. |
+| `restoredLayout` | `boolean` | — | `src/renderer/src/store.ts:173` | Whether a stored arrangement was actually applied — as opposed to the app |
+| `pendingPosition` | `WorkspacePosition \| null → WorkspacePosition (@shared/rig)` | — | `src/renderer/src/store.ts:181` | The saved position, held between `loadRigs` (which recalls it) and `load` |
+| `freshTranscripts` | `Record<string, string[]>` | — | `src/renderer/src/store.ts:192` | Transcripts that arrived or changed since the talent last looked at them — |
+| `cue` | `CueCard \| null → src/renderer/src/store.CueCard` | — | `src/renderer/src/store.ts:194` |  |
+| `nudge` | `number` | — | `src/renderer/src/store.ts:196` | Increments each time a step was refused at the boundary, to replay the nudge. |
+| `load` | `(set: ScriptSet) => void → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:198` |  |
+| `refresh` | `(set: ScriptSet) => void → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:199` |  |
+| `stepNext` | `() => void` | — | `src/renderer/src/store.ts:200` |  |
+| `stepPrev` | `() => void` | — | `src/renderer/src/store.ts:201` |  |
+| `selectScript` | `(scriptId: string) => void` | — | `src/renderer/src/store.ts:202` |  |
+| `goToNextScript` | `() => void` | — | `src/renderer/src/store.ts:203` |  |
+| `goToPrevScript` | `() => void` | — | `src/renderer/src/store.ts:204` |  |
+| `selectTranscript` | `(transcriptId: string) => void` | — | `src/renderer/src/store.ts:205` |  |
+| `selectStyle` | `(style: TriggerStyle) => void → TriggerStyle (@shared/domain)` | — | `src/renderer/src/store.ts:206` |  |
+| `toggleZone` | `(zone: RecordingZone) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:207` |  |
+| `setDriven` | `(zone: RecordingZone) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:208` |  |
+| `setCamera` | `(side: CameraSide) => void → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:209` |  |
+| `resizeZones` | `(left: RecordingZone, right: RecordingZone, deltaPx: number) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:210` |  |
+| `toggleTranscript` | `() => void` | — | `src/renderer/src/store.ts:211` |  |
+| `toggleSetup` | `() => void` | — | `src/renderer/src/store.ts:212` |  |
+| `closeSetup` | `() => void` | — | `src/renderer/src/store.ts:213` |  |
+| `toggleMirror` | `() => void` | — | `src/renderer/src/store.ts:214` |  |
+| `toggleFocus` | `() => void` | — | `src/renderer/src/store.ts:215` |  |
+| `setText` | `(preset: TextPreset) => void → TextPreset (@shared/rig)` | — | `src/renderer/src/store.ts:216` |  |
+| `loadRigs` | `(rigs: Rig[], workspace: Workspace) => void → Rig (@shared/rig), Workspace (@shared/rig)` | — | `src/renderer/src/store.ts:217` |  |
+| `setRigs` | `(rigs: Rig[]) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:218` |  |
+| `sets` | `SetSummary[] → src/renderer/src/store.SetSummary` | — | `src/renderer/src/store.ts:225` | Every set (project) in the store, as summaries — for the setup panel's |
+| `setSets` | `(sets: SetSummary[]) => void → src/renderer/src/store.SetSummary` | — | `src/renderer/src/store.ts:226` |  |
+| `openProject` | `string \| null` | — | `src/renderer/src/store.ts:228` | The session's open project (W6 `context_get`), or null. Never persisted, like the context itself. |
+| `setOpenProject` | `(project: string \| null) => void` | — | `src/renderer/src/store.ts:230` | Records the open project; a CHANGE of project resets the filter to it. |
+| `setFilter` | `SetFilter → src/renderer/src/store.SetFilter` | — | `src/renderer/src/store.ts:231` |  |
+| `setSetFilter` | `(filter: SetFilter) => void → src/renderer/src/store.SetFilter` | — | `src/renderer/src/store.ts:232` |  |
+| `stageHold` | `StageHold \| null → src/renderer/src/store.StageHold` | — | `src/renderer/src/store.ts:234` | Non-null while a change event is holding the on-stage data (W6 S1/S2). |
+| `setStageHold` | `(hold: StageHold \| null) => void → src/renderer/src/store.StageHold` | — | `src/renderer/src/store.ts:235` |  |
+| `unreadableFile` | `UnreadableFile \| null → src/renderer/src/store.UnreadableFile` | — | `src/renderer/src/store.ts:237` | The open project's fli.tubby.json when it cannot be read, else null. |
+| `setUnreadableFile` | `(file: UnreadableFile \| null) => void → src/renderer/src/store.UnreadableFile` | — | `src/renderer/src/store.ts:238` |  |
+| `requestedSetId` | `string \| null` | — | `src/renderer/src/store.ts:239` |  |
+| `requestSet` | `(setId: string) => void` | — | `src/renderer/src/store.ts:240` |  |
+| `clearRequestedSet` | `() => void` | — | `src/renderer/src/store.ts:241` |  |
+| `requestedScriptId` | `string \| null` | — | `src/renderer/src/store.ts:247` | The script to land on once `requestedSetId` has loaded — set only by an |
+| `applyStageRequest` | `(setId: string, scriptId: string \| null) => void` | — | `src/renderer/src/store.ts:253` | Apply an agent's stage request. Same set → just the script; another set |
+| `applyRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:254` |  |
+| `adoptRig` | `(rig: Rig) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:255` |  |
+| `forgetRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:256` |  |
+| `dismissCue` | `() => void` | — | `src/renderer/src/store.ts:257` |  |
 
-### `src/renderer/src/store.SetSummary` — interface — `src/renderer/src/store.ts:264-282`
+### `src/renderer/src/store.SetSummary` — interface — `src/renderer/src/store.ts:265-283`
 
 What `list_sets` answers with — a project row for the setup panel.
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `id` | `string` | — | `src/renderer/src/store.ts:265` |  |
-| `title` | `string` | — | `src/renderer/src/store.ts:266` |  |
-| `description` | `string` | — | `src/renderer/src/store.ts:267` |  |
-| `project` | `string \| null` | — | `src/renderer/src/store.ts:269` | The FliHub folder name, verbatim, or null for an unattached set. |
-| `scriptCount` | `number` | — | `src/renderer/src/store.ts:270` |  |
-| `exportedTo` | `?: string \| null` | — | `src/renderer/src/store.ts:272` | Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy. |
-| `readOnly` | `?: boolean` | — | `src/renderer/src/store.ts:274` | An exported store copy seen without its project open — listed, never editable. |
-| `livesIn` | `?: string \| null` | — | `src/renderer/src/store.ts:275` |  |
-| `onDemand` | `?: boolean` | — | `src/renderer/src/store.ts:277` | A project's on-demand named scripts (`write_script`) — listed by name, newest first. |
-| `source` | `?: 'project' \| 'store'` | — | `src/renderer/src/store.ts:279` | Where this row's data was read from: the open project's fli.tubby.json, or the app store. |
-| `unreadable` | `?: boolean` | — | `src/renderer/src/store.ts:281` | The open project's fli.tubby.json cannot be read, and this set may live there — get_set refuses it. |
+| `id` | `string` | — | `src/renderer/src/store.ts:266` |  |
+| `title` | `string` | — | `src/renderer/src/store.ts:267` |  |
+| `description` | `string` | — | `src/renderer/src/store.ts:268` |  |
+| `project` | `string \| null` | — | `src/renderer/src/store.ts:270` | The FliHub folder name, verbatim, or null for an unattached set. |
+| `scriptCount` | `number` | — | `src/renderer/src/store.ts:271` |  |
+| `exportedTo` | `?: string \| null` | — | `src/renderer/src/store.ts:273` | Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy. |
+| `readOnly` | `?: boolean` | — | `src/renderer/src/store.ts:275` | An exported store copy seen without its project open — listed, never editable. |
+| `livesIn` | `?: string \| null` | — | `src/renderer/src/store.ts:276` |  |
+| `onDemand` | `?: boolean` | — | `src/renderer/src/store.ts:278` | A project's on-demand named scripts (`write_script`) — listed by name, newest first. |
+| `source` | `?: 'project' \| 'store'` | — | `src/renderer/src/store.ts:280` | Where this row's data was read from: the open project's fli.tubby.json, or the app store. |
+| `unreadable` | `?: boolean` | — | `src/renderer/src/store.ts:282` | The open project's fli.tubby.json cannot be read, and this set may live there — get_set refuses it. |
 
-### `src/renderer/src/store.UnreadableFile` — interface — `src/renderer/src/store.ts:285-288`
+### `src/renderer/src/store.UnreadableFile` — interface — `src/renderer/src/store.ts:286-289`
 
 `list_sets.filter.unreadable` — the project file that could not be read, named.
 
 | field | type | default | at |
 |---|---|---|---|
-| `file` | `string` | — | `src/renderer/src/store.ts:286` |
-| `message` | `string` | — | `src/renderer/src/store.ts:287` |
+| `file` | `string` | — | `src/renderer/src/store.ts:287` |
+| `message` | `string` | — | `src/renderer/src/store.ts:288` |
 
-### `src/renderer/src/store.StageHold` — interface — `src/renderer/src/store.ts:345-348`
+### `src/renderer/src/store.StageHold` — interface — `src/renderer/src/store.ts:346-349`
 
 Why the set on stage is being HELD rather than refreshed — shown by the
 
 | field | type | default | at |
 |---|---|---|---|
-| `reason` | `'project-closed' \| 'unreadable'` | — | `src/renderer/src/store.ts:346` |
-| `message` | `string` | — | `src/renderer/src/store.ts:347` |
+| `reason` | `'project-closed' \| 'unreadable'` | — | `src/renderer/src/store.ts:347` |
+| `message` | `string` | — | `src/renderer/src/store.ts:348` |
 
 ### `src/shared/capabilities.CapabilityMeta` — interface — `src/shared/capabilities.ts:75-103`
 
@@ -1390,51 +1390,51 @@ One trigger — a single step in column 2, bound to the paragraph it belongs to.
 | `transcripts` | `Transcript[] → src/shared/domain.Transcript` | — | `src/shared/domain.ts:168` |  |
 | `video` | `?: string \| null` | — | `src/shared/domain.ts:175` | The D15 video this script is for — `videos/<name>/` in the project, |
 
-### `src/shared/domain.ScriptSet` — interface — `src/shared/domain.ts:193-236`
+### `src/shared/domain.ScriptSet` — interface — `src/shared/domain.ts:216-259`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `id` | `SetId → src/shared/domain.SetId` | — | `src/shared/domain.ts:194` |  |
-| `title` | `string` | — | `src/shared/domain.ts:195` |  |
-| `description` | `string` | — | `src/shared/domain.ts:196` |  |
-| `project` | `?: string \| null` | — | `src/shared/domain.ts:213` | THE FLIHUB PROJECT this set's scripts record into — the folder name |
-| `exportedTo` | `?: string \| null` | — | `src/shared/domain.ts:222` | Set by `set_export_to_project` (W6, open-contract §4): the FliHub folder |
-| `exportedBrand` | `?: string \| null` | — | `src/shared/domain.ts:228` | The `brands.json` key the export was made under — recorded beside |
-| `onDemand` | `?: boolean` | — | `src/shared/domain.ts:234` | A project's on-demand scripts (`write_script`, B585): many small NAMED |
-| `scripts` | `Script[] → src/shared/domain.Script` | — | `src/shared/domain.ts:235` |  |
+| `id` | `SetId → src/shared/domain.SetId` | — | `src/shared/domain.ts:217` |  |
+| `title` | `string` | — | `src/shared/domain.ts:218` |  |
+| `description` | `string` | — | `src/shared/domain.ts:219` |  |
+| `project` | `?: string \| null` | — | `src/shared/domain.ts:236` | THE FLIHUB PROJECT this set's scripts record into — the folder name |
+| `exportedTo` | `?: string \| null` | — | `src/shared/domain.ts:245` | Set by `set_export_to_project` (W6, open-contract §4): the FliHub folder |
+| `exportedBrand` | `?: string \| null` | — | `src/shared/domain.ts:251` | The `brands.json` key the export was made under — recorded beside |
+| `onDemand` | `?: boolean` | — | `src/shared/domain.ts:257` | A project's on-demand scripts (`write_script`, B585): many small NAMED |
+| `scripts` | `Script[] → src/shared/domain.Script` | — | `src/shared/domain.ts:258` |  |
 
-### `src/shared/domain.CadenceEnvelope` — interface — `src/shared/domain.ts:251-268`
+### `src/shared/domain.CadenceEnvelope` — interface — `src/shared/domain.ts:274-291`
 
 The eight deterministic threshold rules from
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `wordsMin` | `number` | — | `src/shared/domain.ts:252` |  |
-| `wordsMax` | `number` | — | `src/shared/domain.ts:253` |  |
-| `breathGroupMeanMin` | `number` | — | `src/shared/domain.ts:255` | Mean words per breath group. David ≈ 11.5; Tom writes ≈ 7. |
-| `breaksPer100Max` | `number` | — | `src/shared/domain.ts:257` | Internal punctuation breaks per 100 words. |
-| `sentenceSdMin` | `number` | — | `src/shared/domain.ts:259` | Sentence-length standard deviation — flat rhythm reads as written. |
-| `emDashMax` | `number` | — | `src/shared/domain.ts:261` | Em-dash appositives. Zero, for this talent. |
-| `antiVoice` | `string[]` | — | `src/shared/domain.ts:263` | Words that do not belong in this talent's voice, as regex-safe literals. |
-| `bookends` | `string[]` | — | `src/shared/domain.ts:265` | Channel bookends that must not appear inside a script body. |
-| `source` | `string` | — | `src/shared/domain.ts:267` | Where these numbers were measured. Never guess this field. |
+| `wordsMin` | `number` | — | `src/shared/domain.ts:275` |  |
+| `wordsMax` | `number` | — | `src/shared/domain.ts:276` |  |
+| `breathGroupMeanMin` | `number` | — | `src/shared/domain.ts:278` | Mean words per breath group. David ≈ 11.5; Tom writes ≈ 7. |
+| `breaksPer100Max` | `number` | — | `src/shared/domain.ts:280` | Internal punctuation breaks per 100 words. |
+| `sentenceSdMin` | `number` | — | `src/shared/domain.ts:282` | Sentence-length standard deviation — flat rhythm reads as written. |
+| `emDashMax` | `number` | — | `src/shared/domain.ts:284` | Em-dash appositives. Zero, for this talent. |
+| `antiVoice` | `string[]` | — | `src/shared/domain.ts:286` | Words that do not belong in this talent's voice, as regex-safe literals. |
+| `bookends` | `string[]` | — | `src/shared/domain.ts:288` | Channel bookends that must not appear inside a script body. |
+| `source` | `string` | — | `src/shared/domain.ts:290` | Where these numbers were measured. Never guess this field. |
 
-### `src/shared/domain.Talent` — interface — `src/shared/domain.ts:270-274`
+### `src/shared/domain.Talent` — interface — `src/shared/domain.ts:293-297`
 
 | field | type | default | at |
 |---|---|---|---|
-| `id` | `TalentId → src/shared/domain.TalentId` | — | `src/shared/domain.ts:271` |
-| `name` | `string` | — | `src/shared/domain.ts:272` |
-| `envelope` | `CadenceEnvelope → src/shared/domain.CadenceEnvelope` | — | `src/shared/domain.ts:273` |
+| `id` | `TalentId → src/shared/domain.TalentId` | — | `src/shared/domain.ts:294` |
+| `name` | `string` | — | `src/shared/domain.ts:295` |
+| `envelope` | `CadenceEnvelope → src/shared/domain.CadenceEnvelope` | — | `src/shared/domain.ts:296` |
 
-### `src/shared/domain.DomainViolation` — interface — `src/shared/domain.ts:281-284`
+### `src/shared/domain.DomainViolation` — interface — `src/shared/domain.ts:304-307`
 
 A validation problem, phrased so an agent can act on it.
 
 | field | type | default | at |
 |---|---|---|---|
-| `path` | `string` | — | `src/shared/domain.ts:282` |
-| `message` | `string` | — | `src/shared/domain.ts:283` |
+| `path` | `string` | — | `src/shared/domain.ts:305` |
+| `message` | `string` | — | `src/shared/domain.ts:306` |
 
 ### `src/shared/ipc.AppInfo` — interface — `src/shared/ipc.ts:35-42`
 
@@ -1545,11 +1545,11 @@ The census found these top-level declarations and the extractor did not mirror t
 | family | count | declarations |
 |---|---|---|
 | class | 17 | `src/core/active-context.ActiveContextHolder` `src/core/active-context.ts:48`<br>`src/core/open-context.OpenContextHolder` `src/core/open-context.ts:250`<br>`src/core/repository.FileRepository` `src/core/repository.ts:109`<br>`src/core/repository.MemoryRepository` `src/core/repository.ts:80`<br>`src/core/safety.AuditLog` `src/core/safety.ts:305`<br>`src/core/safety.CapabilityFailure` `src/core/safety.ts:40`<br>`src/core/safety.ConfirmationLedger` `src/core/safety.ts:125`<br>`src/core/safety.IdempotencyLedger` `src/core/safety.ts:220`<br>`src/core/safety.RateLimiter` `src/core/safety.ts:259`<br>`src/core/stage.StageRequests` `src/core/stage.ts:46`<br>`src/core/stage.TalentActivity` `src/core/stage.ts:66`<br>`src/main/file-author.FileAuthor` `src/main/file-author.ts:32`<br>`src/main/ipc-router.IpcRouter` `src/main/ipc-router.ts:19`<br>`src/main/process-supervisor.Managed` `src/main/process-supervisor.ts:54`<br>`src/main/process-supervisor.ProcessSupervisor` `src/main/process-supervisor.ts:31`<br>`src/main/updater.Updater` `src/main/updater.ts:25`<br>`src/main/window-manager.WindowManager` `src/main/window-manager.ts:20` |
-| object constant | 9 | `src/core/agent-layer.DOTTED_NAME` `src/core/agent-layer.ts:50`<br>`src/core/input-shapes.INPUT` `src/core/input-shapes.ts:78`<br>`src/core/repository.EMPTY_DOCUMENT` `src/core/repository.ts:35`<br>`src/renderer/src/store.ZONE_LABEL` `src/renderer/src/store.ts:88`<br>`src/shared/domain.TRIGGER_STYLE_LETTER` `src/shared/domain.ts:84`<br>`src/shared/ipc.IPC` `src/shared/ipc.ts:21`<br>`src/shared/rig.DEFAULT_LAYOUT` `src/shared/rig.ts:142`<br>`src/shared/rig.EMPTY_WORKSPACE` `src/shared/rig.ts:133`<br>`src/shared/script-set.KYBERNESIS_PHASE_1` `src/shared/script-set.ts:17` |
+| object constant | 9 | `src/core/agent-layer.DOTTED_NAME` `src/core/agent-layer.ts:50`<br>`src/core/input-shapes.INPUT` `src/core/input-shapes.ts:78`<br>`src/core/repository.EMPTY_DOCUMENT` `src/core/repository.ts:35`<br>`src/renderer/src/store.ZONE_LABEL` `src/renderer/src/store.ts:89`<br>`src/shared/domain.TRIGGER_STYLE_LETTER` `src/shared/domain.ts:84`<br>`src/shared/ipc.IPC` `src/shared/ipc.ts:21`<br>`src/shared/rig.DEFAULT_LAYOUT` `src/shared/rig.ts:142`<br>`src/shared/rig.EMPTY_WORKSPACE` `src/shared/rig.ts:133`<br>`src/shared/script-set.KYBERNESIS_PHASE_1` `src/shared/script-set.ts:17` |
 | alias of a primitive | 8 | `src/shared/domain.ParagraphId` `src/shared/domain.ts:47`<br>`src/shared/domain.ScriptId` `src/shared/domain.ts:44`<br>`src/shared/domain.SetId` `src/shared/domain.ts:43`<br>`src/shared/domain.TalentId` `src/shared/domain.ts:49`<br>`src/shared/domain.TopicId` `src/shared/domain.ts:46`<br>`src/shared/domain.TranscriptId` `src/shared/domain.ts:45`<br>`src/shared/domain.TriggerId` `src/shared/domain.ts:48`<br>`src/shared/rig.RigId` `src/shared/rig.ts:32` |
 | array constant | 3 | `src/core/zod3-json-schema.UNCONVERTED` `src/core/zod3-json-schema.ts:40`<br>`src/shared/capabilities.CAPABILITIES` `src/shared/capabilities.ts:168`<br>`src/shared/script-set.TALENTS` `src/shared/script-set.ts:2110` |
 | constant (other form) | 3 | `src/core/active-context.ACTIVE_CONTEXT_TTL_MS` `src/core/active-context.ts:27`<br>`src/core/safety.CONFIRMATION_TTL_MS` `src/core/safety.ts:123`<br>`src/core/stage.TALENT_BUSY_WINDOW_MS` `src/core/stage.ts:27` |
-| const built by a call (helper or non-zod call) | 2 | `src/core/agent-layer.SNAKE_NAME` `src/core/agent-layer.ts:89`<br>`src/renderer/src/store.useProm` `src/renderer/src/store.ts:420` |
+| const built by a call (helper or non-zod call) | 2 | `src/core/agent-layer.SNAKE_NAME` `src/core/agent-layer.ts:89`<br>`src/renderer/src/store.useProm` `src/renderer/src/store.ts:421` |
 | derived type (`keyof typeof`, indexed access, `typeof`) | 1 | `src/shared/capabilities.CapabilityName` `src/shared/capabilities.ts:389` |
 | instance constant (`new ...`) | 1 | `src/shared/capabilities.CAPABILITY_BY_NAME` `src/shared/capabilities.ts:391` |
 | union of named or mixed types | 1 | `src/core/active-context.ActiveContext` `src/core/active-context.ts:38` |

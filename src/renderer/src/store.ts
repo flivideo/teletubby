@@ -5,6 +5,7 @@ import {
   findTranscript,
   findTriggerSet,
   paragraphsOf,
+  sameProject,
   type MajorTopic,
   type MinorTopic,
   type Paragraph,
@@ -307,7 +308,7 @@ export function pickOpeningSet(
   // thing on stage (B585; the gap ADR-003 left open). The panel still lists
   // every set, so another project's script is one click away, never automatic.
   if (openProject) {
-    const own = sets.filter((entry) => entry.project === openProject);
+    const own = sets.filter((entry) => sameProject(entry.project, openProject));
     const rememberedOwn = own.find((entry) => entry.id === remembered);
     if (readable(rememberedOwn)) return rememberedOwn.id;
     return own.find(readable)?.id ?? null;
@@ -332,7 +333,7 @@ export function emptyProjectOf(
   openProject: string | null,
 ): string | null {
   if (!openProject) return null;
-  return sets.some((entry) => entry.project === openProject) ? null : openProject;
+  return sets.some((entry) => sameProject(entry.project, openProject)) ? null : openProject;
 }
 
 export type SetFilter = 'project' | 'all';
@@ -380,7 +381,7 @@ export function visibleSets(
   filter: SetFilter,
 ): { sets: SetSummary[]; note: string | null } {
   if (!openProject || filter === 'all') return { sets, note: null };
-  const attached = sets.filter((entry) => entry.project === openProject);
+  const attached = sets.filter((entry) => sameProject(entry.project, openProject));
   if (attached.length === 0 && sets.length > 0)
     return { sets, note: `No set attached to ${openProject} — showing all sets.` };
   return { sets: attached, note: null };

@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { FileRepository, createCore, type Core } from '@core/index';
@@ -305,5 +305,75 @@ describe('d04: two named scripts, listed, one put on stage by an agent', () => {
     );
     expect(forged.ok).toBe(false); // remember_layout is UI-only (★)
     expect((await asAgent('stage_select', { setId: `${PROJECT}-scripts` })).ok).toBe(true);
+  });
+});
+
+/**
+ * d04 FINDINGS (live run, 2026-09-23): `n` is POSITION and shifts on the next
+ * write, and a project FOLDER RENAME (step 10) must not orphan its scripts.
+ */
+describe('d04 findings: n is position; a renamed folder keeps its scripts', () => {
+  it('says n is position by returning the whole order after each write', async () => {
+    await open();
+    const intro = await ok('write_script', { name: 'Intro', text: INTRO });
+    expect(intro.script.n).toBe(1);
+    const outro = await ok('write_script', { name: 'Outro', text: 'Bye.' });
+    // The intro's earlier n:1 is superseded — this reply says so directly.
+    expect(outro.order.map((s: any) => [s.n, s.id])).toEqual([
+      [1, 'outro'],
+      [2, 'intro'],
+    ]);
+    const set = await ok('get_set', { setId: `${PROJECT}-scripts` });
+    expect(set.scripts.map((s: any) => [s.n, s.id])).toEqual([
+      [1, 'outro'],
+      [2, 'intro'],
+    ]);
+  });
+
+  it('after a folder rename, the scripts are still the project’s, and new ones join the SAME set', async () => {
+    const renamed = 'd01-renamed-tour';
+    const from = projectDir();
+    const to = join(from, '..', renamed);
+    await open();
+    await ok('write_script', { name: 'Intro', text: INTRO });
+    const setId = `${PROJECT}-scripts`;
+
+    renameSync(from, to);
+    try {
+      await ok('context_select', { brand: BRAND, project: renamed });
+
+      // Listed as the renamed project's (the filter keys on the code).
+      const listed = await ok('list_sets');
+      expect(listed.filter.project).toBe(renamed);
+      expect(listed.sets.map((s: any) => [s.id, s.project])).toContainEqual([setId, renamed]);
+
+      // A new script joins the existing set — no second set beside it.
+      const outro = await ok('write_script', { name: 'Outro', text: 'Bye.' });
+      expect(outro.setId).toBe(setId);
+      const file = JSON.parse(readFileSync(join(to, 'fli.tubby.json'), 'utf8'));
+      expect(file.sets.map((s: any) => s.id)).toEqual([setId]);
+      expect(file.sets[0].project).toBe(renamed); // corrected by the real write
+      expect(file.sets[0].scripts.map((s: any) => s.id)).toEqual(['outro', 'intro']);
+
+      // write_script naming the OLD folder name is the same project (same code).
+      expect((await call('write_script', { name: 'CTA', text: 'Subscribe.', project: PROJECT })).ok).toBe(true);
+    } finally {
+      renameSync(to, from);
+    }
+  });
+
+  it('an app-store set attached by the old name follows the code too', async () => {
+    const repository = new FileRepository(join(userData, 'teletubby.json'));
+    await repository.update((document) => ({
+      document: {
+        ...document,
+        sets: [{ ...JSON.parse(JSON.stringify(KYBERNESIS_PHASE_1)), id: 'store-set', project: 'd01-an-older-name' }],
+      },
+      result: undefined,
+    }));
+    core = createCore({ repository });
+    await open();
+    const listed = await ok('list_sets');
+    expect(listed.sets.map((s: any) => s.id)).toContain('store-set');
   });
 });

@@ -22,6 +22,7 @@ import {
   findTranscript,
   findTriggerSet,
   paragraphsOf,
+  sameProject,
   transcriptText,
   validateScriptSet,
   validateTranscript,
@@ -278,6 +279,21 @@ function mergeSets(storeSets: ScriptSet[], projectSets: ScriptSet[]): ScriptSet[
 }
 
 /**
+ * A set inside a project's own `fli.tubby.json` belongs to THAT project,
+ * whatever name it recorded. The file moves with the folder, so the folder is
+ * the truth: after a rename (d04 step 10: `d04-d04-autopilot-test` →
+ * `d04-autopilot-test`) the recorded `project` is stale, and every match on
+ * it — the list filter, the window's "this project's sets", write_script —
+ * would lose the scripts that are sitting right there. The id is NOT changed:
+ * ids are identity, and an agent may already hold it.
+ *
+ * Applied on read. The file itself is corrected the next time one of its
+ * sets is really written — never by a write that only touched the store.
+ */
+const ownedBy = (sets: ScriptSet[], project: string): ScriptSet[] =>
+  sets.map((set) => (set.project === project ? set : { ...set, project }));
+
+/**
  * The document every READ handler sees: the app store, with the open
  * project's `fli.tubby.json` (if any) merged over it. The store's copy of a
  * set also present in the project file is stale and is never shown twice.
@@ -295,9 +311,9 @@ async function effectiveView(context: HandlerContext): Promise<{
   const document = await context.repository.read();
   const status = context.openContext.get();
   if (!status.context) return { document, projectIds: new Set(), unreadable: null };
-  const { sets: projectSets, unreadable } = await readProjectSetsReport(
-    projectDirOf(status.context),
-  );
+  const report = await readProjectSetsReport(projectDirOf(status.context));
+  const unreadable = report.unreadable;
+  const projectSets = ownedBy(report.sets, status.context.project);
   if (unreadable) {
     return {
       document: { ...document, sets: markUnreadable(document.sets, status.context.project, unreadable) },
@@ -330,7 +346,7 @@ function markUnreadable(
   unreadable: UnreadableProjectFile,
 ): ScriptSet[] {
   return sets.map((set) =>
-    set.project === project ? ({ ...set, [UNREADABLE]: unreadable } as MaybeUnreadable) : set,
+    sameProject(set.project, project) ? ({ ...set, [UNREADABLE]: unreadable } as MaybeUnreadable) : set,
   );
 }
 
@@ -371,7 +387,9 @@ async function projectAwareUpdateLocked<T>(
 ): Promise<T> {
   const projectDir = openContext ? projectDirOf(openContext) : null;
   const report = projectDir ? await readProjectSetsReport(projectDir) : null;
-  const before = report?.sets ?? [];
+  // Owned BEFORE the snapshot, so correcting a stale recorded name is not by
+  // itself "a change" that rewrites the file.
+  const before = openContext ? ownedBy(report?.sets ?? [], openContext.project) : [];
   const unreadable = report?.unreadable ?? null;
   const beforeIds = new Set(before.map((set) => set.id));
   // Snapshot NOW: handlers mutate the merged sets in place, and those are the
@@ -591,7 +609,7 @@ export function createHandlers(): Record<string, Handler> {
     const { document, projectIds, unreadable } = await effectiveView(context);
     const status = context.openContext.get();
     const project = !allSets && status.context ? status.context.project : null;
-    const sets = document.sets.filter((set) => project === null || set.project === project);
+    const sets = document.sets.filter((set) => project === null || sameProject(set.project, project));
     return {
       sets: sets.map((set) => ({
         id: set.id,
@@ -815,7 +833,7 @@ export function createHandlers(): Record<string, Handler> {
         'invalid_input',
         `set "${set.id}" is not attached to a project — attach one with rename_set first`,
       );
-    if (set.project !== openContext.project)
+    if (!sameProject(set.project, openContext.project))
       fail(
         'invalid_input',
         `set "${set.id}" is attached to "${set.project}", but Teletubby is open on ` +
@@ -921,7 +939,7 @@ export function createHandlers(): Record<string, Handler> {
         'no open project — open one first (context_select), so the script lands in its fli.tubby.json',
       );
     const openContext = status.context;
-    if (parsed.project && parsed.project !== openContext.project)
+    if (parsed.project && !sameProject(parsed.project, openContext.project))
       fail(
         'invalid_input',
         `Teletubby is open on "${openContext.project}", not "${parsed.project}" — ` +
@@ -930,17 +948,21 @@ export function createHandlers(): Record<string, Handler> {
     const projectDir = projectDirOf(openContext);
 
     return withProjectLock(projectDir, async () => {
-      const setId = onDemandSetId(openContext.project);
-      // A store set with the derived id would be shadowed by the project copy
-      // the moment this writes — refused rather than silently hidden.
-      const store = await context.repository.read();
-      if (store.sets.some((candidate) => candidate.id === setId))
-        fail('conflict', `the app store already has a set "${setId}"; rename it before writing scripts here`);
-
       // Unreadable → `internal`, before anything is written: never overwrite on a guess.
-      const existing = await readProjectSets(projectDir);
-      const current =
-        existing.find((candidate) => candidate.id === setId) ?? emptyOnDemandSet(openContext.project);
+      const existing = ownedBy(await readProjectSets(projectDir), openContext.project);
+      // The project's on-demand set is found by its FLAG, not its derived id:
+      // after a folder rename the id still names the old folder, and deriving
+      // it again would start a second set beside the first.
+      const found = existing.find((candidate) => candidate.onDemand);
+      const setId = found?.id ?? onDemandSetId(openContext.project);
+      if (!found) {
+        // A store set with the derived id would be shadowed by the project
+        // copy the moment this writes — refused rather than silently hidden.
+        const store = await context.repository.read();
+        if (store.sets.some((candidate) => candidate.id === setId))
+          fail('conflict', `the app store already has a set "${setId}"; rename it before writing scripts here`);
+      }
+      const current = found ?? emptyOnDemandSet(openContext.project);
 
       // INPUT.write_script is the validator for exactly this shape.
       const built = scriptFromText(parsed as TextScriptInput, 1);
@@ -964,7 +986,17 @@ export function createHandlers(): Record<string, Handler> {
         applied: true,
         setId,
         replaced,
+        // `n` is POSITION, newest first — display only, and it SHIFTS: the
+        // next new script takes n:1 and this one moves to n:2. `id` is the
+        // identity. `order` is the whole set as it stands after this write,
+        // so a caller never has to reconcile a stale n from an earlier reply.
         script: { id: script.id, n: script.n, title: script.title, video: script.video ?? null },
+        order: next.scripts.map((candidate) => ({
+          id: candidate.id,
+          n: candidate.n,
+          title: candidate.title,
+          video: candidate.video ?? null,
+        })),
         drivable: script.transcripts[0]!.triggerSets.length > 0,
         previous,
         projectFile: projectFilePath(projectDir),
