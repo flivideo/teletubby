@@ -163,7 +163,7 @@ export default function App(): JSX.Element {
       const shown = visibleSets(sets, state.openProject, state.setFilter).sets;
       // Only a READABLE set opens (W6 S2). None readable → the shell, with
       // the unreadable file named and the panel open to pick from.
-      const target = pickOpeningSet(sets, shown, state.pendingPosition?.setId);
+      const target = pickOpeningSet(sets, shown, state.pendingPosition?.setId, state.openProject);
       if (!target) {
         setShell(true);
         return;
@@ -236,6 +236,7 @@ export default function App(): JSX.Element {
           sets,
           visibleSets(sets, state2.openProject, state2.setFilter).sets,
           null,
+          state2.openProject,
         );
         if (target) await fetchSet(target, load);
       })();

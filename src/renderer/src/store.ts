@@ -261,6 +261,8 @@ export interface SetSummary {
   /** An exported store copy seen without its project open — listed, never editable. */
   readOnly?: boolean;
   livesIn?: string | null;
+  /** A project's on-demand named scripts (`write_script`) — listed by name, newest first. */
+  onDemand?: boolean;
   /** Where this row's data was read from: the open project's fli.tubby.json, or the app store. */
   source?: 'project' | 'store';
   /** The open project's fli.tubby.json cannot be read, and this set may live there — get_set refuses it. */
@@ -284,9 +286,20 @@ export function pickOpeningSet(
   sets: SetSummary[],
   shown: SetSummary[],
   remembered: string | null | undefined,
+  openProject: string | null = null,
 ): string | null {
   const readable = (entry: SetSummary | undefined): entry is SetSummary =>
     Boolean(entry && !entry.unreadable);
+  // With a project open, ONLY its own sets may open — the remembered one
+  // included. Otherwise D02 reopened on D03's script because D03 was the last
+  // thing on stage (B585; the gap ADR-003 left open). The panel still lists
+  // every set, so another project's script is one click away, never automatic.
+  if (openProject) {
+    const own = sets.filter((entry) => entry.project === openProject);
+    const rememberedOwn = own.find((entry) => entry.id === remembered);
+    if (readable(rememberedOwn)) return rememberedOwn.id;
+    return own.find(readable)?.id ?? null;
+  }
   const rememberedRow = sets.find((entry) => entry.id === remembered);
   if (readable(rememberedRow)) return rememberedRow.id;
   return shown.find(readable)?.id ?? sets.find(readable)?.id ?? null;

@@ -260,6 +260,10 @@ export const CAPABILITIES: readonly CapabilityMeta[] = [
   ),
   command('create_script', 'Add a script to a set, optionally with its provenance transcript.'),
   command(
+    'write_script',
+    'Add or replace one small NAMED script in the open project from plain text — an intro, a title, a CTA an AI conversation wrote. Optional video tag and caller-authored trigger words. Returns the previous version.',
+  ),
+  command(
     'update_script',
     'Change a script’s title, takeaway or summary. Returns the previous values.',
   ),

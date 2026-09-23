@@ -362,6 +362,39 @@ describe('a project with no set attached opens EMPTY, not on the remembered set 
   });
 });
 
+describe('with a project open, only ITS sets may open — the remembered one included (B585)', () => {
+  const row = (id: string, project: string | null): SetSummary => ({
+    id,
+    title: id,
+    description: '',
+    project,
+    scriptCount: 1,
+  });
+  const store = [
+    row('cutty-presenter-tracking', 'd03-cutty-presenter-tracking'),
+    row('d02-scripts', 'd02-cutty-audio-cleanup'),
+    row('cutty-audio-cleanup', 'd02-cutty-audio-cleanup'),
+  ];
+
+  it('never reopens another project’s remembered set: D02 open, D03 remembered → a D02 set', () => {
+    expect(
+      pickOpeningSet(store, store, 'cutty-presenter-tracking', 'd02-cutty-audio-cleanup'),
+    ).toBe('d02-scripts');
+  });
+
+  it('keeps the remembered set when it belongs to the open project', () => {
+    expect(pickOpeningSet(store, store, 'cutty-audio-cleanup', 'd02-cutty-audio-cleanup')).toBe(
+      'cutty-audio-cleanup',
+    );
+  });
+
+  it('with no context, the remembered set still wins wherever it belongs', () => {
+    expect(pickOpeningSet(store, store, 'cutty-presenter-tracking', null)).toBe(
+      'cutty-presenter-tracking',
+    );
+  });
+});
+
 describe('opening on a readable set when the project file is unreadable (W6 second pass S2)', () => {
   const row = (id: string, project: string | null, unreadable = false): SetSummary => ({
     id,

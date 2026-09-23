@@ -177,6 +177,41 @@ export const INPUT: Record<string, z.ZodObject<z.ZodRawShape>> = {
         ...commandEnvelope,
       }),
 
+  /**
+   * Scripts on demand (B585, ADR-004): plain text in, one named script in the
+   * OPEN project's own fli.tubby.json out. How an AI conversation hands over an
+   * intro, a title, a CTA. The words are the caller's; Teletubby never writes
+   * them.
+   */
+  write_script: z.object({
+        name: z.string().trim().min(1).describe('what the talent sees in the picker, e.g. "Intro — v2"'),
+        text: z
+          .string()
+          .min(1)
+          .describe('the script, verbatim; paragraphs are separated by a blank line'),
+        id: slug
+          .optional()
+          .describe('defaults to the slug of name; an existing id is REPLACED in place'),
+        video: projectName
+          .nullish()
+          .describe('optional D15 video tag — the videos/<name>/ folder name, verbatim'),
+        project: projectName
+          .optional()
+          .describe('must equal the open project if given; the script always lands in the open one'),
+        takeaway: z.string().optional().describe('defaults to name'),
+        source: z.string().optional().describe('where the text came from, e.g. "chat over hub/transcripts"'),
+        triggers: z
+          .object({
+            style: z.enum(TRIGGER_STYLES),
+            items: z
+              .array(z.object({ text: z.string().min(1), paragraph: z.number().int().positive() }))
+              .min(2),
+          })
+          .optional()
+          .describe('optional column-2 words, each bound to a 1-based paragraph number by the caller'),
+        ...commandEnvelope,
+      }),
+
   update_script: z.object({
         setId: slug.optional(),
         scriptId: slug.optional(),

@@ -48,6 +48,13 @@ import {
   type Principal,
 } from '@shared/capabilities';
 import type { ActiveContextHolder } from './active-context.js';
+import {
+  emptyOnDemandSet,
+  onDemandSetId,
+  scriptFromText,
+  upsertOnDemand,
+  type TextScriptInput,
+} from './text-script.js';
 import { scoreAgainst } from './cadence.js';
 import {
   projectDirOf,
@@ -441,6 +448,7 @@ const setSummary = (set: ScriptSet): unknown => ({
     title: script.title,
     summary: script.summary,
     takeaway: script.takeaway,
+    video: script.video ?? null,
     transcripts: script.transcripts.map((transcript) => ({
       id: transcript.id,
       kind: transcript.kind,
@@ -591,6 +599,7 @@ export function createHandlers(): Record<string, Handler> {
         unreadable: Boolean((set as MaybeUnreadable)[UNREADABLE]),
         livesIn: set.exportedTo ? `${set.exportedTo}/fli.tubby.json` : null,
         source: projectIds.has(set.id) ? 'project' : 'store',
+        onDemand: Boolean(set.onDemand),
         scriptCount: set.scripts.length,
       })),
       // Missing context → today's unfiltered list, with WHY reported here
@@ -883,6 +892,72 @@ export function createHandlers(): Record<string, Handler> {
       if (context.dryRun) return { document, result: { applied: false, preview: { script } } };
       set.scripts.push(script);
       return { document, result: { applied: true, setId: set.id, script } };
+    });
+  };
+
+  /**
+   * Scripts on demand (B585, ADR-004). Always the OPEN project, always its
+   * own fli.tubby.json, always the one on-demand set (`<project>-scripts`) —
+   * created on the first call. Only that set is touched; every other set in
+   * the file is written back exactly as read.
+   */
+  handlers.write_script = async (input, context) => {
+    const parsed = parse(INPUT.write_script, input);
+    const status = context.openContext.get();
+    if (!status.context)
+      fail(
+        'invalid_input',
+        'no open project — open one first (context_select), so the script lands in its fli.tubby.json',
+      );
+    const openContext = status.context;
+    if (parsed.project && parsed.project !== openContext.project)
+      fail(
+        'invalid_input',
+        `Teletubby is open on "${openContext.project}", not "${parsed.project}" — ` +
+          `context_select the project first; a script never lands anywhere but the open one`,
+      );
+    const projectDir = projectDirOf(openContext);
+
+    return withProjectLock(projectDir, async () => {
+      const setId = onDemandSetId(openContext.project);
+      // A store set with the derived id would be shadowed by the project copy
+      // the moment this writes — refused rather than silently hidden.
+      const store = await context.repository.read();
+      if (store.sets.some((candidate) => candidate.id === setId))
+        fail('conflict', `the app store already has a set "${setId}"; rename it before writing scripts here`);
+
+      // Unreadable → `internal`, before anything is written: never overwrite on a guess.
+      const existing = await readProjectSets(projectDir);
+      const current =
+        existing.find((candidate) => candidate.id === setId) ?? emptyOnDemandSet(openContext.project);
+
+      // INPUT.write_script is the validator for exactly this shape.
+      const built = scriptFromText(parsed as TextScriptInput, 1);
+      if ('problem' in built) fail('invalid_input', built.problem);
+      const { set: next, previous } = upsertOnDemand(current, built.script);
+      assertShape(scriptSetSchema, next, 'set');
+      assertDomain(validateScriptSet(next));
+
+      const script = next.scripts.find((candidate) => candidate.id === built.script.id)!;
+      const replaced = previous !== null;
+      if (context.dryRun)
+        return { applied: false, preview: { setId, replaced, script } };
+
+      const sets = existing.some((candidate) => candidate.id === setId)
+        ? existing.map((candidate) => (candidate.id === setId ? next : candidate))
+        : [...existing, next];
+      await writeProjectSets(projectDir, openContext.project, sets);
+      if (previous) context.recordPrior(previous);
+
+      return {
+        applied: true,
+        setId,
+        replaced,
+        script: { id: script.id, n: script.n, title: script.title, video: script.video ?? null },
+        drivable: script.transcripts[0]!.triggerSets.length > 0,
+        previous,
+        projectFile: projectFilePath(projectDir),
+      };
     });
   };
 

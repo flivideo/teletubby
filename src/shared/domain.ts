@@ -166,6 +166,13 @@ export interface Script {
   /** Requirements §6 — a set of twelve has to be scannable in one sitting. */
   summary: string;
   transcripts: Transcript[];
+  /**
+   * The D15 video this script is for — `videos/<name>/` in the project,
+   * verbatim — or absent. A TAG, never an identity: a project holds many
+   * scripts, and several may be for the same video (B585: "tied to a video
+   * project, but not tied to one script"). Nothing is resolved against disk.
+   */
+  video?: string | null;
 }
 
 /**
@@ -219,6 +226,12 @@ export interface ScriptSet {
    * on a launch with no context (W6 fix F4). `null`/absent when not exported.
    */
   exportedBrand?: string | null;
+  /**
+   * A project's on-demand scripts (`write_script`, B585): many small NAMED
+   * scripts, newest first, each a title / intro / CTA the talent re-records.
+   * Pickers list these by name; a numbered set (Kybernesis 01–12) by number.
+   */
+  onDemand?: boolean;
   scripts: Script[];
 }
 

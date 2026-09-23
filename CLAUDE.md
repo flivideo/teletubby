@@ -363,6 +363,26 @@ marked *do not run until F1–F4 are gated*.
 
 ---
 
+### Scripts on demand — tied to the project, not to one script (B585, 2026-09-23)
+
+A project holds **many small named scripts** — an intro, a title, a CTA — each optionally tagged
+with the D15 video it is for (`video: <videos/ folder name>`, a tag, never an identity). They
+arrive through **`write_script`** (plain text in; the caller's words verbatim, paragraphs split on
+blank lines; triggers only if the caller authored them) and land in the OPEN project's
+`fli.tubby.json`, in the one set `<project>-scripts` (`onDemand: true`), newest first; a re-used
+id is replaced in place. The setup panel lists them **by name** with the video tag.
+
+```bash
+teletubby call context_select --input '{"brand":"appydave","project":"d01-flivideo-tour"}'
+teletubby call write_script --input '{"name":"Intro","text":"First paragraph.\n\nSecond.","video":"flivideo-tour"}'
+```
+
+⚠️ **Opening a project only ever opens ITS OWN sets** — the remembered set included. The panel
+lists every set one click away; nothing from another project loads by itself (ADR-003, ADR-004).
+
+⚠️ Teletubby still never writes the words or the triggers. The chat that writes them is L19, later.
+Full ruling: [docs/kdd/decisions/adr-004-…](docs/kdd/decisions/adr-004-scripts-on-demand-one-project-file-many-named-scripts.md).
+
 ## The capability core — read this before adding any feature
 
 **One API, N clients, none privileged.** Every verb lives in `src/shared/capabilities.ts` and
@@ -432,7 +452,7 @@ npm install        # npm ONLY — packageManager is pinned; pnpm blocks Electron
 npm run app        # start DETACHED — renderer on 7110, control API on 7111 (registered slots)
 npm run app:status # is it up? (health, not a guess)
 npm run app:stop
-npm test           # 355 tests
+npm test           # 382 tests
 npm run typecheck
 ```
 

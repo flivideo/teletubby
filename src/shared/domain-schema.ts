@@ -91,6 +91,12 @@ export const scriptSchema: z.ZodType<Script> = z.object({
   takeaway: z.string().trim().min(1, 'script takeaway must not be empty'),
   summary: z.string().trim().min(1, 'script summary must not be empty'),
   transcripts: z.array(transcriptSchema),
+  // A D15 video folder name (videos/<name>/) — same kebab grammar as a project.
+  video: z
+    .string()
+    .regex(PROJECT_NAME_PATTERN, 'video must be a video folder name (kebab-case)')
+    .max(PROJECT_NAME_MAX, `video must be at most ${PROJECT_NAME_MAX} characters`)
+    .nullish(),
 });
 
 export const scriptSetSchema: z.ZodType<ScriptSet> = z.object({
@@ -114,6 +120,7 @@ export const scriptSetSchema: z.ZodType<ScriptSet> = z.object({
   // The brand the export was made under — the other half of where the live
   // copy is (W6 fix F4).
   exportedBrand: z.string().trim().min(1, 'exportedBrand must not be empty').nullish(),
+  onDemand: z.boolean().optional(),
   scripts: z.array(scriptSchema),
 });
 

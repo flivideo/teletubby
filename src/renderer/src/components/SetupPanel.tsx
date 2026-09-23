@@ -353,7 +353,30 @@ export default function SetupPanel(): JSX.Element | null {
       <div className="flex flex-col gap-4 px-4 py-4">
         {/* The 12-chip grid lives here now. The strip's stepper walks to the
             neighbouring script; jumping to 07 is what this is for. */}
-        {set && (
+        {/* A project's on-demand scripts (write_script, B585) are small NAMED
+            pieces — an intro, a CTA — so they list by name, newest first (the
+            set's own order), with the video each is for. A number means
+            nothing on a set that grows one re-take at a time. */}
+        {set && set.onDemand && (
+          <Field label="Script">
+            <div className="flex flex-col items-stretch gap-1.5">
+              {set.scripts.map((s) => (
+                <Chip
+                  key={s.id}
+                  on={s.id === scriptId}
+                  onClick={() => selectScript(s.id)}
+                  title={s.title}
+                >
+                  <span className="truncate">{s.title}</span>
+                  {s.video && (
+                    <span className="ml-2 font-mono text-[0.65rem] opacity-60">{s.video}</span>
+                  )}
+                </Chip>
+              ))}
+            </div>
+          </Field>
+        )}
+        {set && !set.onDemand && (
           <Field label="Script">
             <div className="flex flex-wrap gap-1.5">
               {set.scripts.map((s) => (

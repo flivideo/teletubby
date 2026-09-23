@@ -53,6 +53,7 @@ const UI_SURFACE = [
   'set_export_to_project',
   'update_script',
   'upsert_talent',
+  'write_script',
   'write_transcript',
   'write_trigger_set',
 ];
@@ -87,6 +88,7 @@ const AGENT_SURFACE = [
   'set_export_to_project',
   'update_script',
   'upsert_talent',
+  'write_script',
   'write_transcript',
   'write_trigger_set',
 ];
