@@ -336,6 +336,23 @@ export const CAPABILITIES: readonly CapabilityMeta[] = [
     failureModes: [],
   }),
 
+  /* The stage — agent-callable since the d04 preflight (2026-09-23): an agent
+   * may choose what is on stage ONLY while the talent is not on the
+   * prompter; mid-take it refuses app_busy. The window applies the request. */
+  command(
+    'stage_select',
+    'Put a set (and optionally one script) on stage. Refused (app_busy) while the talent is on the prompter. The window applies it; read the result from list_rigs → workspace.position.',
+    {
+      supportsIdempotencyKey: false,
+      failureModes: ['not_found', 'invalid_input', 'app_busy', 'unavailable'],
+    },
+  ),
+  query(
+    'stage_get',
+    'The latest stage request (who asked, what, when) and whether the talent is busy.',
+    { failureModes: [] },
+  ),
+
   /* Lifecycle — fli-core's LIFECYCLE_CAPABILITIES (system.status / quit /
    * restart), bound here. The reply goes out BEFORE the process does. Quit
    * and restart refuse `app_busy` while the talent is on the prompter;

@@ -45,6 +45,11 @@ launching, the capability core, the open contract, the styling rules and the got
 
 ## Decisions worth knowing
 
+- **An agent may put a set or script on stage only while the talent is idle** (ADR-006):
+  `stage_select` refuses `app_busy` when the talent moved in the last 2 minutes. The window
+  applies it; confirm with `list_rigs → workspace.position`. Do not make `set_active_context`
+  agent-callable instead: that forges the talent's own selection.
+
 - **Teletubby shows and edits scripts; it never writes them.** Writing is a future app, Scribe.
   Any verb that would generate text or triggers belongs there, not here (David, 2026-09-23).
 - **Opening is scoped to the open project** — the remembered set included (ADR-003, ADR-004).

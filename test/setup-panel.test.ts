@@ -431,3 +431,28 @@ describe('opening on a readable set when the project file is unreadable (W6 seco
     s().setUnreadableFile(null);
   });
 });
+
+describe('an agent’s stage request, applied by the window (d04 preflight)', () => {
+  it('on the same set, switches only the script', () => {
+    s().load(JSON.parse(JSON.stringify(KYBERNESIS_PHASE_1)));
+    const target = KYBERNESIS_PHASE_1.scripts[2]!.id;
+    s().applyStageRequest(KYBERNESIS_PHASE_1.id, target);
+    expect(s().scriptId).toBe(target);
+    expect(s().requestedSetId).toBeNull();
+  });
+
+  it('on another set, goes through the panel’s own path and carries the script', () => {
+    s().load(JSON.parse(JSON.stringify(KYBERNESIS_PHASE_1)));
+    s().applyStageRequest('d04-demo-scripts', 'intro');
+    expect(s().requestedSetId).toBe('d04-demo-scripts');
+    expect(s().requestedScriptId).toBe('intro');
+    useProm.setState({ requestedSetId: null, requestedScriptId: null });
+  });
+
+  it('ignores a script the loaded set does not have — never a blank stage', () => {
+    s().load(JSON.parse(JSON.stringify(KYBERNESIS_PHASE_1)));
+    const before = s().scriptId;
+    s().applyStageRequest(KYBERNESIS_PHASE_1.id, 'no-such-script');
+    expect(s().scriptId).toBe(before);
+  });
+});

@@ -313,6 +313,13 @@ export const INPUT: Record<string, z.ZodObject<z.ZodRawShape>> = {
 
   delete_rig: z.object({ id: slug, ...commandEnvelope }),
 
+  stage_select: z.object({
+        setId: slug.describe('the set to put on stage (set.list / set.get)'),
+        scriptId: slug.optional().describe('a script in that set; omitted → the set opens at its default script'),
+        dryRun: z.boolean().optional(),
+      }),
+  stage_get: z.object({}),
+
   system_status: z.object({}),
   system_quit: z.object({
         force: z.boolean().optional().describe('quit even while busy — a person only, never an agent'),

@@ -49,6 +49,7 @@ import {
 } from '@shared/capabilities';
 import type { ActiveContextHolder } from './active-context.js';
 import type { LifecycleHooks } from './index.js';
+import type { StageRequests, TalentActivity } from './stage.js';
 import {
   emptyOnDemandSet,
   onDemandSetId,
@@ -78,6 +79,12 @@ import { ConfirmationLedger, fail, fingerprint } from './safety.js';
 export interface HandlerContext {
   /** The host process, for the lifecycle verbs. Absent headless. */
   lifecycle?: LifecycleHooks;
+  /** The latest agent request for what is on stage (d04 preflight). */
+  stage: StageRequests;
+  /** When the talent last moved — what "busy" means. */
+  activity: TalentActivity;
+  /** Who is calling, by name (`human:prompter`, `agent:claude`, `cli`). */
+  principalName: string;
   repository: Repository;
   active: ActiveContextHolder;
   /** The session's brand/project context (W6, door 2 + door 3). Never persisted. */
@@ -444,6 +451,7 @@ const setSummary = (set: ScriptSet): unknown => ({
   title: set.title,
   description: set.description,
   project: set.project ?? null,
+  onDemand: Boolean(set.onDemand),
   scriptCount: set.scripts.length,
   scripts: set.scripts.map((script) => ({
     id: script.id,
@@ -976,16 +984,60 @@ export function createHandlers(): Record<string, Handler> {
    * while someone is mid-take is exactly what `app-busy` exists to stop.
    */
   const busyOf = (context: HandlerContext): { what: string; since: string }[] => {
+    // The window's own position writes are the live signal; an explicit
+    // set_active_context (UI-only) still counts while it is fresh.
+    const busy = context.activity.busy();
     const active = context.active.get();
-    if (!active.active) return [];
-    const where = [active.setId, active.scriptId].filter(Boolean).join(' / ') || 'a script';
-    return [{ what: `prompter session on ${where}`, since: new Date(active.updatedAt).toISOString() }];
+    if (active.active) {
+      const where = [active.setId, active.scriptId].filter(Boolean).join(' / ') || 'a script';
+      busy.push({ what: `prompter session on ${where}`, since: new Date(active.updatedAt).toISOString() });
+    }
+    return busy;
   };
 
   const hostOf = (context: HandlerContext): LifecycleHooks => {
     if (!context.lifecycle)
       fail('unavailable', 'no host process to control — this core is running headless');
     return context.lifecycle;
+  };
+
+  /**
+   * Put a set (and optionally a script) on stage — agent-callable (d04
+   * preflight). The core RECORDS the request and wakes the window, which
+   * applies it; an agent reads the result back from `list_rigs`
+   * (`workspace.position`), which the window writes once it has landed.
+   *
+   * Refused `app_busy` while the talent is on the prompter: the rule that an
+   * agent never moves the talent holds mid-take. The set must be readable
+   * and the script must be in it, so an agent learns it asked for nothing
+   * BEFORE the window has to discover it.
+   */
+  handlers.stage_select = async (input, context) => {
+    const parsed = parse(INPUT.stage_select, input);
+    const document = await effectiveDocument(context);
+    const set = resolveSet(document, parsed.setId, context.active);
+    if (parsed.scriptId && !findScript(set, parsed.scriptId))
+      fail('not_found', `set "${set.id}" has no script "${parsed.scriptId}"`, {
+        available: set.scripts.map((script) => ({ id: script.id, title: script.title })),
+      });
+    const busy = busyOf(context);
+    if (busy.length > 0)
+      fail('app_busy', `the talent is on the prompter (${busy[0]!.what}); an agent does not move them mid-take`, {
+        busy,
+      });
+    const preview = { setId: set.id, scriptId: parsed.scriptId ?? null, project: set.project ?? null };
+    if (context.dryRun) return { applied: false, preview };
+    const request = context.stage.request(set.id, parsed.scriptId ?? null, context.principalName);
+    return { applied: true, ...preview, request };
+  };
+
+  handlers.stage_get = async (input, context) => {
+    parse(INPUT.stage_get, input);
+    return {
+      request: context.stage.get(),
+      busy: busyOf(context),
+      note: 'request is what an agent last asked for; the window reports where it actually is in list_rigs → workspace.position',
+    };
   };
 
   handlers.system_status = async (input, context) => {

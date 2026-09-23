@@ -184,7 +184,22 @@ export default function App(): JSX.Element {
     //
     // Rigs take the same treatment: a rig an agent authored appears as a new
     // chip, and the arrangement on screen is left exactly where it is.
+    // The stage request an agent made (stage_select), applied exactly once
+    // per request. The core refused it already if the talent was mid-take.
+    let appliedStageSeq = 0;
+    const applyStageRequest = async (): Promise<void> => {
+      const result = await window.appytron.invoke<{
+        request: { seq: number; setId: string; scriptId: string | null } | null;
+      }>({ capability: 'stage_get' });
+      if (cancelled || !result.ok || !result.data.request) return;
+      const request = result.data.request;
+      if (request.seq <= appliedStageSeq) return;
+      appliedStageSeq = request.seq;
+      useProm.getState().applyStageRequest(request.setId, request.scriptId);
+    };
+
     const unsubscribe = window.appytron.onControlChanged(() => {
+      void applyStageRequest();
       void fetchRigs(({ rigs }) => setRigs(rigs));
       void (async () => {
         // The row the stage was last refreshed from — read BEFORE fetchSets
@@ -238,7 +253,9 @@ export default function App(): JSX.Element {
           null,
           state2.openProject,
         );
-        if (target) await fetchSet(target, load);
+        // An agent's stage request (stage_select) for this same event outranks
+        // the fallback pick — otherwise whichever fetch landed last would win.
+        if (target && !useProm.getState().requestedSetId) await fetchSet(target, load);
       })();
     });
 
@@ -268,7 +285,11 @@ export default function App(): JSX.Element {
         // The talent chose; nothing on stage is being held any more.
         useProm.getState().setStageHold(null);
         load(full.data);
+        // An agent's stage_select names the script too; a person's pick does not.
+        const script = useProm.getState().requestedScriptId;
+        if (script && full.data.scripts.some((s) => s.id === script)) useProm.getState().selectScript(script);
       }
+      useProm.setState({ requestedScriptId: null });
       useProm.getState().clearRequestedSet();
     })();
     return () => {

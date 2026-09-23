@@ -3,13 +3,13 @@
 > Generated from the code, not written about it. Do not hand-edit — every line below is anchored to a `file:line` and is re-derived on every run. `verify_mirror.py` fails when this page no longer matches its JSON. To record a gap the extractor cannot find, use `docs/schema-mirror.known-gaps.json`.
 
 - **stack** `typescript` · **extractor** `extract_typescript.py`
-- **commit** `243e25517551` · **generated** 2026-09-23T10:41:40+00:00
+- **commit** `8d366640c144` · **generated** 2026-09-23T14:16:08+00:00
 - **scope** include `*.ts`, `*.tsx` · exclude `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx`, `*.stories.tsx`, `*.config.ts`, `*/test/*`, `*/tests/*`, `*/__tests__/*`, `*/e2e/*`, `*/__mocks__/*`, `*/fixtures/*`, `*.d.ts`, `*/dist/*`, `*/build/*`, `*/out/*`
 - **zod bound** in 0 file(s) by a direct import, 6 through a re-export, 0 by call shape only
 
 | shapes | declared sets | derived sets | gaps | declared but not read | findings |
 |---|---|---|---|---|---|
-| 99 | 32 | 4 | 9 | 43 | 4 |
+| 101 | 32 | 4 | 9 | 46 | 4 |
 
 > **Read the gaps, the census and the never-read list before trusting the shape.** Derived sets have no declaring symbol and will drift silently. Gaps are things this mirror could not reach — they are not absences in the code.
 
@@ -19,13 +19,14 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 
 - `src/core/active-context.ts` — `ActiveSelection` :29
 - `src/core/cadence.ts` — `CadenceMeasurements` :29 · `CadenceRule` :44 · `CadenceScore` :62
-- `src/core/handlers.ts` — `HandlerContext` :78 · `Resolved` :134 · `MaybeUnreadable` :318
-- `src/core/index.ts` — `CoreOptions` :48 · `LifecycleHooks` :63 · `InvokeOptions` :74 · `ChangeEvent` :96 · `Core` :102
-- `src/core/input-shapes.ts` — `slug` :25 · `projectName` :28 · `paragraphInput` :34 · `minorInput` :39 · `majorInput` :45 · `layoutInput` :56 · `triggerInput` :71 · `InputField` :325
+- `src/core/handlers.ts` — `HandlerContext` :79 · `Resolved` :141 · `MaybeUnreadable` :325
+- `src/core/index.ts` — `CoreOptions` :49 · `LifecycleHooks` :64 · `InvokeOptions` :75 · `ChangeEvent` :97 · `Core` :103
+- `src/core/input-shapes.ts` — `slug` :25 · `projectName` :28 · `paragraphInput` :34 · `minorInput` :39 · `majorInput` :45 · `layoutInput` :56 · `triggerInput` :71 · `InputField` :332
 - `src/core/open-context.ts` — `OPEN_REFUSAL_CODES` (set) :35 · `OpenRefusal` :45 · `OpenContext` :54 · `OpenResolution` :65 · `ResolveOpenArgsOptions` :69 · `ContextReport` :239
 - `src/core/project-store.ts` — `projectFileSchema` :33 · `UnreadableProjectFile` :98
 - `src/core/repository.ts` — `RepositoryDocument` :24 · `Repository` :66
 - `src/core/safety.ts` — `PendingAction` :107 · `AuditEntry` :288
+- `src/core/stage.ts` — `StagePosition` :29 · `StageRequest` :36
 - `src/core/text-script.ts` — `TextScriptInput` :21
 - `src/core/zod3-json-schema.ts` — `Def` :23
 - `src/main/control-server.ts` — `ControlServerOptions` :60 · `ControlServerHandle` :69
@@ -35,10 +36,10 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 - `src/main/process-supervisor.ts` — `SpawnOptions` :4 · `ProcessStatus` (set) :11 · `LogChunk` :12 · `ManagedProcess` :17
 - `src/main/updater.ts` — `UpdateStatus` (set) :4 · `UpdateState` :7 · `UpdaterOptions` :14
 - `src/main/window-manager.ts` — `WindowOptions` :4
-- `src/renderer/src/App.tsx` — `zone (switch)` (set) :737
+- `src/renderer/src/App.tsx` — `zone (switch)` (set) :758
 - `src/renderer/src/components/CadencePanel.tsx` — `Rule` :23 · `Score` :31
-- `src/renderer/src/store.ts` — `ZONES` (set) :70 · `CueCard` :96 · `PrompterState` :103 · `SetSummary` :252 · `UnreadableFile` :273 · `SetFilter` (set) :326 · `StageHold` :333 · `Rank` (set) :1179
-- `src/shared/capabilities.ts` — `PRINCIPALS` (set) :36 · `SIDE_EFFECTS` (set) :43 · `CapabilityKind` (set) :51 · `ERROR_CODES` (set) :59 · `CapabilityMeta` :75 · `InvokeRequest` :389 · `CapabilityError` :396 · `InvokeResult` :405
+- `src/renderer/src/store.ts` — `ZONES` (set) :70 · `CueCard` :96 · `PrompterState` :103 · `SetSummary` :264 · `UnreadableFile` :285 · `SetFilter` (set) :338 · `StageHold` :345 · `Rank` (set) :1200
+- `src/shared/capabilities.ts` — `PRINCIPALS` (set) :36 · `SIDE_EFFECTS` (set) :43 · `CapabilityKind` (set) :51 · `ERROR_CODES` (set) :59 · `CapabilityMeta` :75 · `InvokeRequest` :406 · `CapabilityError` :413 · `InvokeResult` :422
 - `src/shared/domain-schema.ts` — `paragraphSchema` :47 · `minorTopicSchema` :52 · `majorTopicSchema` :58 · `triggerSchema` :64 · `triggerSetSchema` :70 · `transcriptSchema` :77 · `scriptSchema` :87 · `scriptSetSchema` :102 · `cadenceEnvelopeSchema` :127 · `talentSchema` :139 · `rigLayoutSchema` :149 · `rigSchema` :164 · `workspaceSchema` :170
 - `src/shared/domain.ts` — `TRANSCRIPT_KINDS` (set) :65 · `TRIGGER_STYLES` (set) :80 · `AUTHORSHIPS` (set) :91 · `Paragraph` :98 · `MinorTopic` :105 · `MajorTopic` :112 · `Trigger` :127 · `TriggerSet` :133 · `Transcript` :141 · `Script` :159 · `ScriptSet` :193 · `CadenceEnvelope` :251 · `Talent` :270 · `DomainViolation` :281
 - `src/shared/ipc.ts` — `AppInfo` :35 · `ControlStatus` :44 · `ControlChanged` :55 · `InvokePayload` :61 · `AppytronApi` :68
@@ -62,7 +63,7 @@ These constructs are outside what this extractor reads **on every run, in every 
 
 ## Coverage census
 
-**156** top-level declarations counted = **110** mirrored + **3** listed as gaps + **43** declared but not read.
+**161** top-level declarations counted = **112** mirrored + **3** listed as gaps + **46** declared but not read.
 
 Counted: every top-level interface, enum, class and type alias (exported or not) and every exported constant, in the files in scope.
 Not counted, as not schema-bearing: 30 functions, 2 function types, 7 literal constants.
@@ -75,6 +76,7 @@ Not counted, as not schema-bearing: 30 functions, 2 function types, 7 literal co
 | `src/core/open-context.ts` | 8 | 7 | 0 | **1** |
 | `src/core/repository.ts` | 5 | 2 | 0 | **3** |
 | `src/core/safety.ts` | 8 | 2 | 0 | **6** |
+| `src/core/stage.ts` | 5 | 2 | 0 | **3** |
 | `src/core/zod3-json-schema.ts` | 3 | 1 | 0 | **2** |
 | `src/main/file-author.ts` | 3 | 2 | 0 | **1** |
 | `src/main/ipc-router.ts` | 2 | 1 | 0 | **1** |
@@ -187,7 +189,7 @@ Stable key, so a UI can flag one rule without matching on prose.
 | `paragraph` | `src/renderer/src/store.ts:70` |
 | `transcript` | `src/renderer/src/store.ts:70` |
 
-### `src/renderer/src/store.SetSummary.source` — `src/renderer/src/store.ts:267`
+### `src/renderer/src/store.SetSummary.source` — `src/renderer/src/store.ts:279`
 
 Where this row's data was read from: the open project's fli.tubby.json, or the app store.
 
@@ -195,35 +197,35 @@ Where this row's data was read from: the open project's fli.tubby.json, or the a
 
 | value | declared at |
 |---|---|
-| `project` | `src/renderer/src/store.ts:267` |
-| `store` | `src/renderer/src/store.ts:267` |
+| `project` | `src/renderer/src/store.ts:279` |
+| `store` | `src/renderer/src/store.ts:279` |
 
-### `src/renderer/src/store.SetFilter` — `src/renderer/src/store.ts:326`
+### `src/renderer/src/store.SetFilter` — `src/renderer/src/store.ts:338`
 
 *literal union type alias `SetFilter` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `project` | `src/renderer/src/store.ts:326` |
-| `all` | `src/renderer/src/store.ts:326` |
+| `project` | `src/renderer/src/store.ts:338` |
+| `all` | `src/renderer/src/store.ts:338` |
 
-### `src/renderer/src/store.StageHold.reason` — `src/renderer/src/store.ts:334`
+### `src/renderer/src/store.StageHold.reason` — `src/renderer/src/store.ts:346`
 
 *literal union type of `reason` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `project-closed` | `src/renderer/src/store.ts:334` |
-| `unreadable` | `src/renderer/src/store.ts:334` |
+| `project-closed` | `src/renderer/src/store.ts:346` |
+| `unreadable` | `src/renderer/src/store.ts:346` |
 
-### `src/renderer/src/store.Rank` — `src/renderer/src/store.ts:1179`
+### `src/renderer/src/store.Rank` — `src/renderer/src/store.ts:1200`
 
 *literal union type alias `Rank` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `driven` | `src/renderer/src/store.ts:1179` |
-| `follower` | `src/renderer/src/store.ts:1179` |
+| `driven` | `src/renderer/src/store.ts:1200` |
+| `follower` | `src/renderer/src/store.ts:1200` |
 
 ### `src/shared/capabilities.PRINCIPALS` — `src/shared/capabilities.ts:36`
 
@@ -272,14 +274,14 @@ Where this row's data was read from: the open project's fli.tubby.json, or the a
 | `internal` | `src/shared/capabilities.ts:69` |
 | `app_busy` | `src/shared/capabilities.ts:71` |
 
-### `src/shared/capabilities.InvokeResult.ok` — `src/shared/capabilities.ts:405-406`
+### `src/shared/capabilities.InvokeResult.ok` — `src/shared/capabilities.ts:422-423`
 
 *the `ok` discriminator of union type `InvokeResult` - each value declared by a literal type in one variant*
 
 | value | declared at |
 |---|---|
-| `true` | `src/shared/capabilities.ts:406` |
-| `false` | `src/shared/capabilities.ts:406` |
+| `true` | `src/shared/capabilities.ts:423` |
+| `false` | `src/shared/capabilities.ts:423` |
 
 ### `src/shared/domain-schema.triggerSetSchema.style` — `src/shared/domain-schema.ts:71`
 
@@ -477,18 +479,18 @@ Each set below was read out of the real authority — control flow, membership t
 
 > **REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:385. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
 
-### `src/renderer/src/App.zone (switch)` — `src/renderer/src/App.tsx:737`
+### `src/renderer/src/App.zone (switch)` — `src/renderer/src/App.tsx:758`
 
 *`switch` on `zone` - its type is not a literal union, no enum, no z.enum*
 
 | value | read from |
 |---|---|
-| `major` | `src/renderer/src/App.tsx:738` |
-| `minor` | `src/renderer/src/App.tsx:748` |
-| `triggers` | `src/renderer/src/App.tsx:758` |
-| `paragraph` | `src/renderer/src/App.tsx:762` |
+| `major` | `src/renderer/src/App.tsx:759` |
+| `minor` | `src/renderer/src/App.tsx:769` |
+| `triggers` | `src/renderer/src/App.tsx:779` |
+| `paragraph` | `src/renderer/src/App.tsx:783` |
 
-> **REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:737. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
+> **REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:758. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
 
 > 3 comparison(s) against vocabularies this app does not own (DOM key names, HTTP headers, library internals) were **not** treated as closed sets and carry no refactor advice: `src/core/input-shapes.def.typeName (switch)` (every value is a zod internal type name), `src/core/zod3-json-schema.def.typeName (switch)` (every value is a zod internal type name), `src/renderer/src/App.e.key (switch)` (the subject is a property declared by TypeScript's lib or a package).
 
@@ -538,86 +540,89 @@ Each set below was read out of the real authority — control flow, membership t
 | `rules` | `CadenceRule[] → src/core/cadence.CadenceRule` | — | `src/core/cadence.ts:65` |  |
 | `envelopeSource` | `string` | — | `src/core/cadence.ts:67` | Which envelope this was judged against. Never anonymous. |
 
-### `src/core/handlers.HandlerContext` — interface — `src/core/handlers.ts:78-93`
+### `src/core/handlers.HandlerContext` — interface — `src/core/handlers.ts:79-100`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `lifecycle` | `?: LifecycleHooks → src/core/index.LifecycleHooks` | — | `src/core/handlers.ts:80` | The host process, for the lifecycle verbs. Absent headless. |
-| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/handlers.ts:81` |  |
-| `active` | `ActiveContextHolder` | — | `src/core/handlers.ts:82` |  |
-| `openContext` | `OpenContextHolder` | — | `src/core/handlers.ts:84` | The session's brand/project context (W6, door 2 + door 3). Never persisted. |
-| `confirmations` | `ConfirmationLedger` | — | `src/core/handlers.ts:85` |  |
-| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/handlers.ts:86` |  |
-| `capability` | `CapabilityMeta → CapabilityMeta (@shared/capabilities)` | — | `src/core/handlers.ts:87` |  |
-| `dryRun` | `boolean` | — | `src/core/handlers.ts:89` | True when the caller asked for a preview rather than an act. |
-| `confirmationId` | `?: string` | — | `src/core/handlers.ts:90` |  |
-| `recordPrior` | `(prior: unknown) => void` | — | `src/core/handlers.ts:92` | Hand the prior state to the audit log. Call it before you overwrite. |
+| `lifecycle` | `?: LifecycleHooks → src/core/index.LifecycleHooks` | — | `src/core/handlers.ts:81` | The host process, for the lifecycle verbs. Absent headless. |
+| `stage` | `StageRequests` | — | `src/core/handlers.ts:83` | The latest agent request for what is on stage (d04 preflight). |
+| `activity` | `TalentActivity` | — | `src/core/handlers.ts:85` | When the talent last moved — what "busy" means. |
+| `principalName` | `string` | — | `src/core/handlers.ts:87` | Who is calling, by name (`human:prompter`, `agent:claude`, `cli`). |
+| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/handlers.ts:88` |  |
+| `active` | `ActiveContextHolder` | — | `src/core/handlers.ts:89` |  |
+| `openContext` | `OpenContextHolder` | — | `src/core/handlers.ts:91` | The session's brand/project context (W6, door 2 + door 3). Never persisted. |
+| `confirmations` | `ConfirmationLedger` | — | `src/core/handlers.ts:92` |  |
+| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/handlers.ts:93` |  |
+| `capability` | `CapabilityMeta → CapabilityMeta (@shared/capabilities)` | — | `src/core/handlers.ts:94` |  |
+| `dryRun` | `boolean` | — | `src/core/handlers.ts:96` | True when the caller asked for a preview rather than an act. |
+| `confirmationId` | `?: string` | — | `src/core/handlers.ts:97` |  |
+| `recordPrior` | `(prior: unknown) => void` | — | `src/core/handlers.ts:99` | Hand the prior state to the audit log. Call it before you overwrite. |
 
-### `src/core/handlers.Resolved` — interface — `src/core/handlers.ts:134-139`
+### `src/core/handlers.Resolved` — interface — `src/core/handlers.ts:141-146`
 
 | field | type | default | at |
 |---|---|---|---|
-| `document` | `RepositoryDocument → src/core/repository.RepositoryDocument` | — | `src/core/handlers.ts:135` |
-| `set` | `ScriptSet → ScriptSet (@shared/domain)` | — | `src/core/handlers.ts:136` |
-| `script` | `Script → Script (@shared/domain)` | — | `src/core/handlers.ts:137` |
-| `transcript` | `Transcript → Transcript (@shared/domain)` | — | `src/core/handlers.ts:138` |
+| `document` | `RepositoryDocument → src/core/repository.RepositoryDocument` | — | `src/core/handlers.ts:142` |
+| `set` | `ScriptSet → ScriptSet (@shared/domain)` | — | `src/core/handlers.ts:143` |
+| `script` | `Script → Script (@shared/domain)` | — | `src/core/handlers.ts:144` |
+| `transcript` | `Transcript → Transcript (@shared/domain)` | — | `src/core/handlers.ts:145` |
 
-### `src/core/handlers.MaybeUnreadable` — type — `src/core/handlers.ts:318`
+### `src/core/handlers.MaybeUnreadable` — type — `src/core/handlers.ts:325`
 
 *extends* `ScriptSet`
 
 *No annotated fields found — this shape declares its fields elsewhere.*
 
-### `src/core/index.CoreOptions` — interface — `src/core/index.ts:48-60`
+### `src/core/index.CoreOptions` — interface — `src/core/index.ts:49-61`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:49` |  |
-| `clock` | `?: Clock → src/core/safety.Clock` | — | `src/core/index.ts:51` | Injectable so every time-dependent control is testable without sleeping. |
-| `auditSink` | `?: (entry: AuditEntry) => void → src/core/safety.AuditEntry` | — | `src/core/index.ts:53` | Where audit entries go beyond the in-memory ring — a logger, usually. |
-| `lifecycle` | `?: LifecycleHooks → src/core/index.LifecycleHooks` | — | `src/core/index.ts:59` | The process around the core, for `system_status` / `system_quit` / |
+| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:50` |  |
+| `clock` | `?: Clock → src/core/safety.Clock` | — | `src/core/index.ts:52` | Injectable so every time-dependent control is testable without sleeping. |
+| `auditSink` | `?: (entry: AuditEntry) => void → src/core/safety.AuditEntry` | — | `src/core/index.ts:54` | Where audit entries go beyond the in-memory ring — a logger, usually. |
+| `lifecycle` | `?: LifecycleHooks → src/core/index.LifecycleHooks` | — | `src/core/index.ts:60` | The process around the core, for `system_status` / `system_quit` / |
 
-### `src/core/index.LifecycleHooks` — interface — `src/core/index.ts:63-72`
+### `src/core/index.LifecycleHooks` — interface — `src/core/index.ts:64-73`
 
 What only the host process can do. The core decides WHETHER; the host does it.
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `app` | `string` | — | `src/core/index.ts:64` |  |
-| `version` | `string` | — | `src/core/index.ts:65` |  |
-| `pid` | `number` | — | `src/core/index.ts:66` |  |
-| `startedAt` | `string` | — | `src/core/index.ts:67` |  |
-| `quit` | `(): void` | — | `src/core/index.ts:69` | Called after the reply is sent. |
-| `restart` | `(open: { brand: string; project: string } \| null): void` | — | `src/core/index.ts:71` | Called after the reply is sent, with the context to reopen on. |
+| `app` | `string` | — | `src/core/index.ts:65` |  |
+| `version` | `string` | — | `src/core/index.ts:66` |  |
+| `pid` | `number` | — | `src/core/index.ts:67` |  |
+| `startedAt` | `string` | — | `src/core/index.ts:68` |  |
+| `quit` | `(): void` | — | `src/core/index.ts:70` | Called after the reply is sent. |
+| `restart` | `(open: { brand: string; project: string } \| null): void` | — | `src/core/index.ts:72` | Called after the reply is sent, with the context to reopen on. |
 
-### `src/core/index.InvokeOptions` — interface — `src/core/index.ts:74-84`
+### `src/core/index.InvokeOptions` — interface — `src/core/index.ts:75-85`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:75` |  |
-| `as` | `?: string` | — | `src/core/index.ts:82` | Who is calling, by name (fli-core): `human:<surface>`, `agent:<name>` or |
-| `idempotencyKey` | `?: string` | — | `src/core/index.ts:83` |  |
+| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:76` |  |
+| `as` | `?: string` | — | `src/core/index.ts:83` | Who is calling, by name (fli-core): `human:<surface>`, `agent:<name>` or |
+| `idempotencyKey` | `?: string` | — | `src/core/index.ts:84` |  |
 
-### `src/core/index.ChangeEvent` — interface — `src/core/index.ts:96-100`
+### `src/core/index.ChangeEvent` — interface — `src/core/index.ts:97-101`
 
 Emitted after a command actually changes the DATA — not on a query, not on a
 
 | field | type | default | at |
 |---|---|---|---|
-| `capability` | `string` | — | `src/core/index.ts:97` |
-| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:98` |
-| `at` | `number` | — | `src/core/index.ts:99` |
+| `capability` | `string` | — | `src/core/index.ts:98` |
+| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:99` |
+| `at` | `number` | — | `src/core/index.ts:100` |
 
-### `src/core/index.Core` — interface — `src/core/index.ts:102-112`
+### `src/core/index.Core` — interface — `src/core/index.ts:103-113`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `invoke` | `(name: string, input: unknown, options: InvokeOptions): Promise<InvokeResult>` | — | `src/core/index.ts:103` |  |
-| `onChange` | `(listener: (event: ChangeEvent) => void): () => void` | — | `src/core/index.ts:105` | Subscribe to state changes. Returns an unsubscribe function. |
-| `active` | `ActiveContextHolder` | — | `src/core/index.ts:107` | The renderer's own selection state, so the UI can drive it directly. |
-| `openContext` | `OpenContextHolder` | — | `src/core/index.ts:109` | The session's brand/project context (W6) — set by door 2 or `context_select`, never persisted. |
-| `audit` | `AuditLog` | — | `src/core/index.ts:110` |  |
-| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:111` |  |
+| `invoke` | `(name: string, input: unknown, options: InvokeOptions): Promise<InvokeResult>` | — | `src/core/index.ts:104` |  |
+| `onChange` | `(listener: (event: ChangeEvent) => void): () => void` | — | `src/core/index.ts:106` | Subscribe to state changes. Returns an unsubscribe function. |
+| `active` | `ActiveContextHolder` | — | `src/core/index.ts:108` | The renderer's own selection state, so the UI can drive it directly. |
+| `openContext` | `OpenContextHolder` | — | `src/core/index.ts:110` | The session's brand/project context (W6) — set by door 2 or `context_select`, never persisted. |
+| `audit` | `AuditLog` | — | `src/core/index.ts:111` |  |
+| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:112` |  |
 
 ### `src/core/input-shapes.slug` — zod-scalar — `src/core/input-shapes.ts:25`
 
@@ -683,15 +688,15 @@ A layout as a caller supplies it. `visible` is canonicalised on the way in
 | `text` | `z.string().min(1)` | — | `src/core/input-shapes.ts:73` |
 | `paragraphId` | `slug → src/core/input-shapes.slug` | — | `src/core/input-shapes.ts:74` |
 
-### `src/core/input-shapes.InputField` — interface — `src/core/input-shapes.ts:325-338`
+### `src/core/input-shapes.InputField` — interface — `src/core/input-shapes.ts:332-345`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `name` | `string` | — | `src/core/input-shapes.ts:326` |  |
-| `type` | `string` | — | `src/core/input-shapes.ts:327` |  |
-| `required` | `boolean` | — | `src/core/input-shapes.ts:328` |  |
-| `default` | `?: unknown` | — | `src/core/input-shapes.ts:336` | Present when omitting the field APPLIES A VALUE rather than leaving it |
-| `note` | `?: string` | — | `src/core/input-shapes.ts:337` |  |
+| `name` | `string` | — | `src/core/input-shapes.ts:333` |  |
+| `type` | `string` | — | `src/core/input-shapes.ts:334` |  |
+| `required` | `boolean` | — | `src/core/input-shapes.ts:335` |  |
+| `default` | `?: unknown` | — | `src/core/input-shapes.ts:343` | Present when omitting the field APPLIES A VALUE rather than leaving it |
+| `note` | `?: string` | — | `src/core/input-shapes.ts:344` |  |
 
 ### `src/core/open-context.OpenRefusal` — interface — `src/core/open-context.ts:45-52`
 
@@ -804,6 +809,24 @@ A layout as a caller supplies it. `visible` is canonicalised on the way in
 | `prior` | `?: unknown` | — | `src/core/safety.ts:300` | What it changed. Cheap to add now, expensive to retrofit, and the only |
 | `dryRun` | `?: boolean` | — | `src/core/safety.ts:301` |  |
 | `replayed` | `?: boolean` | — | `src/core/safety.ts:302` |  |
+
+### `src/core/stage.StagePosition` — interface — `src/core/stage.ts:29-34`
+
+| field | type | default | at | note |
+|---|---|---|---|---|
+| `setId` | `string \| null` | — | `src/core/stage.ts:30` |  |
+| `scriptId` | `string \| null` | — | `src/core/stage.ts:31` |  |
+| `paragraphId` | `?: string \| null` | — | `src/core/stage.ts:33` | The beat, by paragraph id — stepping inside one script changes only this. |
+
+### `src/core/stage.StageRequest` — interface — `src/core/stage.ts:36-44`
+
+| field | type | default | at | note |
+|---|---|---|---|---|
+| `seq` | `number` | — | `src/core/stage.ts:38` | Increases per request, so the window applies each one exactly once. |
+| `setId` | `string` | — | `src/core/stage.ts:39` |  |
+| `scriptId` | `string \| null` | — | `src/core/stage.ts:40` |  |
+| `requestedBy` | `string` | — | `src/core/stage.ts:42` | The principal name that asked (`agent:claude`, `cli`). |
+| `at` | `string` | — | `src/core/stage.ts:43` |  |
 
 ### `src/core/text-script.TextScriptInput` — interface — `src/core/text-script.ts:21-33`
 
@@ -992,7 +1015,7 @@ WHAT "CADENCE" ACTUALLY MEANS, shown in the app.
 | `title` | `string` | — | `src/renderer/src/store.ts:98` |  |
 | `token` | `number` | — | `src/renderer/src/store.ts:100` | Changes on every cue so the component can restart its dismiss timer. |
 
-### `src/renderer/src/store.PrompterState` — interface — `src/renderer/src/store.ts:103-245`
+### `src/renderer/src/store.PrompterState` — interface — `src/renderer/src/store.ts:103-257`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
@@ -1053,46 +1076,48 @@ WHAT "CADENCE" ACTUALLY MEANS, shown in the app.
 | `requestedSetId` | `string \| null` | — | `src/renderer/src/store.ts:238` |  |
 | `requestSet` | `(setId: string) => void` | — | `src/renderer/src/store.ts:239` |  |
 | `clearRequestedSet` | `() => void` | — | `src/renderer/src/store.ts:240` |  |
-| `applyRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:241` |  |
-| `adoptRig` | `(rig: Rig) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:242` |  |
-| `forgetRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:243` |  |
-| `dismissCue` | `() => void` | — | `src/renderer/src/store.ts:244` |  |
+| `requestedScriptId` | `string \| null` | — | `src/renderer/src/store.ts:246` | The script to land on once `requestedSetId` has loaded — set only by an |
+| `applyStageRequest` | `(setId: string, scriptId: string \| null) => void` | — | `src/renderer/src/store.ts:252` | Apply an agent's stage request. Same set → just the script; another set |
+| `applyRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:253` |  |
+| `adoptRig` | `(rig: Rig) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:254` |  |
+| `forgetRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:255` |  |
+| `dismissCue` | `() => void` | — | `src/renderer/src/store.ts:256` |  |
 
-### `src/renderer/src/store.SetSummary` — interface — `src/renderer/src/store.ts:252-270`
+### `src/renderer/src/store.SetSummary` — interface — `src/renderer/src/store.ts:264-282`
 
 What `list_sets` answers with — a project row for the setup panel.
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `id` | `string` | — | `src/renderer/src/store.ts:253` |  |
-| `title` | `string` | — | `src/renderer/src/store.ts:254` |  |
-| `description` | `string` | — | `src/renderer/src/store.ts:255` |  |
-| `project` | `string \| null` | — | `src/renderer/src/store.ts:257` | The FliHub folder name, verbatim, or null for an unattached set. |
-| `scriptCount` | `number` | — | `src/renderer/src/store.ts:258` |  |
-| `exportedTo` | `?: string \| null` | — | `src/renderer/src/store.ts:260` | Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy. |
-| `readOnly` | `?: boolean` | — | `src/renderer/src/store.ts:262` | An exported store copy seen without its project open — listed, never editable. |
-| `livesIn` | `?: string \| null` | — | `src/renderer/src/store.ts:263` |  |
-| `onDemand` | `?: boolean` | — | `src/renderer/src/store.ts:265` | A project's on-demand named scripts (`write_script`) — listed by name, newest first. |
-| `source` | `?: 'project' \| 'store'` | — | `src/renderer/src/store.ts:267` | Where this row's data was read from: the open project's fli.tubby.json, or the app store. |
-| `unreadable` | `?: boolean` | — | `src/renderer/src/store.ts:269` | The open project's fli.tubby.json cannot be read, and this set may live there — get_set refuses it. |
+| `id` | `string` | — | `src/renderer/src/store.ts:265` |  |
+| `title` | `string` | — | `src/renderer/src/store.ts:266` |  |
+| `description` | `string` | — | `src/renderer/src/store.ts:267` |  |
+| `project` | `string \| null` | — | `src/renderer/src/store.ts:269` | The FliHub folder name, verbatim, or null for an unattached set. |
+| `scriptCount` | `number` | — | `src/renderer/src/store.ts:270` |  |
+| `exportedTo` | `?: string \| null` | — | `src/renderer/src/store.ts:272` | Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy. |
+| `readOnly` | `?: boolean` | — | `src/renderer/src/store.ts:274` | An exported store copy seen without its project open — listed, never editable. |
+| `livesIn` | `?: string \| null` | — | `src/renderer/src/store.ts:275` |  |
+| `onDemand` | `?: boolean` | — | `src/renderer/src/store.ts:277` | A project's on-demand named scripts (`write_script`) — listed by name, newest first. |
+| `source` | `?: 'project' \| 'store'` | — | `src/renderer/src/store.ts:279` | Where this row's data was read from: the open project's fli.tubby.json, or the app store. |
+| `unreadable` | `?: boolean` | — | `src/renderer/src/store.ts:281` | The open project's fli.tubby.json cannot be read, and this set may live there — get_set refuses it. |
 
-### `src/renderer/src/store.UnreadableFile` — interface — `src/renderer/src/store.ts:273-276`
+### `src/renderer/src/store.UnreadableFile` — interface — `src/renderer/src/store.ts:285-288`
 
 `list_sets.filter.unreadable` — the project file that could not be read, named.
 
 | field | type | default | at |
 |---|---|---|---|
-| `file` | `string` | — | `src/renderer/src/store.ts:274` |
-| `message` | `string` | — | `src/renderer/src/store.ts:275` |
+| `file` | `string` | — | `src/renderer/src/store.ts:286` |
+| `message` | `string` | — | `src/renderer/src/store.ts:287` |
 
-### `src/renderer/src/store.StageHold` — interface — `src/renderer/src/store.ts:333-336`
+### `src/renderer/src/store.StageHold` — interface — `src/renderer/src/store.ts:345-348`
 
 Why the set on stage is being HELD rather than refreshed — shown by the
 
 | field | type | default | at |
 |---|---|---|---|
-| `reason` | `'project-closed' \| 'unreadable'` | — | `src/renderer/src/store.ts:334` |
-| `message` | `string` | — | `src/renderer/src/store.ts:335` |
+| `reason` | `'project-closed' \| 'unreadable'` | — | `src/renderer/src/store.ts:346` |
+| `message` | `string` | — | `src/renderer/src/store.ts:347` |
 
 ### `src/shared/capabilities.CapabilityMeta` — interface — `src/shared/capabilities.ts:75-103`
 
@@ -1110,44 +1135,44 @@ Why the set on stage is being HELD rather than refreshed — shown by the
 | `supportsIdempotencyKey` | `boolean` | — | `src/shared/capabilities.ts:101` | Honours `idempotencyKey` and replays the original result on retry. |
 | `failureModes` | `readonly ErrorCode[] → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:102` |  |
 
-### `src/shared/capabilities.InvokeRequest` — interface — `src/shared/capabilities.ts:389-394`
+### `src/shared/capabilities.InvokeRequest` — interface — `src/shared/capabilities.ts:406-411`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `capability` | `string` | — | `src/shared/capabilities.ts:390` |  |
-| `input` | `?: unknown` | — | `src/shared/capabilities.ts:391` |  |
-| `idempotencyKey` | `?: string` | — | `src/shared/capabilities.ts:393` | Retry-safe key. On repeat the ORIGINAL result comes back, not a new one. |
+| `capability` | `string` | — | `src/shared/capabilities.ts:407` |  |
+| `input` | `?: unknown` | — | `src/shared/capabilities.ts:408` |  |
+| `idempotencyKey` | `?: string` | — | `src/shared/capabilities.ts:410` | Retry-safe key. On repeat the ORIGINAL result comes back, not a new one. |
 
-### `src/shared/capabilities.CapabilityError` — interface — `src/shared/capabilities.ts:396-403`
+### `src/shared/capabilities.CapabilityError` — interface — `src/shared/capabilities.ts:413-420`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `code` | `ErrorCode → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:397` |  |
-| `failureMode` | `?: string` | — | `src/shared/capabilities.ts:399` | The suite's kebab name for this refusal (fli-core), with a frozen JSON-RPC number. |
-| `message` | `string` | — | `src/shared/capabilities.ts:400` |  |
-| `details` | `?: unknown` | — | `src/shared/capabilities.ts:402` | Structural detail an agent can act on — which field, which id. |
+| `code` | `ErrorCode → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:414` |  |
+| `failureMode` | `?: string` | — | `src/shared/capabilities.ts:416` | The suite's kebab name for this refusal (fli-core), with a frozen JSON-RPC number. |
+| `message` | `string` | — | `src/shared/capabilities.ts:417` |  |
+| `details` | `?: unknown` | — | `src/shared/capabilities.ts:419` | Structural detail an agent can act on — which field, which id. |
 
-### `src/shared/capabilities.InvokeResult` — type-union on `ok` — `src/shared/capabilities.ts:405-406`
+### `src/shared/capabilities.InvokeResult` — type-union on `ok` — `src/shared/capabilities.ts:422-423`
 
 | variant | shape | default | at |
 |---|---|---|---|
-| `true` | `{ ok: true; data: T; replayed?: boolean }` | — | `src/shared/capabilities.ts:406` |
-| `false` | `{ ok: false; error: CapabilityError }` | — | `src/shared/capabilities.ts:406` |
+| `true` | `{ ok: true; data: T; replayed?: boolean }` | — | `src/shared/capabilities.ts:423` |
+| `false` | `{ ok: false; error: CapabilityError }` | — | `src/shared/capabilities.ts:423` |
 
-### `src/shared/capabilities.InvokeResult[ok=false]` — type — `src/shared/capabilities.ts:406`
-
-| field | type | default | at |
-|---|---|---|---|
-| `ok` | `false` | — | `src/shared/capabilities.ts:406` |
-| `error` | `CapabilityError → src/shared/capabilities.CapabilityError` | — | `src/shared/capabilities.ts:406` |
-
-### `src/shared/capabilities.InvokeResult[ok=true]` — type — `src/shared/capabilities.ts:406`
+### `src/shared/capabilities.InvokeResult[ok=false]` — type — `src/shared/capabilities.ts:423`
 
 | field | type | default | at |
 |---|---|---|---|
-| `ok` | `true` | — | `src/shared/capabilities.ts:406` |
-| `data` | `T` | — | `src/shared/capabilities.ts:406` |
-| `replayed` | `?: boolean` | — | `src/shared/capabilities.ts:406` |
+| `ok` | `false` | — | `src/shared/capabilities.ts:423` |
+| `error` | `CapabilityError → src/shared/capabilities.CapabilityError` | — | `src/shared/capabilities.ts:423` |
+
+### `src/shared/capabilities.InvokeResult[ok=true]` — type — `src/shared/capabilities.ts:423`
+
+| field | type | default | at |
+|---|---|---|---|
+| `ok` | `true` | — | `src/shared/capabilities.ts:423` |
+| `data` | `T` | — | `src/shared/capabilities.ts:423` |
+| `replayed` | `?: boolean` | — | `src/shared/capabilities.ts:423` |
 
 ### `src/shared/domain-schema.paragraphSchema` — zod-object — `src/shared/domain-schema.ts:47-50`
 
@@ -1504,8 +1529,8 @@ These were looked at and could not be resolved to an authority. **Nothing is gue
 | subject | why | looked at |
 |---|---|---|
 | schemas built by `appFileName(...)` (1 use) | built by calling `appFileName(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `appFileName({ app: 'tubby' }) (src/core/project-store.ts:27)` |
-| schemas built by `defineCapabilities(...)` (1 use) | built by calling `defineCapabilities(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineCapabilities(Object.fromEntries(CAPABILITIES.map((meta) => [DOTTED_NAME[meta.name]!, contractFor(meta)]))) (src/core/agent-layer.ts:175)` |
-| schemas built by `defineFailureCodes(...)` (1 use) | built by calling `defineFailureCodes(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineFailureCodes({ 'invalid-input': JSONRPC_CODES.invalidParams, 'unknown-capability': JSONRPC_CODES.methodNotFound, internal: JSONRPC_CO… (src/core/agent-layer.ts:105)` |
+| schemas built by `defineCapabilities(...)` (1 use) | built by calling `defineCapabilities(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineCapabilities(Object.fromEntries(CAPABILITIES.map((meta) => [DOTTED_NAME[meta.name]!, contractFor(meta)]))) (src/core/agent-layer.ts:177)` |
+| schemas built by `defineFailureCodes(...)` (1 use) | built by calling `defineFailureCodes(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineFailureCodes({ 'invalid-input': JSONRPC_CODES.invalidParams, 'unknown-capability': JSONRPC_CODES.methodNotFound, internal: JSONRPC_CO… (src/core/agent-layer.ts:107)` |
 | schemas built by `id(...)` (13 uses) | built by calling `id(...)`, which does not return a single zod expression this reader can follow | `id('paragraph id') (src/shared/domain-schema.ts:48)`<br>`id('minor topic id') (src/shared/domain-schema.ts:53)`<br>`id('major topic id') (src/shared/domain-schema.ts:59)`<br>`id('trigger id') (src/shared/domain-schema.ts:65)`<br>`id('paragraph id') (src/shared/domain-schema.ts:67)`<br>`id('transcript id') (src/shared/domain-schema.ts:78)`<br>`id('corpus') (src/shared/domain-schema.ts:80)`<br>`id('talent id').nullable() (src/shared/domain-schema.ts:81)`<br>`id('script id') (src/shared/domain-schema.ts:88)`<br>`id('set id') (src/shared/domain-schema.ts:103)` |
 | src/core/input-shapes.layoutInput.camera | a z.enum whose members are computed or imported - this reader could not reach a literal list | `z.enum(CAMERA_SIDES)` |
 | src/core/input-shapes.layoutInput.driven | a z.enum whose members are computed or imported - this reader could not reach a literal list | `z.enum(RECORDING_SET)` |
@@ -1519,14 +1544,14 @@ The census found these top-level declarations and the extractor did not mirror t
 
 | family | count | declarations |
 |---|---|---|
-| class | 15 | `src/core/active-context.ActiveContextHolder` `src/core/active-context.ts:48`<br>`src/core/open-context.OpenContextHolder` `src/core/open-context.ts:250`<br>`src/core/repository.FileRepository` `src/core/repository.ts:109`<br>`src/core/repository.MemoryRepository` `src/core/repository.ts:80`<br>`src/core/safety.AuditLog` `src/core/safety.ts:305`<br>`src/core/safety.CapabilityFailure` `src/core/safety.ts:40`<br>`src/core/safety.ConfirmationLedger` `src/core/safety.ts:125`<br>`src/core/safety.IdempotencyLedger` `src/core/safety.ts:220`<br>`src/core/safety.RateLimiter` `src/core/safety.ts:259`<br>`src/main/file-author.FileAuthor` `src/main/file-author.ts:32`<br>`src/main/ipc-router.IpcRouter` `src/main/ipc-router.ts:19`<br>`src/main/process-supervisor.Managed` `src/main/process-supervisor.ts:54`<br>`src/main/process-supervisor.ProcessSupervisor` `src/main/process-supervisor.ts:31`<br>`src/main/updater.Updater` `src/main/updater.ts:25`<br>`src/main/window-manager.WindowManager` `src/main/window-manager.ts:20` |
+| class | 17 | `src/core/active-context.ActiveContextHolder` `src/core/active-context.ts:48`<br>`src/core/open-context.OpenContextHolder` `src/core/open-context.ts:250`<br>`src/core/repository.FileRepository` `src/core/repository.ts:109`<br>`src/core/repository.MemoryRepository` `src/core/repository.ts:80`<br>`src/core/safety.AuditLog` `src/core/safety.ts:305`<br>`src/core/safety.CapabilityFailure` `src/core/safety.ts:40`<br>`src/core/safety.ConfirmationLedger` `src/core/safety.ts:125`<br>`src/core/safety.IdempotencyLedger` `src/core/safety.ts:220`<br>`src/core/safety.RateLimiter` `src/core/safety.ts:259`<br>`src/core/stage.StageRequests` `src/core/stage.ts:46`<br>`src/core/stage.TalentActivity` `src/core/stage.ts:66`<br>`src/main/file-author.FileAuthor` `src/main/file-author.ts:32`<br>`src/main/ipc-router.IpcRouter` `src/main/ipc-router.ts:19`<br>`src/main/process-supervisor.Managed` `src/main/process-supervisor.ts:54`<br>`src/main/process-supervisor.ProcessSupervisor` `src/main/process-supervisor.ts:31`<br>`src/main/updater.Updater` `src/main/updater.ts:25`<br>`src/main/window-manager.WindowManager` `src/main/window-manager.ts:20` |
 | object constant | 9 | `src/core/agent-layer.DOTTED_NAME` `src/core/agent-layer.ts:50`<br>`src/core/input-shapes.INPUT` `src/core/input-shapes.ts:78`<br>`src/core/repository.EMPTY_DOCUMENT` `src/core/repository.ts:35`<br>`src/renderer/src/store.ZONE_LABEL` `src/renderer/src/store.ts:88`<br>`src/shared/domain.TRIGGER_STYLE_LETTER` `src/shared/domain.ts:84`<br>`src/shared/ipc.IPC` `src/shared/ipc.ts:21`<br>`src/shared/rig.DEFAULT_LAYOUT` `src/shared/rig.ts:142`<br>`src/shared/rig.EMPTY_WORKSPACE` `src/shared/rig.ts:133`<br>`src/shared/script-set.KYBERNESIS_PHASE_1` `src/shared/script-set.ts:17` |
 | alias of a primitive | 8 | `src/shared/domain.ParagraphId` `src/shared/domain.ts:47`<br>`src/shared/domain.ScriptId` `src/shared/domain.ts:44`<br>`src/shared/domain.SetId` `src/shared/domain.ts:43`<br>`src/shared/domain.TalentId` `src/shared/domain.ts:49`<br>`src/shared/domain.TopicId` `src/shared/domain.ts:46`<br>`src/shared/domain.TranscriptId` `src/shared/domain.ts:45`<br>`src/shared/domain.TriggerId` `src/shared/domain.ts:48`<br>`src/shared/rig.RigId` `src/shared/rig.ts:32` |
 | array constant | 3 | `src/core/zod3-json-schema.UNCONVERTED` `src/core/zod3-json-schema.ts:40`<br>`src/shared/capabilities.CAPABILITIES` `src/shared/capabilities.ts:168`<br>`src/shared/script-set.TALENTS` `src/shared/script-set.ts:2110` |
-| const built by a call (helper or non-zod call) | 2 | `src/core/agent-layer.SNAKE_NAME` `src/core/agent-layer.ts:87`<br>`src/renderer/src/store.useProm` `src/renderer/src/store.ts:408` |
-| constant (other form) | 2 | `src/core/active-context.ACTIVE_CONTEXT_TTL_MS` `src/core/active-context.ts:27`<br>`src/core/safety.CONFIRMATION_TTL_MS` `src/core/safety.ts:123` |
-| derived type (`keyof typeof`, indexed access, `typeof`) | 1 | `src/shared/capabilities.CapabilityName` `src/shared/capabilities.ts:372` |
-| instance constant (`new ...`) | 1 | `src/shared/capabilities.CAPABILITY_BY_NAME` `src/shared/capabilities.ts:374` |
+| constant (other form) | 3 | `src/core/active-context.ACTIVE_CONTEXT_TTL_MS` `src/core/active-context.ts:27`<br>`src/core/safety.CONFIRMATION_TTL_MS` `src/core/safety.ts:123`<br>`src/core/stage.TALENT_BUSY_WINDOW_MS` `src/core/stage.ts:27` |
+| const built by a call (helper or non-zod call) | 2 | `src/core/agent-layer.SNAKE_NAME` `src/core/agent-layer.ts:89`<br>`src/renderer/src/store.useProm` `src/renderer/src/store.ts:420` |
+| derived type (`keyof typeof`, indexed access, `typeof`) | 1 | `src/shared/capabilities.CapabilityName` `src/shared/capabilities.ts:389` |
+| instance constant (`new ...`) | 1 | `src/shared/capabilities.CAPABILITY_BY_NAME` `src/shared/capabilities.ts:391` |
 | union of named or mixed types | 1 | `src/core/active-context.ActiveContext` `src/core/active-context.ts:38` |
 | utility-type alias (`Pick` / `Omit` / `Record` / generic instance) | 1 | `src/core/zod3-json-schema.JsonSchema` `src/core/zod3-json-schema.ts:21` |
 
@@ -1537,7 +1562,7 @@ These are refactors of the **application**, not of this mirror. Each one convert
 1. `src/core/zod3-json-schema.ts:61` — REFACTOR: `check.kind` is a closed set enforced only by control flow at src/core/zod3-json-schema.ts:61. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
 2. `src/core/zod3-json-schema.ts:70` — REFACTOR: `check.kind` is a closed set enforced only by control flow at src/core/zod3-json-schema.ts:70. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
 3. `src/main/control-server.ts:385` — REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:385. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
-4. `src/renderer/src/App.tsx:737` — REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:737. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
+4. `src/renderer/src/App.tsx:758` — REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:758. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
 
 ---
 

@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { FileRepository, createCore, type Core } from '@core/index';
 import { KYBERNESIS_PHASE_1 } from '@shared/script-set';
+import { DEFAULT_LAYOUT } from '@shared/rig';
 import { onDemandSetId, paragraphsOfText, slugOf } from '../src/core/text-script';
 
 /**
@@ -200,5 +201,109 @@ describe('write_script', () => {
     expect(kyber.scripts).toHaveLength(KYBERNESIS_PHASE_1.scripts.length);
     const file = JSON.parse(readFileSync(projectFile(), 'utf8'));
     expect(file.sets.map((s: any) => s.id)).toEqual([`${PROJECT}-scripts`]);
+  });
+});
+
+/**
+ * THE d04 PREFLIGHT (2026-09-23): a project that ALREADY has a set attached,
+ * two named scripts written by an agent, both listed back — and the agent
+ * puts one on stage, which the window then applies. Refused mid-take.
+ */
+describe('d04: two named scripts, listed, one put on stage by an agent', () => {
+  const agent = { principal: 'agent' as const, as: 'agent:d04-uat' };
+  const asAgent = async (capability: string, input: unknown = {}): Promise<any> =>
+    core.invoke(capability, input, agent);
+
+  beforeEach(async () => {
+    // The wrong-set bug's shape: a set already attached to the project.
+    const repository = new FileRepository(join(userData, 'teletubby.json'));
+    await repository.update((document) => ({
+      document: {
+        ...document,
+        sets: [
+          KYBERNESIS_PHASE_1,
+          { ...JSON.parse(JSON.stringify(KYBERNESIS_PHASE_1)), id: 'existing-set', project: PROJECT },
+        ],
+      },
+      result: undefined,
+    }));
+    core = createCore({ repository });
+    await open();
+  });
+
+  it('writes two, proves both belong to the project without a window, and stages one', async () => {
+    const intro = await asAgent('write_script', { name: 'Intro (improved)', text: INTRO, video: 'd04-demo' });
+    const outro = await asAgent('write_script', { name: 'Outro', text: 'Thanks for watching.\n\nSee you next time.' });
+    expect(intro.ok && outro.ok).toBe(true);
+
+    // Listed back: the set is the project's own, and it holds exactly these two, newest first.
+    const listed = await asAgent('list_sets');
+    const row = listed.data.sets.find((s: any) => s.id === `${PROJECT}-scripts`);
+    expect(row).toMatchObject({ project: PROJECT, onDemand: true, source: 'project', scriptCount: 2 });
+    const set = await asAgent('get_set', { setId: `${PROJECT}-scripts` });
+    expect(set.data).toMatchObject({ project: PROJECT, onDemand: true });
+    expect(set.data.scripts.map((s: any) => [s.title, s.video])).toEqual([
+      ['Outro', null],
+      ['Intro (improved)', 'd04-demo'],
+    ]);
+
+    // The agent chooses the stage — not the existing set the window opened on.
+    const staged = await asAgent('stage_select', { setId: `${PROJECT}-scripts`, scriptId: 'intro-improved' });
+    expect(staged).toMatchObject({ ok: true, data: { applied: true, project: PROJECT } });
+    const readBack = await asAgent('stage_get');
+    expect(readBack.data.request).toMatchObject({
+      seq: 1,
+      setId: `${PROJECT}-scripts`,
+      scriptId: 'intro-improved',
+      requestedBy: 'agent:d04-uat',
+    });
+  });
+
+  it('refuses a script the set does not have, naming what it does have', async () => {
+    await asAgent('write_script', { name: 'Intro', text: INTRO });
+    const result = await asAgent('stage_select', { setId: `${PROJECT}-scripts`, scriptId: 'nope' });
+    expect(result.ok).toBe(false);
+    expect(result.error.failureMode).toBe('not-found');
+    expect(result.error.details.available).toEqual([{ id: 'intro', title: 'Intro' }]);
+  });
+
+  it('refuses app-busy while the talent is stepping — and the window landing on the agent’s pick is not "busy"', async () => {
+    await asAgent('write_script', { name: 'Intro', text: INTRO });
+    await asAgent('write_script', { name: 'Outro', text: 'Bye.' });
+    const where = (setId: string, scriptId: string, paragraphId: string): unknown => ({
+      layout: DEFAULT_LAYOUT,
+      rigId: null,
+      position: { setId, scriptId, transcriptId: null, style: null, paragraphId },
+    });
+    const window = async (position: unknown): Promise<void> => {
+      const written = await core.invoke('remember_layout', position, { principal: 'ui' });
+      expect(written.ok, JSON.stringify(written)).toBe(true);
+    };
+
+    // The window opens (first write: not a move), the agent stages a script,
+    // the window lands on it (the agent's move: not busy either).
+    await window(where('existing-set', '01', 'p1'));
+    expect((await asAgent('stage_select', { setId: `${PROJECT}-scripts`, scriptId: 'intro' })).ok).toBe(true);
+    await window(where(`${PROJECT}-scripts`, 'intro', 'p1'));
+    expect((await asAgent('stage_select', { setId: `${PROJECT}-scripts`, scriptId: 'outro' })).ok).toBe(true);
+
+    // The talent steps a beat: now an agent may not move them.
+    await window(where(`${PROJECT}-scripts`, 'outro', 'p1'));
+    await window(where(`${PROJECT}-scripts`, 'outro', 'p2'));
+    const refused = await asAgent('stage_select', { setId: `${PROJECT}-scripts`, scriptId: 'intro' });
+    expect(refused.ok).toBe(false);
+    expect(refused.error.failureMode).toBe('app-busy');
+    expect(refused.error.details.busy[0].what).toContain('talent on the prompter');
+  });
+
+  it('an agent cannot make the app look busy — only the window’s own writes count', async () => {
+    await asAgent('write_script', { name: 'Intro', text: INTRO });
+    const forged = await core.invoke(
+      'remember_layout',
+      { layout: DEFAULT_LAYOUT, rigId: null, position: { setId: 'x', scriptId: 'y', transcriptId: null, style: null, paragraphId: 'p9' } },
+      agent,
+    );
+    expect(forged.ok).toBe(false); // remember_layout is UI-only (★)
+    expect((await asAgent('stage_select', { setId: `${PROJECT}-scripts` })).ok).toBe(true);
   });
 });

@@ -74,7 +74,8 @@ to recite. It writes no scripts; producing them is a future app, **Scribe**.
   agent-drivable layer (ADR-005). That adds `family.verb` names over JSON-RPC, a committed OpenRPC
   spec, a served reference page and console, callers named by `x-fli-principal`, fli-core's ★
   fence in `core.invoke`, and the lifecycle verbs (`system.status/quit/restart`; quit refuses
-  `app-busy` while the talent is on the prompter).
+  `app-busy` while the talent is on the prompter). An agent can also put a set or script on stage
+  (`stage.select`), refused mid-take the same way (ADR-006).
 - **The open context** (`{ brand, project }`). It is set at launch (arguments or `FLIVIDEO_*`
   environment variables) or later with `context_select`, and resolved through `@flivideo/core`.
   It decides which project's `fli.tubby.json` is merged into every read, and which sets are

@@ -1,6 +1,6 @@
 {
   "census": {
-    "declared": 156,
+    "declared": 161,
     "files": {
       "src/core/active-context.ts": {
         "declared": 4,
@@ -71,6 +71,13 @@
         "mirrored": 2,
         "not_read": 6,
         "not_schema_bearing": 2
+      },
+      "src/core/stage.ts": {
+        "declared": 5,
+        "gaps": 0,
+        "mirrored": 2,
+        "not_read": 3,
+        "not_schema_bearing": 0
       },
       "src/core/text-script.ts": {
         "declared": 1,
@@ -193,8 +200,8 @@
       }
     },
     "gaps": 3,
-    "mirrored": 110,
-    "not_read": 43,
+    "mirrored": 112,
+    "not_read": 46,
     "not_schema_bearing": 39,
     "not_schema_bearing_by_family": {
       "function": 30,
@@ -643,38 +650,38 @@
     {
       "anchor": {
         "file": "src/renderer/src/App.tsx",
-        "line": 737
+        "line": 758
       },
       "authority": "`switch` on `zone` - its type is not a literal union, no enum, no z.enum",
-      "finding": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:737. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "finding": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:758. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
       "grade": "derived",
       "id": "src/renderer/src/App.zone (switch)",
       "members": [
         {
           "anchor": {
             "file": "src/renderer/src/App.tsx",
-            "line": 738
+            "line": 759
           },
           "value": "major"
         },
         {
           "anchor": {
             "file": "src/renderer/src/App.tsx",
-            "line": 748
+            "line": 769
           },
           "value": "minor"
         },
         {
           "anchor": {
             "file": "src/renderer/src/App.tsx",
-            "line": 758
+            "line": 779
           },
           "value": "triggers"
         },
         {
           "anchor": {
             "file": "src/renderer/src/App.tsx",
-            "line": 762
+            "line": 783
           },
           "value": "paragraph"
         }
@@ -729,7 +736,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 267
+        "line": 279
       },
       "authority": "literal union type of `source` - a single declaring symbol",
       "doc": "Where this row's data was read from: the open project's fli.tubby.json, or the app store.",
@@ -739,14 +746,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 267
+            "line": 279
           },
           "value": "project"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 267
+            "line": 279
           },
           "value": "store"
         }
@@ -755,7 +762,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 326
+        "line": 338
       },
       "authority": "literal union type alias `SetFilter` - a single declaring symbol",
       "grade": "declared",
@@ -764,14 +771,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 326
+            "line": 338
           },
           "value": "project"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 326
+            "line": 338
           },
           "value": "all"
         }
@@ -780,7 +787,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 334
+        "line": 346
       },
       "authority": "literal union type of `reason` - a single declaring symbol",
       "grade": "declared",
@@ -789,14 +796,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 334
+            "line": 346
           },
           "value": "project-closed"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 334
+            "line": 346
           },
           "value": "unreadable"
         }
@@ -805,7 +812,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 1179
+        "line": 1200
       },
       "authority": "literal union type alias `Rank` - a single declaring symbol",
       "grade": "declared",
@@ -814,14 +821,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 1179
+            "line": 1200
           },
           "value": "driven"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 1179
+            "line": 1200
           },
           "value": "follower"
         }
@@ -1008,9 +1015,9 @@
     },
     {
       "anchor": {
-        "end_line": 406,
+        "end_line": 423,
         "file": "src/shared/capabilities.ts",
-        "line": 405
+        "line": 422
       },
       "authority": "the `ok` discriminator of union type `InvokeResult` - each value declared by a literal type in one variant",
       "grade": "declared",
@@ -1019,14 +1026,14 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 406
+            "line": 423
           },
           "value": "true"
         },
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 406
+            "line": 423
           },
           "value": "false"
         }
@@ -1517,19 +1524,19 @@
     {
       "anchor": {
         "file": "src/renderer/src/App.tsx",
-        "line": 737
+        "line": 758
       },
       "kind": "refactor_required",
-      "message": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:737. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "message": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:758. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
       "target": "src/renderer/src/App.zone (switch)"
     }
   ],
-  "generated": "2026-09-23T10:41:40+00:00",
+  "generated": "2026-09-23T14:16:08+00:00",
   "ignored_derived": [
     {
       "anchor": {
         "file": "src/core/input-shapes.ts",
-        "line": 349
+        "line": 356
       },
       "subject": "src/core/input-shapes.def.typeName (switch)",
       "values": [
@@ -1569,7 +1576,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/App.tsx",
-        "line": 665
+        "line": 686
       },
       "subject": "src/renderer/src/App.e.key (switch)",
       "values": [
@@ -1913,9 +1920,9 @@
     },
     {
       "anchor": {
-        "end_line": 93,
+        "end_line": 100,
         "file": "src/core/handlers.ts",
-        "line": 78
+        "line": 79
       },
       "bases": [],
       "doc": null,
@@ -1924,7 +1931,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 80
+            "line": 81
           },
           "default": null,
           "doc": "The host process, for the lifecycle verbs. Absent headless.",
@@ -1934,7 +1941,37 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 81
+            "line": 83
+          },
+          "default": null,
+          "doc": "The latest agent request for what is on stage (d04 preflight).",
+          "name": "stage",
+          "type": "StageRequests"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 85
+          },
+          "default": null,
+          "doc": "When the talent last moved \u2014 what \"busy\" means.",
+          "name": "activity",
+          "type": "TalentActivity"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 87
+          },
+          "default": null,
+          "doc": "Who is calling, by name (`human:prompter`, `agent:claude`, `cli`).",
+          "name": "principalName",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 88
           },
           "default": null,
           "name": "repository",
@@ -1943,7 +1980,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 82
+            "line": 89
           },
           "default": null,
           "name": "active",
@@ -1952,7 +1989,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 84
+            "line": 91
           },
           "default": null,
           "doc": "The session's brand/project context (W6, door 2 + door 3). Never persisted.",
@@ -1962,7 +1999,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 85
+            "line": 92
           },
           "default": null,
           "name": "confirmations",
@@ -1971,7 +2008,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 86
+            "line": 93
           },
           "default": null,
           "name": "principal",
@@ -1980,7 +2017,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 87
+            "line": 94
           },
           "default": null,
           "name": "capability",
@@ -1989,7 +2026,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 89
+            "line": 96
           },
           "default": null,
           "doc": "True when the caller asked for a preview rather than an act.",
@@ -1999,7 +2036,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 90
+            "line": 97
           },
           "default": null,
           "name": "confirmationId",
@@ -2008,7 +2045,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 92
+            "line": 99
           },
           "default": null,
           "doc": "Hand the prior state to the audit log. Call it before you overwrite.",
@@ -2022,9 +2059,9 @@
     },
     {
       "anchor": {
-        "end_line": 139,
+        "end_line": 146,
         "file": "src/core/handlers.ts",
-        "line": 134
+        "line": 141
       },
       "bases": [],
       "doc": null,
@@ -2033,7 +2070,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 135
+            "line": 142
           },
           "default": null,
           "name": "document",
@@ -2042,7 +2079,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 136
+            "line": 143
           },
           "default": null,
           "name": "set",
@@ -2051,7 +2088,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 137
+            "line": 144
           },
           "default": null,
           "name": "script",
@@ -2060,7 +2097,7 @@
         {
           "anchor": {
             "file": "src/core/handlers.ts",
-            "line": 138
+            "line": 145
           },
           "default": null,
           "name": "transcript",
@@ -2074,7 +2111,7 @@
     {
       "anchor": {
         "file": "src/core/handlers.ts",
-        "line": 318
+        "line": 325
       },
       "bases": [
         "ScriptSet"
@@ -2088,9 +2125,9 @@
     },
     {
       "anchor": {
-        "end_line": 60,
+        "end_line": 61,
         "file": "src/core/index.ts",
-        "line": 48
+        "line": 49
       },
       "bases": [],
       "doc": null,
@@ -2099,7 +2136,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 49
+            "line": 50
           },
           "default": null,
           "name": "repository",
@@ -2108,7 +2145,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 51
+            "line": 52
           },
           "default": null,
           "doc": "Injectable so every time-dependent control is testable without sleeping.",
@@ -2118,7 +2155,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 53
+            "line": 54
           },
           "default": null,
           "doc": "Where audit entries go beyond the in-memory ring \u2014 a logger, usually.",
@@ -2128,7 +2165,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 59
+            "line": 60
           },
           "default": null,
           "doc": "The process around the core, for `system_status` / `system_quit` /",
@@ -2142,9 +2179,9 @@
     },
     {
       "anchor": {
-        "end_line": 72,
+        "end_line": 73,
         "file": "src/core/index.ts",
-        "line": 63
+        "line": 64
       },
       "bases": [],
       "doc": "What only the host process can do. The core decides WHETHER; the host does it.",
@@ -2153,7 +2190,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 64
+            "line": 65
           },
           "default": null,
           "name": "app",
@@ -2162,7 +2199,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 65
+            "line": 66
           },
           "default": null,
           "name": "version",
@@ -2171,7 +2208,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 66
+            "line": 67
           },
           "default": null,
           "name": "pid",
@@ -2180,7 +2217,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 67
+            "line": 68
           },
           "default": null,
           "name": "startedAt",
@@ -2189,7 +2226,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 69
+            "line": 70
           },
           "default": null,
           "doc": "Called after the reply is sent.",
@@ -2199,7 +2236,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 71
+            "line": 72
           },
           "default": null,
           "doc": "Called after the reply is sent, with the context to reopen on.",
@@ -2213,9 +2250,9 @@
     },
     {
       "anchor": {
-        "end_line": 84,
+        "end_line": 85,
         "file": "src/core/index.ts",
-        "line": 74
+        "line": 75
       },
       "bases": [],
       "doc": null,
@@ -2224,7 +2261,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 75
+            "line": 76
           },
           "default": null,
           "name": "principal",
@@ -2233,7 +2270,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 82
+            "line": 83
           },
           "default": null,
           "doc": "Who is calling, by name (fli-core): `human:<surface>`, `agent:<name>` or",
@@ -2243,7 +2280,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 83
+            "line": 84
           },
           "default": null,
           "name": "idempotencyKey",
@@ -2256,9 +2293,9 @@
     },
     {
       "anchor": {
-        "end_line": 100,
+        "end_line": 101,
         "file": "src/core/index.ts",
-        "line": 96
+        "line": 97
       },
       "bases": [],
       "doc": "Emitted after a command actually changes the DATA \u2014 not on a query, not on a",
@@ -2267,7 +2304,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 97
+            "line": 98
           },
           "default": null,
           "name": "capability",
@@ -2276,7 +2313,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 98
+            "line": 99
           },
           "default": null,
           "name": "principal",
@@ -2285,7 +2322,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 99
+            "line": 100
           },
           "default": null,
           "name": "at",
@@ -2298,9 +2335,9 @@
     },
     {
       "anchor": {
-        "end_line": 112,
+        "end_line": 113,
         "file": "src/core/index.ts",
-        "line": 102
+        "line": 103
       },
       "bases": [],
       "doc": null,
@@ -2309,7 +2346,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 103
+            "line": 104
           },
           "default": null,
           "name": "invoke",
@@ -2318,7 +2355,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 105
+            "line": 106
           },
           "default": null,
           "doc": "Subscribe to state changes. Returns an unsubscribe function.",
@@ -2328,7 +2365,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 107
+            "line": 108
           },
           "default": null,
           "doc": "The renderer's own selection state, so the UI can drive it directly.",
@@ -2338,7 +2375,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 109
+            "line": 110
           },
           "default": null,
           "doc": "The session's brand/project context (W6) \u2014 set by door 2 or `context_select`, never persisted.",
@@ -2348,7 +2385,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 110
+            "line": 111
           },
           "default": null,
           "name": "audit",
@@ -2357,7 +2394,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 111
+            "line": 112
           },
           "default": null,
           "name": "repository",
@@ -2685,9 +2722,9 @@
     },
     {
       "anchor": {
-        "end_line": 338,
+        "end_line": 345,
         "file": "src/core/input-shapes.ts",
-        "line": 325
+        "line": 332
       },
       "bases": [],
       "doc": null,
@@ -2696,7 +2733,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 326
+            "line": 333
           },
           "default": null,
           "name": "name",
@@ -2705,7 +2742,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 327
+            "line": 334
           },
           "default": null,
           "name": "type",
@@ -2714,7 +2751,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 328
+            "line": 335
           },
           "default": null,
           "name": "required",
@@ -2723,7 +2760,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 336
+            "line": 343
           },
           "default": null,
           "doc": "Present when omitting the field APPLIES A VALUE rather than leaving it",
@@ -2733,7 +2770,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 337
+            "line": 344
           },
           "default": null,
           "name": "note",
@@ -3374,6 +3411,111 @@
       ],
       "grade": "declared",
       "id": "src/core/safety.AuditEntry",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 34,
+        "file": "src/core/stage.ts",
+        "line": 29
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/stage.ts",
+            "line": 30
+          },
+          "default": null,
+          "name": "setId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/core/stage.ts",
+            "line": 31
+          },
+          "default": null,
+          "name": "scriptId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/core/stage.ts",
+            "line": 33
+          },
+          "default": null,
+          "doc": "The beat, by paragraph id \u2014 stepping inside one script changes only this.",
+          "name": "paragraphId",
+          "type": "?: string | null"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/stage.StagePosition",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 44,
+        "file": "src/core/stage.ts",
+        "line": 36
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/stage.ts",
+            "line": 38
+          },
+          "default": null,
+          "doc": "Increases per request, so the window applies each one exactly once.",
+          "name": "seq",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/stage.ts",
+            "line": 39
+          },
+          "default": null,
+          "name": "setId",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/stage.ts",
+            "line": 40
+          },
+          "default": null,
+          "name": "scriptId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/core/stage.ts",
+            "line": 42
+          },
+          "default": null,
+          "doc": "The principal name that asked (`agent:claude`, `cli`).",
+          "name": "requestedBy",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/stage.ts",
+            "line": 43
+          },
+          "default": null,
+          "name": "at",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/stage.StageRequest",
       "kind": "interface"
     },
     {
@@ -4441,7 +4583,7 @@
     },
     {
       "anchor": {
-        "end_line": 245,
+        "end_line": 257,
         "file": "src/renderer/src/store.ts",
         "line": 103
       },
@@ -4981,7 +5123,27 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 241
+            "line": 246
+          },
+          "default": null,
+          "doc": "The script to land on once `requestedSetId` has loaded \u2014 set only by an",
+          "name": "requestedScriptId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 252
+          },
+          "default": null,
+          "doc": "Apply an agent's stage request. Same set \u2192 just the script; another set",
+          "name": "applyStageRequest",
+          "type": "(setId: string, scriptId: string | null) => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 253
           },
           "default": null,
           "name": "applyRig",
@@ -4990,7 +5152,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 242
+            "line": 254
           },
           "default": null,
           "name": "adoptRig",
@@ -4999,7 +5161,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 243
+            "line": 255
           },
           "default": null,
           "name": "forgetRig",
@@ -5008,7 +5170,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 244
+            "line": 256
           },
           "default": null,
           "name": "dismissCue",
@@ -5021,9 +5183,9 @@
     },
     {
       "anchor": {
-        "end_line": 270,
+        "end_line": 282,
         "file": "src/renderer/src/store.ts",
-        "line": 252
+        "line": 264
       },
       "bases": [],
       "doc": "What `list_sets` answers with \u2014 a project row for the setup panel.",
@@ -5032,7 +5194,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 253
+            "line": 265
           },
           "default": null,
           "name": "id",
@@ -5041,7 +5203,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 254
+            "line": 266
           },
           "default": null,
           "name": "title",
@@ -5050,7 +5212,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 255
+            "line": 267
           },
           "default": null,
           "name": "description",
@@ -5059,7 +5221,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 257
+            "line": 269
           },
           "default": null,
           "doc": "The FliHub folder name, verbatim, or null for an unattached set.",
@@ -5069,7 +5231,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 258
+            "line": 270
           },
           "default": null,
           "name": "scriptCount",
@@ -5078,7 +5240,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 260
+            "line": 272
           },
           "default": null,
           "doc": "Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy.",
@@ -5088,7 +5250,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 262
+            "line": 274
           },
           "default": null,
           "doc": "An exported store copy seen without its project open \u2014 listed, never editable.",
@@ -5098,7 +5260,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 263
+            "line": 275
           },
           "default": null,
           "name": "livesIn",
@@ -5107,7 +5269,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 265
+            "line": 277
           },
           "default": null,
           "doc": "A project's on-demand named scripts (`write_script`) \u2014 listed by name, newest first.",
@@ -5117,7 +5279,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 267
+            "line": 279
           },
           "default": null,
           "doc": "Where this row's data was read from: the open project's fli.tubby.json, or the app store.",
@@ -5127,7 +5289,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 269
+            "line": 281
           },
           "default": null,
           "doc": "The open project's fli.tubby.json cannot be read, and this set may live there \u2014 get_set refuses it.",
@@ -5141,9 +5303,9 @@
     },
     {
       "anchor": {
-        "end_line": 276,
+        "end_line": 288,
         "file": "src/renderer/src/store.ts",
-        "line": 273
+        "line": 285
       },
       "bases": [],
       "doc": "`list_sets.filter.unreadable` \u2014 the project file that could not be read, named.",
@@ -5152,7 +5314,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 274
+            "line": 286
           },
           "default": null,
           "name": "file",
@@ -5161,7 +5323,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 275
+            "line": 287
           },
           "default": null,
           "name": "message",
@@ -5174,9 +5336,9 @@
     },
     {
       "anchor": {
-        "end_line": 336,
+        "end_line": 348,
         "file": "src/renderer/src/store.ts",
-        "line": 333
+        "line": 345
       },
       "bases": [],
       "doc": "Why the set on stage is being HELD rather than refreshed \u2014 shown by the",
@@ -5185,7 +5347,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 334
+            "line": 346
           },
           "default": null,
           "name": "reason",
@@ -5194,7 +5356,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 335
+            "line": 347
           },
           "default": null,
           "name": "message",
@@ -5328,9 +5490,9 @@
     },
     {
       "anchor": {
-        "end_line": 394,
+        "end_line": 411,
         "file": "src/shared/capabilities.ts",
-        "line": 389
+        "line": 406
       },
       "bases": [],
       "doc": null,
@@ -5339,7 +5501,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 390
+            "line": 407
           },
           "default": null,
           "name": "capability",
@@ -5348,7 +5510,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 391
+            "line": 408
           },
           "default": null,
           "name": "input",
@@ -5357,7 +5519,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 393
+            "line": 410
           },
           "default": null,
           "doc": "Retry-safe key. On repeat the ORIGINAL result comes back, not a new one.",
@@ -5371,9 +5533,9 @@
     },
     {
       "anchor": {
-        "end_line": 403,
+        "end_line": 420,
         "file": "src/shared/capabilities.ts",
-        "line": 396
+        "line": 413
       },
       "bases": [],
       "doc": null,
@@ -5382,7 +5544,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 397
+            "line": 414
           },
           "default": null,
           "name": "code",
@@ -5391,7 +5553,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 399
+            "line": 416
           },
           "default": null,
           "doc": "The suite's kebab name for this refusal (fli-core), with a frozen JSON-RPC number.",
@@ -5401,7 +5563,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 400
+            "line": 417
           },
           "default": null,
           "name": "message",
@@ -5410,7 +5572,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 402
+            "line": 419
           },
           "default": null,
           "doc": "Structural detail an agent can act on \u2014 which field, which id.",
@@ -5424,9 +5586,9 @@
     },
     {
       "anchor": {
-        "end_line": 406,
+        "end_line": 423,
         "file": "src/shared/capabilities.ts",
-        "line": 405
+        "line": 422
       },
       "bases": [],
       "doc": null,
@@ -5435,7 +5597,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 406
+            "line": 423
           },
           "default": null,
           "name": "true",
@@ -5444,7 +5606,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 406
+            "line": 423
           },
           "default": null,
           "name": "false",
@@ -5458,7 +5620,7 @@
     {
       "anchor": {
         "file": "src/shared/capabilities.ts",
-        "line": 406
+        "line": 423
       },
       "bases": [],
       "doc": null,
@@ -5467,7 +5629,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 406
+            "line": 423
           },
           "default": null,
           "name": "ok",
@@ -5476,7 +5638,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 406
+            "line": 423
           },
           "default": null,
           "name": "error",
@@ -5490,7 +5652,7 @@
     {
       "anchor": {
         "file": "src/shared/capabilities.ts",
-        "line": 406
+        "line": 423
       },
       "bases": [],
       "doc": null,
@@ -5499,7 +5661,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 406
+            "line": 423
           },
           "default": null,
           "name": "ok",
@@ -5508,7 +5670,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 406
+            "line": 423
           },
           "default": null,
           "name": "data",
@@ -5517,7 +5679,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 406
+            "line": 423
           },
           "default": null,
           "name": "replayed",
@@ -7510,7 +7672,7 @@
     }
   ],
   "target": {
-    "commit": "243e2551755168f62b4c0d5e5f59f694592a7ad1",
+    "commit": "8d366640c144aefab9c9e188a812ecfc0a3dba9e",
     "root": "..",
     "stack": "typescript"
   },
@@ -7555,7 +7717,7 @@
       "census": true,
       "family": "const built by a call (helper or non-zod call)",
       "looked_at": [
-        "src/core/agent-layer.ts:87"
+        "src/core/agent-layer.ts:89"
       ],
       "reason": "declared but not read: const built by a call (helper or non-zod call). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/core/agent-layer.SNAKE_NAME` - declared but not read"
@@ -7661,6 +7823,33 @@
     },
     {
       "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/stage.ts:46"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/stage.StageRequests` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "constant (other form)",
+      "looked_at": [
+        "src/core/stage.ts:27"
+      ],
+      "reason": "declared but not read: constant (other form). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/stage.TALENT_BUSY_WINDOW_MS` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/stage.ts:66"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/stage.TalentActivity` - declared but not read"
+    },
+    {
+      "census": true,
       "family": "utility-type alias (`Pick` / `Omit` / `Record` / generic instance)",
       "looked_at": [
         "src/core/zod3-json-schema.ts:21"
@@ -7744,7 +7933,7 @@
       "census": true,
       "family": "const built by a call (helper or non-zod call)",
       "looked_at": [
-        "src/renderer/src/store.ts:408"
+        "src/renderer/src/store.ts:420"
       ],
       "reason": "declared but not read: const built by a call (helper or non-zod call). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/renderer/src/store.useProm` - declared but not read"
@@ -7762,7 +7951,7 @@
       "census": true,
       "family": "instance constant (`new ...`)",
       "looked_at": [
-        "src/shared/capabilities.ts:374"
+        "src/shared/capabilities.ts:391"
       ],
       "reason": "declared but not read: instance constant (`new ...`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/shared/capabilities.CAPABILITY_BY_NAME` - declared but not read"
@@ -7771,7 +7960,7 @@
       "census": true,
       "family": "derived type (`keyof typeof`, indexed access, `typeof`)",
       "looked_at": [
-        "src/shared/capabilities.ts:372"
+        "src/shared/capabilities.ts:389"
       ],
       "reason": "declared but not read: derived type (`keyof typeof`, indexed access, `typeof`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/shared/capabilities.CapabilityName` - declared but not read"
@@ -7911,14 +8100,14 @@
     },
     {
       "looked_at": [
-        "defineCapabilities(Object.fromEntries(CAPABILITIES.map((meta) => [DOTTED_NAME[meta.name]!, contractFor(meta)]))) (src/core/agent-layer.ts:175)"
+        "defineCapabilities(Object.fromEntries(CAPABILITIES.map((meta) => [DOTTED_NAME[meta.name]!, contractFor(meta)]))) (src/core/agent-layer.ts:177)"
       ],
       "reason": "built by calling `defineCapabilities(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror",
       "subject": "schemas built by `defineCapabilities(...)` (1 use)"
     },
     {
       "looked_at": [
-        "defineFailureCodes({ 'invalid-input': JSONRPC_CODES.invalidParams, 'unknown-capability': JSONRPC_CODES.methodNotFound, internal: JSONRPC_CO\u2026 (src/core/agent-layer.ts:105)"
+        "defineFailureCodes({ 'invalid-input': JSONRPC_CODES.invalidParams, 'unknown-capability': JSONRPC_CODES.methodNotFound, internal: JSONRPC_CO\u2026 (src/core/agent-layer.ts:107)"
       ],
       "reason": "built by calling `defineFailureCodes(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror",
       "subject": "schemas built by `defineFailureCodes(...)` (1 use)"

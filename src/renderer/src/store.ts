@@ -238,6 +238,18 @@ interface PrompterState {
   requestedSetId: string | null;
   requestSet: (setId: string) => void;
   clearRequestedSet: () => void;
+  /**
+   * The script to land on once `requestedSetId` has loaded — set only by an
+   * agent's `stage_select` (d04 preflight). The panel never sets it: a person
+   * picking a set lands on its default script, as before.
+   */
+  requestedScriptId: string | null;
+  /**
+   * Apply an agent's stage request. Same set → just the script; another set
+   * → through the panel's own `requestedSetId` path, then the script. The
+   * core has already refused it if the talent was mid-take.
+   */
+  applyStageRequest: (setId: string, scriptId: string | null) => void;
   applyRig: (rigId: string) => void;
   adoptRig: (rig: Rig) => void;
   forgetRig: (rigId: string) => void;
@@ -433,6 +445,7 @@ export const useProm = create<PrompterState>((set, get) => ({
   stageHold: null,
   unreadableFile: null,
   requestedSetId: null,
+  requestedScriptId: null,
 
   cue: null,
   nudge: 0,
@@ -871,6 +884,14 @@ export const useProm = create<PrompterState>((set, get) => ({
   setUnreadableFile: (file) => set({ unreadableFile: file }),
   requestSet: (setId) => set({ requestedSetId: setId }),
   clearRequestedSet: () => set({ requestedSetId: null }),
+  applyStageRequest: (setId, scriptId) => {
+    const state = get();
+    if (state.set?.id === setId) {
+      if (scriptId && findScript(state.set, scriptId)) state.selectScript(scriptId);
+      return;
+    }
+    set({ requestedSetId: setId, requestedScriptId: scriptId });
+  },
 
   applyRig: (rigId) => {
     const rig = findRig(get().rigs, rigId);

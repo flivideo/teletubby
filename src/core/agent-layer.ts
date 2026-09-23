@@ -79,6 +79,8 @@ export const DOTTED_NAME: Readonly<Record<string, string>> = {
   remember_layout: 'rig.remember-layout',
   approve_pending: 'pending.approve',
   list_pending: 'pending.list',
+  stage_select: 'stage.select',
+  stage_get: 'stage.get',
   system_status: 'system.status',
   system_quit: 'system.quit',
   system_restart: 'system.restart',

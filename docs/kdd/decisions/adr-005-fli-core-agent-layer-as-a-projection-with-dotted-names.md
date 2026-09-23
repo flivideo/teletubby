@@ -44,7 +44,9 @@ a straight port impossible:
   `humanOnly: true`: `set_active_context`, `remember_layout`, `approve_pending`, `list_pending`.
   `authorize` runs in `core.invoke` beside the old gate. Anything over HTTP that names itself
   `human:*` is refused.
-- **Busy means the talent is on the prompter.** It is a selection touched within the last 5 minutes.
+- **Busy means the talent is on the prompter.** *(Superseded by ADR-006: the renderer never set the
+  selection, so this first cut never fired. Busy is now the talent moving within the last 2
+  minutes.)* It was a selection touched within the last 5 minutes.
   Teletubby cannot see Ecamm; this is the honest signal it has. Quit and restart refuse `app-busy`
   while busy, and `force` is human-only.
 - **Restart runs `scripts/app.sh restart`, detached.** `app.relaunch()` cannot survive

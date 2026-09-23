@@ -31,6 +31,7 @@ import {
 } from './agent-layer.js';
 import { createHandlers, type Handler, type HandlerContext } from './handlers.js';
 import { OpenContextHolder } from './open-context.js';
+import { StageRequests, TalentActivity } from './stage.js';
 import type { Repository } from './repository.js';
 import {
   AuditLog,
@@ -115,6 +116,8 @@ export function createCore(options: CoreOptions): Core {
   const clock = options.clock ?? systemClock;
   const active = new ActiveContextHolder(clock);
   const openContext = new OpenContextHolder();
+  const stage = new StageRequests(clock);
+  const activity = new TalentActivity(clock, stage);
   const confirmations = new ConfirmationLedger(clock);
   const idempotency = new IdempotencyLedger(clock);
   const limiter = new RateLimiter(clock);
@@ -197,6 +200,9 @@ export function createCore(options: CoreOptions): Core {
 
       const context: HandlerContext = {
         lifecycle: options.lifecycle,
+        stage,
+        activity,
+        principalName,
         repository: options.repository,
         active,
         openContext,
@@ -211,6 +217,12 @@ export function createCore(options: CoreOptions): Core {
       };
 
       const data = await handler(input, context);
+
+      // The talent moving is what "busy" means (src/core/stage.ts). Only the
+      // window's own position write counts — an agent cannot make the app
+      // look busy, or idle.
+      if (name === 'remember_layout' && principal === 'ui' && !dryRun)
+        activity.observe((input as { position?: Parameters<TalentActivity['observe']>[0] })?.position);
 
       if (idempotencyKey && capability.supportsIdempotencyKey && !dryRun)
         idempotency.remember(name, idempotencyKey, data);
