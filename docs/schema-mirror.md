@@ -1098,7 +1098,14 @@ Where the talent WAS — script, corpus, style, and the paragraph in front of
 
 ## Cannot be mirrored
 
-Nothing. Every closed set and shape in scope resolved to an authority in the source.
+**Hand-corrected 2026-09-23. The generator says "Nothing", and that is wrong.**
+
+| Not mirrored | Why | Read instead |
+|---|---|---|
+| Every zod schema (the domain validators and each verb's input shape) | `z` is imported from `@appydave/core`, and the extractor only recognises `from 'zod'` (`extract_typescript.mjs:204`), a known extractor defect | `src/shared/domain-schema.ts`, `src/core/input-shapes.ts`, `src/core/project-store.ts` (project-file shape) |
+
+The TypeScript shapes those validators enforce are mirrored above. Regenerating this page
+overwrites this correction until the extractor is fixed, so re-apply it.
 
 ## Findings — changes needed in the target application
 
