@@ -25,6 +25,12 @@ What gets built — the zone model, the camera-position constraint, trigger styl
 Background: [docs/concept.md](docs/concept.md) · origin brainstorm
 [Captain's Log B421](docs/source/b421-2026-08-19-plaud.md).
 
+Agent notes (pitfalls, conventions, tooling — loaded):
+@docs/AGENT-NOTES.md
+
+Human narrative (not loaded): [docs/SYSTEM.md](docs/SYSTEM.md) · data shapes:
+[docs/schema-mirror.md](docs/schema-mirror.md).
+
 ---
 
 ## Current state
