@@ -3,7 +3,7 @@ generated: 2026-09-23
 generator: system-context
 audience: human
 status: snapshot
-commit: 806729c
+commit: 6547eca
 sources:
   - CLAUDE.md
   - README.md
@@ -35,7 +35,7 @@ sources:
   - test/open-contract.test.ts
   - test/setup-panel.test.ts
   - test/write-script.test.ts
-  - docs/context.globs.json
+  - context.globs.json
 regenerate: "Run /dev-team:system-context in the repo root (docs/ convention, see /Users/davidcruwys/dev/ad/flivideo/docs/agent-comprehension-docs.md)"
 ---
 
@@ -210,6 +210,7 @@ to recite. It writes no scripts; producing them is a future app, **Scribe**.
 - **The dock icon re-ran startup (fixed in 7e412ba).** Before that commit, reopening the window on
   macOS built a second core and lost the control server. [inferred] The signature would be a
   second "open context resolved at startup" line for the same process id in `.logs/app.log`.
-- **The schema mirror has no zod schemas.** Teletubby imports `z` from `@appydave/core`, and the
-  extractor only recognises `from 'zod'`. The validators exist and are enforced; the mirror just
-  does not show them. It still reports "Cannot be mirrored: Nothing".
+- **The schema mirror does not show the verb input schemas.** `INPUT` in
+  `src/core/input-shapes.ts` (every verb's zod input) is listed under "Declared but not read", so
+  `verify_mirror.py` exits 0 while those shapes change freely. The published contract for them is
+  `teletubby capabilities`, which is generated from `INPUT`.

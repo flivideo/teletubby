@@ -31,6 +31,8 @@ verbatim. The fix isn't a better script — it's needing less of it on screen.
 
 ## What it does
 
+True at `6547eca` (2026-09-23).
+
 Teletubby **shows and edits scripts** in a teleprompter. It does not write them. Writing a
 script is a separate, future FliVideo app, **Scribe**. Whatever writes the words hands them to
 Teletubby, and Teletubby puts them in front of the talent.
@@ -73,8 +75,7 @@ from the app, so it is always current.
 | `M` | mirror, for prompter glass |
 | `F` | fullscreen |
 
-Bare `←` `→` are deliberately unbound. With the zone model there is no single axis for them to
-mean.
+Bare `←` `→` are deliberately unbound: the zone model has no single axis for them to mean.
 
 **Not built:** writing scripts (that is Scribe), the AI layer (listening, sync-to-voice, trigger
 generation), recording and clip capture (Ecamm records; FliHub watches the folder). The app
@@ -104,10 +105,8 @@ Canonical location — **do not clone it anywhere else**, several docs reference
 ~/dev/ad/flivideo/teletubby      # git@github.com:flivideo/teletubby.git
 ```
 
-Moved from `~/dev/ad/apps/teletubby` on 2026-09-10 — David ruled it belongs to
-FliVideo, the organisation ("it's part of the YouTube workflow system"). Dated
-handovers and checkpoints still naming the old path described it correctly at the
-time; only live pointers were updated.
+Moved from `~/dev/ad/apps/teletubby` on 2026-09-10; dated handovers that name the
+old path were right at the time.
 
 Jump alias: **`jfli-tubby`** (registry key `teletubby`), following the `jfli-<name>`
 convention of the other FliVideo apps.

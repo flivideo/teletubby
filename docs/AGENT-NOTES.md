@@ -3,7 +3,7 @@ generated: 2026-09-23
 generator: system-context
 audience: agent
 status: snapshot
-commit: 806729c
+commit: 6547eca
 ---
 
 # Teletubby — Agent Notes
@@ -13,16 +13,15 @@ launching, the capability core, the open contract, the styling rules and the got
 
 ## Tooling
 
-- Launch with `npm run app` (overmind, detached). Never `npm run dev`: the README still shows
-  it, and it is wrong for an agent.
+- Launch with `npm run app` (overmind, detached). Never `npm run dev` from an agent.
 - Drive the app with `bin/teletubby.mjs call <verb> --input '<json>'`. Read verb shapes from
   `teletubby capabilities` (generated), not from any doc.
 - Schema drift check: `python3 /Users/davidcruwys/dev/ad/appydave-plugins/dev-team/skills/schema-mirror/scripts/verify_mirror.py docs/schema-mirror.json`.
   Regenerate with `extract_typescript.py` + `render_mirror.py` after any change to
   `src/shared/*` or `src/core/input-shapes.ts`.
-- The mirror has **no zod schemas**, and its "Cannot be mirrored: Nothing" is wrong. `z` comes from
-  `@appydave/core`, and the extractor only recognises `from 'zod'`. Validators are in
-  `src/shared/domain-schema.ts` and `src/core/input-shapes.ts`; read them there.
+- The mirror covers the domain zod schemas but **not the per-verb input schemas**. `INPUT` in
+  `src/core/input-shapes.ts` is listed under "Declared but not read". Get verb inputs from
+  `teletubby capabilities`, which is generated from `INPUT`.
 
 ## Pitfalls
 

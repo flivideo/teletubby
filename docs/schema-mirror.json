@@ -1,4 +1,193 @@
 {
+  "census": {
+    "declared": 148,
+    "files": {
+      "src/core/active-context.ts": {
+        "declared": 4,
+        "gaps": 0,
+        "mirrored": 1,
+        "not_read": 3,
+        "not_schema_bearing": 0
+      },
+      "src/core/cadence.ts": {
+        "declared": 3,
+        "gaps": 0,
+        "mirrored": 3,
+        "not_read": 0,
+        "not_schema_bearing": 0
+      },
+      "src/core/handlers.ts": {
+        "declared": 3,
+        "gaps": 0,
+        "mirrored": 3,
+        "not_read": 0,
+        "not_schema_bearing": 1
+      },
+      "src/core/index.ts": {
+        "declared": 4,
+        "gaps": 0,
+        "mirrored": 4,
+        "not_read": 0,
+        "not_schema_bearing": 0
+      },
+      "src/core/input-shapes.ts": {
+        "declared": 2,
+        "gaps": 0,
+        "mirrored": 1,
+        "not_read": 1,
+        "not_schema_bearing": 1
+      },
+      "src/core/open-context.ts": {
+        "declared": 8,
+        "gaps": 0,
+        "mirrored": 7,
+        "not_read": 1,
+        "not_schema_bearing": 0
+      },
+      "src/core/project-store.ts": {
+        "declared": 2,
+        "gaps": 1,
+        "mirrored": 1,
+        "not_read": 0,
+        "not_schema_bearing": 0
+      },
+      "src/core/repository.ts": {
+        "declared": 5,
+        "gaps": 0,
+        "mirrored": 2,
+        "not_read": 3,
+        "not_schema_bearing": 0
+      },
+      "src/core/safety.ts": {
+        "declared": 8,
+        "gaps": 0,
+        "mirrored": 2,
+        "not_read": 6,
+        "not_schema_bearing": 2
+      },
+      "src/core/text-script.ts": {
+        "declared": 1,
+        "gaps": 0,
+        "mirrored": 1,
+        "not_read": 0,
+        "not_schema_bearing": 4
+      },
+      "src/main/control-server.ts": {
+        "declared": 2,
+        "gaps": 0,
+        "mirrored": 2,
+        "not_read": 0,
+        "not_schema_bearing": 1
+      },
+      "src/main/create-console.ts": {
+        "declared": 3,
+        "gaps": 0,
+        "mirrored": 3,
+        "not_read": 0,
+        "not_schema_bearing": 0
+      },
+      "src/main/file-author.ts": {
+        "declared": 3,
+        "gaps": 0,
+        "mirrored": 2,
+        "not_read": 1,
+        "not_schema_bearing": 0
+      },
+      "src/main/ipc-router.ts": {
+        "declared": 2,
+        "gaps": 0,
+        "mirrored": 1,
+        "not_read": 1,
+        "not_schema_bearing": 0
+      },
+      "src/main/process-supervisor.ts": {
+        "declared": 6,
+        "gaps": 0,
+        "mirrored": 4,
+        "not_read": 2,
+        "not_schema_bearing": 0
+      },
+      "src/main/updater.ts": {
+        "declared": 4,
+        "gaps": 0,
+        "mirrored": 3,
+        "not_read": 1,
+        "not_schema_bearing": 0
+      },
+      "src/main/window-manager.ts": {
+        "declared": 2,
+        "gaps": 0,
+        "mirrored": 1,
+        "not_read": 1,
+        "not_schema_bearing": 0
+      },
+      "src/renderer/src/components/CadencePanel.tsx": {
+        "declared": 2,
+        "gaps": 0,
+        "mirrored": 2,
+        "not_read": 0,
+        "not_schema_bearing": 0
+      },
+      "src/renderer/src/store.ts": {
+        "declared": 11,
+        "gaps": 0,
+        "mirrored": 9,
+        "not_read": 2,
+        "not_schema_bearing": 20
+      },
+      "src/shared/capabilities.ts": {
+        "declared": 14,
+        "gaps": 0,
+        "mirrored": 11,
+        "not_read": 3,
+        "not_schema_bearing": 0
+      },
+      "src/shared/domain-schema.ts": {
+        "declared": 13,
+        "gaps": 0,
+        "mirrored": 13,
+        "not_read": 0,
+        "not_schema_bearing": 0
+      },
+      "src/shared/domain.ts": {
+        "declared": 25,
+        "gaps": 0,
+        "mirrored": 17,
+        "not_read": 8,
+        "not_schema_bearing": 2
+      },
+      "src/shared/ipc.ts": {
+        "declared": 6,
+        "gaps": 0,
+        "mirrored": 5,
+        "not_read": 1,
+        "not_schema_bearing": 0
+      },
+      "src/shared/rig.ts": {
+        "declared": 13,
+        "gaps": 0,
+        "mirrored": 10,
+        "not_read": 3,
+        "not_schema_bearing": 4
+      },
+      "src/shared/script-set.ts": {
+        "declared": 2,
+        "gaps": 0,
+        "mirrored": 0,
+        "not_read": 2,
+        "not_schema_bearing": 0
+      }
+    },
+    "gaps": 1,
+    "mirrored": 108,
+    "not_read": 39,
+    "not_schema_bearing": 35,
+    "not_schema_bearing_by_family": {
+      "function": 29,
+      "function type": 2,
+      "literal constant": 4
+    }
+  },
   "closed_sets": [
     {
       "anchor": {
@@ -7,6 +196,7 @@
         "line": 46
       },
       "authority": "literal union type of `key` - a single declaring symbol",
+      "doc": "Stable key, so a UI can flag one rule without matching on prose.",
       "grade": "declared",
       "id": "src/core/cadence.CadenceRule.key",
       "members": [
@@ -70,88 +260,6 @@
     },
     {
       "anchor": {
-        "file": "src/core/input-shapes.ts",
-        "line": 341
-      },
-      "authority": "`switch` on `def.typeName` - its type is not a literal union, no enum, no z.enum",
-      "finding": "REFACTOR: `def.typeName` is a closed set enforced only by control flow at src/core/input-shapes.ts:341. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
-      "grade": "derived",
-      "id": "src/core/input-shapes.def.typeName (switch)",
-      "members": [
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 342
-          },
-          "value": "ZodOptional"
-        },
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 343
-          },
-          "value": "ZodNullable"
-        },
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 344
-          },
-          "value": "ZodDefault"
-        },
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 346
-          },
-          "value": "ZodEffects"
-        },
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 348
-          },
-          "value": "ZodString"
-        },
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 350
-          },
-          "value": "ZodNumber"
-        },
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 352
-          },
-          "value": "ZodBoolean"
-        },
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 354
-          },
-          "value": "ZodEnum"
-        },
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 356
-          },
-          "value": "ZodArray"
-        },
-        {
-          "anchor": {
-            "file": "src/core/input-shapes.ts",
-            "line": 358
-          },
-          "value": "ZodObject"
-        }
-      ]
-    },
-    {
-      "anchor": {
         "end_line": 42,
         "file": "src/core/open-context.ts",
         "line": 35
@@ -210,6 +318,7 @@
         "line": 62
       },
       "authority": "literal union type of `membership` - a single declaring symbol",
+      "doc": "`'project'` when the folder holds a valid `fli.studio.json`; `'folder'` otherwise (see file header).",
       "grade": "declared",
       "id": "src/core/open-context.OpenContext.membership",
       "members": [
@@ -451,116 +560,6 @@
     {
       "anchor": {
         "file": "src/renderer/src/App.tsx",
-        "line": 665
-      },
-      "authority": "`switch` on `e.key` - its type is not a literal union, no enum, no z.enum",
-      "finding": "REFACTOR: `e.key` is a closed set enforced only by control flow at src/renderer/src/App.tsx:665. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
-      "grade": "derived",
-      "id": "src/renderer/src/App.e.key (switch)",
-      "members": [
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 666
-          },
-          "value": "ArrowDown"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 667
-          },
-          "value": " "
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 671
-          },
-          "value": "ArrowUp"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 675
-          },
-          "value": "t"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 676
-          },
-          "value": "T"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 683
-          },
-          "value": "s"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 684
-          },
-          "value": "S"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 687
-          },
-          "value": "Escape"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 690
-          },
-          "value": "d"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 691
-          },
-          "value": "D"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 694
-          },
-          "value": "m"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 695
-          },
-          "value": "M"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 698
-          },
-          "value": "f"
-        },
-        {
-          "anchor": {
-            "file": "src/renderer/src/App.tsx",
-            "line": 699
-          },
-          "value": "F"
-        }
-      ]
-    },
-    {
-      "anchor": {
-        "file": "src/renderer/src/App.tsx",
         "line": 737
       },
       "authority": "`switch` on `zone` - its type is not a literal union, no enum, no z.enum",
@@ -650,6 +649,7 @@
         "line": 267
       },
       "authority": "literal union type of `source` - a single declaring symbol",
+      "doc": "Where this row's data was read from: the open project's fli.tubby.json, or the app store.",
       "grade": "declared",
       "id": "src/renderer/src/store.SetSummary.source",
       "members": [
@@ -944,6 +944,255 @@
     },
     {
       "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 71
+      },
+      "authority": "`z.enum` `style` - members read through `TRIGGER_STYLES` (src/shared/domain.TRIGGER_STYLES) - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain-schema.triggerSetSchema.style",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 80
+          },
+          "value": "near-verbatim"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 80
+          },
+          "value": "compressed-concept"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 80
+          },
+          "value": "loose-keywords"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 72
+      },
+      "authority": "`z.enum` `authoredBy` - members read through `AUTHORSHIPS` (src/shared/domain.AUTHORSHIPS) - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain-schema.triggerSetSchema.authoredBy",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 91
+          },
+          "value": "hand"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 91
+          },
+          "value": "agent"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 79
+      },
+      "authority": "`z.enum` `kind` - members read through `TRANSCRIPT_KINDS` (src/shared/domain.TRANSCRIPT_KINDS) - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain-schema.transcriptSchema.kind",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 65
+          },
+          "value": "provenance"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 65
+          },
+          "value": "cadence"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 150
+      },
+      "authority": "`z.enum` `visible[]` - members read through `RECORDING_SET` (src/shared/rig.RECORDING_SET) - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain-schema.rigLayoutSchema.visible[]",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "major"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "minor"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "triggers"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "paragraph"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 151
+      },
+      "authority": "`z.enum` `driven` - members read through `RECORDING_SET` (src/shared/rig.RECORDING_SET) - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain-schema.rigLayoutSchema.driven",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "major"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "minor"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "triggers"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "paragraph"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 158
+      },
+      "authority": "`z.enum` `camera` - members read through `CAMERA_SIDES` (src/shared/rig.CAMERA_SIDES) - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain-schema.rigLayoutSchema.camera",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 51
+          },
+          "value": "left"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 51
+          },
+          "value": "right"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 159
+      },
+      "authority": "`z.enum` `text` - members read through `TEXT_PRESETS` (src/shared/rig.TEXT_PRESETS) - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain-schema.rigLayoutSchema.text",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 55
+          },
+          "value": "standard"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 55
+          },
+          "value": "large"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 55
+          },
+          "value": "stage"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 179
+      },
+      "authority": "`z.enum` `style` - members read through `TRIGGER_STYLES` (src/shared/domain.TRIGGER_STYLES) - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain-schema.workspaceSchema.position.style",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 80
+          },
+          "value": "near-verbatim"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 80
+          },
+          "value": "compressed-concept"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 80
+          },
+          "value": "loose-keywords"
+        }
+      ]
+    },
+    {
+      "anchor": {
         "file": "src/shared/domain.ts",
         "line": 65
       },
@@ -1150,30 +1399,12 @@
   "findings": [
     {
       "anchor": {
-        "file": "src/core/input-shapes.ts",
-        "line": 341
-      },
-      "kind": "refactor_required",
-      "message": "REFACTOR: `def.typeName` is a closed set enforced only by control flow at src/core/input-shapes.ts:341. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
-      "target": "src/core/input-shapes.def.typeName (switch)"
-    },
-    {
-      "anchor": {
         "file": "src/main/control-server.ts",
         "line": 255
       },
       "kind": "refactor_required",
       "message": "REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:255. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
       "target": "src/main/control-server.result.error.code (switch)"
-    },
-    {
-      "anchor": {
-        "file": "src/renderer/src/App.tsx",
-        "line": 665
-      },
-      "kind": "refactor_required",
-      "message": "REFACTOR: `e.key` is a closed set enforced only by control flow at src/renderer/src/App.tsx:665. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
-      "target": "src/renderer/src/App.e.key (switch)"
     },
     {
       "anchor": {
@@ -1185,8 +1416,65 @@
       "target": "src/renderer/src/App.zone (switch)"
     }
   ],
-  "generated": "2026-09-23T03:55:27+00:00",
+  "generated": "2026-09-23T08:05:24+00:00",
+  "ignored_derived": [
+    {
+      "anchor": {
+        "file": "src/core/input-shapes.ts",
+        "line": 341
+      },
+      "subject": "src/core/input-shapes.def.typeName (switch)",
+      "values": [
+        "ZodOptional",
+        "ZodNullable",
+        "ZodDefault",
+        "ZodEffects",
+        "ZodString",
+        "ZodNumber",
+        "ZodBoolean",
+        "ZodEnum",
+        "ZodArray",
+        "ZodObject"
+      ],
+      "why": "every value is a zod internal type name"
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/App.tsx",
+        "line": 665
+      },
+      "subject": "src/renderer/src/App.e.key (switch)",
+      "values": [
+        "ArrowDown",
+        " ",
+        "ArrowUp",
+        "t",
+        "T",
+        "s",
+        "S",
+        "Escape",
+        "d",
+        "D",
+        "m",
+        "M"
+      ],
+      "why": "the subject is a property declared by TypeScript's lib or a package"
+    }
+  ],
   "mirror_version": 1,
+  "never_read": [
+    "classes - a class's fields are never mirrored (the census lists each one)",
+    "generic, mapped and conditional type aliases",
+    "template-literal types, and unions that contain one",
+    "aliases of another type or value (`X = Y`), and utility-type aliases (`Pick<>`, `Omit<>`, `Record<>`)",
+    "`keyof typeof X` / indexed-access types, unless X itself is read as a closed set",
+    "results of `.pick` / `.omit` / `.partial` / `.required` (listed as gaps where met)",
+    "zod schemas built inside function bodies, other than a function that returns one zod expression",
+    "the parameterised result of a schema helper or factory call (listed as gaps where met)",
+    "constants that are not exported (the census does not count them)",
+    "`*.d.ts` files and build output (`dist/`, `build/`, `out/`) - excluded by default",
+    "regex-encoded sets, JSON Schema files, and the data actually on disk"
+  ],
   "parser": "typescript 5.9.3 (resolved from the target)",
   "scope": {
     "exclude": [
@@ -1201,7 +1489,11 @@
       "*/__tests__/*",
       "*/e2e/*",
       "*/__mocks__/*",
-      "*/fixtures/*"
+      "*/fixtures/*",
+      "*.d.ts",
+      "*/dist/*",
+      "*/build/*",
+      "*/out/*"
     ],
     "include": [
       "*.ts",
@@ -1849,6 +2141,321 @@
     },
     {
       "anchor": {
+        "file": "src/core/input-shapes.ts",
+        "line": 25
+      },
+      "bases": [],
+      "doc": null,
+      "exported": false,
+      "fields": [],
+      "grade": "declared",
+      "id": "src/core/input-shapes.slug",
+      "kind": "zod-scalar",
+      "value": "z.string().min(1)"
+    },
+    {
+      "anchor": {
+        "end_line": 32,
+        "file": "src/core/input-shapes.ts",
+        "line": 28
+      },
+      "bases": [],
+      "doc": "A FliHub folder name, verbatim \u2014 FliHub's own kebab rule, mirrored not reinvented.",
+      "exported": false,
+      "fields": [],
+      "grade": "declared",
+      "id": "src/core/input-shapes.projectName",
+      "kind": "zod-scalar",
+      "value": "z.string().trim().regex(PROJECT_NAME_PATTERN, 'not a FliHub folder name (kebab-case, e.g. d01-kybernesis-12-videos)').max(PROJECT_NAME_MAX,\u2026"
+    },
+    {
+      "anchor": {
+        "end_line": 37,
+        "file": "src/core/input-shapes.ts",
+        "line": 34
+      },
+      "bases": [],
+      "doc": null,
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 35
+          },
+          "default": null,
+          "name": "id",
+          "type": "z.string().optional()"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 36
+          },
+          "default": null,
+          "name": "text",
+          "type": "z.string().min(1)"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/input-shapes.paragraphInput",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 43,
+        "file": "src/core/input-shapes.ts",
+        "line": 39
+      },
+      "bases": [],
+      "doc": null,
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 40
+          },
+          "default": null,
+          "name": "id",
+          "type": "z.string().optional()"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 41
+          },
+          "default": null,
+          "name": "heading",
+          "type": "z.string().min(1)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 42
+          },
+          "default": null,
+          "name": "paragraphs",
+          "type": "z.array(paragraphInput).min(1) \u2192 src/core/input-shapes.paragraphInput"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/input-shapes.minorInput",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 49,
+        "file": "src/core/input-shapes.ts",
+        "line": 45
+      },
+      "bases": [],
+      "doc": null,
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 46
+          },
+          "default": null,
+          "name": "id",
+          "type": "z.string().optional()"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 47
+          },
+          "default": null,
+          "name": "heading",
+          "type": "z.string().min(1)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 48
+          },
+          "default": null,
+          "name": "minors",
+          "type": "z.array(minorInput).min(1) \u2192 src/core/input-shapes.minorInput"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/input-shapes.majorInput",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 69,
+        "file": "src/core/input-shapes.ts",
+        "line": 56
+      },
+      "bases": [],
+      "doc": "A layout as a caller supplies it. `visible` is canonicalised on the way in",
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 57
+          },
+          "default": null,
+          "name": "visible",
+          "type": "z.array(z.enum(RECORDING_SET)).min(1) \u2192 RECORDING_SET (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 58
+          },
+          "default": null,
+          "name": "driven",
+          "type": "z.enum(RECORDING_SET) \u2192 RECORDING_SET (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 59
+          },
+          "default": null,
+          "name": "weights",
+          "type": "z.object({ major: z.number().finite(), minor: z.number().finite(), triggers: z.number().finite(), paragraph: z.number().finite() })"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 65
+          },
+          "default": null,
+          "name": "camera",
+          "type": "z.enum(CAMERA_SIDES) \u2192 CAMERA_SIDES (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 66
+          },
+          "default": null,
+          "name": "text",
+          "type": "z.enum(TEXT_PRESETS) \u2192 TEXT_PRESETS (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 67
+          },
+          "default": null,
+          "name": "mirror",
+          "type": "z.boolean()"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 68
+          },
+          "default": null,
+          "name": "focus",
+          "type": "z.boolean()"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/input-shapes.layoutInput",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "file": "src/core/input-shapes.ts",
+        "line": 59
+      },
+      "bases": [],
+      "doc": null,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 60
+          },
+          "default": null,
+          "name": "major",
+          "type": "z.number().finite()"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 61
+          },
+          "default": null,
+          "name": "minor",
+          "type": "z.number().finite()"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 62
+          },
+          "default": null,
+          "name": "triggers",
+          "type": "z.number().finite()"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 63
+          },
+          "default": null,
+          "name": "paragraph",
+          "type": "z.number().finite()"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/input-shapes.layoutInput.weights",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 75,
+        "file": "src/core/input-shapes.ts",
+        "line": 71
+      },
+      "bases": [],
+      "doc": null,
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 72
+          },
+          "default": null,
+          "name": "id",
+          "type": "z.string().optional()"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 73
+          },
+          "default": null,
+          "name": "text",
+          "type": "z.string().min(1)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 74
+          },
+          "default": null,
+          "name": "paragraphId",
+          "type": "slug \u2192 src/core/input-shapes.slug"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/input-shapes.triggerInput",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
         "end_line": 330,
         "file": "src/core/input-shapes.ts",
         "line": 317
@@ -2170,6 +2777,48 @@
       "grade": "declared",
       "id": "src/core/open-context.ContextReport",
       "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 37,
+        "file": "src/core/project-store.ts",
+        "line": 33
+      },
+      "bases": [],
+      "doc": null,
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/project-store.ts",
+            "line": 34
+          },
+          "default": null,
+          "name": "schema",
+          "type": "z.literal(1)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/project-store.ts",
+            "line": 35
+          },
+          "default": null,
+          "name": "project",
+          "type": "z.string().min(1)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/project-store.ts",
+            "line": 36
+          },
+          "default": null,
+          "name": "sets",
+          "type": "z.array(scriptSetSchema) \u2192 scriptSetSchema (@shared/domain-schema)"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/project-store.projectFileSchema",
+      "kind": "zod-object"
     },
     {
       "anchor": {
@@ -2969,7 +3618,7 @@
           "default": null,
           "doc": "Optional Zod schema \u2014 the payload is validated before `handle` runs.",
           "name": "input",
-          "type": "?: z.ZodType<In> \u2192 \"/Users/davidcruwys/dev/ad/flivideo/teletubby/node_modules/zod/v3/external\" (@appydave/core), ZodType (node_modules/zod/v3/types.d.cts)"
+          "type": "?: z.ZodType<In> \u2192 ZodType (zod)"
         },
         {
           "anchor": {
@@ -2978,7 +3627,7 @@
           },
           "default": null,
           "name": "handle",
-          "type": "(input: In) => Promise<Out> | Out \u2192 Promise (node_modules/typescript/lib/lib.es2015.promise.d.ts)"
+          "type": "(input: In) => Promise<Out> | Out"
         }
       ],
       "grade": "declared",
@@ -3029,7 +3678,7 @@
           },
           "default": null,
           "name": "env",
-          "type": "?: NodeJS.ProcessEnv \u2192 NodeJS (node_modules/@types/node/compatibility/iterators.d.ts), ProcessEnv (node_modules/@types/node/process.d.ts)"
+          "type": "?: NodeJS.ProcessEnv \u2192 NodeJS (@types/node), ProcessEnv (@types/node)"
         }
       ],
       "grade": "declared",
@@ -3530,7 +4179,7 @@
           "default": null,
           "doc": "Flex weight per zone, adjusted by dragging a divider. Relative, not pixels,",
           "name": "weights",
-          "type": "Record<RecordingZone, number> \u2192 Record (node_modules/typescript/lib/lib.es5.d.ts), RecordingZone (@shared/rig)"
+          "type": "Record<RecordingZone, number> \u2192 RecordingZone (@shared/rig)"
         },
         {
           "anchor": {
@@ -3654,7 +4303,7 @@
           "default": null,
           "doc": "Transcripts that arrived or changed since the talent last looked at them \u2014",
           "name": "freshTranscripts",
-          "type": "Record<string, string[]> \u2192 Record (node_modules/typescript/lib/lib.es5.d.ts)"
+          "type": "Record<string, string[]>"
         },
         {
           "anchor": {
@@ -4528,6 +5177,866 @@
     },
     {
       "anchor": {
+        "end_line": 50,
+        "file": "src/shared/domain-schema.ts",
+        "line": 47
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 48
+          },
+          "default": null,
+          "name": "id",
+          "type": "id('paragraph id') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 49
+          },
+          "default": null,
+          "name": "text",
+          "type": "z.string().trim().min(1, 'paragraph text must not be empty')"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.paragraphSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 56,
+        "file": "src/shared/domain-schema.ts",
+        "line": 52
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 53
+          },
+          "default": null,
+          "name": "id",
+          "type": "id('minor topic id') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 54
+          },
+          "default": null,
+          "name": "heading",
+          "type": "z.string().trim().min(1, 'minor topic heading must not be empty')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 55
+          },
+          "default": null,
+          "name": "paragraphs",
+          "type": "z.array(paragraphSchema).min(1, 'a minor topic needs at least one paragraph') \u2192 src/shared/domain-schema.paragraphSchema"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.minorTopicSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 62,
+        "file": "src/shared/domain-schema.ts",
+        "line": 58
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 59
+          },
+          "default": null,
+          "name": "id",
+          "type": "id('major topic id') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 60
+          },
+          "default": null,
+          "name": "heading",
+          "type": "z.string().trim().min(1, 'major topic heading must not be empty')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 61
+          },
+          "default": null,
+          "name": "minors",
+          "type": "z.array(minorTopicSchema).min(1, 'a major topic needs at least one minor topic') \u2192 src/shared/domain-schema.minorTopicSchema"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.majorTopicSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 68,
+        "file": "src/shared/domain-schema.ts",
+        "line": 64
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 65
+          },
+          "default": null,
+          "name": "id",
+          "type": "id('trigger id') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 66
+          },
+          "default": null,
+          "name": "text",
+          "type": "z.string().trim().min(1, 'trigger text must not be empty')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 67
+          },
+          "default": null,
+          "name": "paragraphId",
+          "type": "id('paragraph id') \u2192 src/shared/domain-schema.id"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.triggerSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 75,
+        "file": "src/shared/domain-schema.ts",
+        "line": 70
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 71
+          },
+          "default": null,
+          "name": "style",
+          "type": "z.enum(TRIGGER_STYLES) \u2192 src/shared/domain.TRIGGER_STYLES"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 72
+          },
+          "default": null,
+          "name": "authoredBy",
+          "type": "z.enum(AUTHORSHIPS) \u2192 src/shared/domain.AUTHORSHIPS"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 73
+          },
+          "default": null,
+          "name": "note",
+          "type": "z.string().optional()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 74
+          },
+          "default": null,
+          "name": "triggers",
+          "type": "z.array(triggerSchema).min(2, 'a trigger set needs at least two steps') \u2192 src/shared/domain-schema.triggerSchema"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.triggerSetSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 85,
+        "file": "src/shared/domain-schema.ts",
+        "line": 77
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 78
+          },
+          "default": null,
+          "name": "id",
+          "type": "id('transcript id') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 79
+          },
+          "default": null,
+          "name": "kind",
+          "type": "z.enum(TRANSCRIPT_KINDS) \u2192 src/shared/domain.TRANSCRIPT_KINDS"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 80
+          },
+          "default": null,
+          "name": "corpus",
+          "type": "id('corpus') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 81
+          },
+          "default": null,
+          "name": "talentId",
+          "type": "id('talent id').nullable() \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 82
+          },
+          "default": null,
+          "name": "source",
+          "type": "z.string().trim().min(1, 'transcript source must not be empty')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 83
+          },
+          "default": null,
+          "name": "topics",
+          "type": "z.array(majorTopicSchema).min(1, 'a transcript needs at least one major topic') \u2192 src/shared/domain-schema.majorTopicSchema"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 84
+          },
+          "default": null,
+          "name": "triggerSets",
+          "type": "z.array(triggerSetSchema) \u2192 src/shared/domain-schema.triggerSetSchema"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.transcriptSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 100,
+        "file": "src/shared/domain-schema.ts",
+        "line": 87
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 88
+          },
+          "default": null,
+          "name": "id",
+          "type": "id('script id') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 89
+          },
+          "default": null,
+          "name": "n",
+          "type": "z.number().int().positive()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 90
+          },
+          "default": null,
+          "name": "title",
+          "type": "z.string().trim().min(1, 'script title must not be empty')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 91
+          },
+          "default": null,
+          "name": "takeaway",
+          "type": "z.string().trim().min(1, 'script takeaway must not be empty')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 92
+          },
+          "default": null,
+          "name": "summary",
+          "type": "z.string().trim().min(1, 'script summary must not be empty')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 93
+          },
+          "default": null,
+          "name": "transcripts",
+          "type": "z.array(transcriptSchema) \u2192 src/shared/domain-schema.transcriptSchema"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 95
+          },
+          "default": null,
+          "name": "video",
+          "type": "z.string().regex(PROJECT_NAME_PATTERN, 'video must be a video folder name (kebab-case)').max(PROJECT_NAME_MAX, `video must be at most ${PRO\u2026 \u2192 src/shared/domain.PROJECT_NAME_PATTERN, src/shared/domain.PROJECT_NAME_MAX"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.scriptSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 125,
+        "file": "src/shared/domain-schema.ts",
+        "line": 102
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 103
+          },
+          "default": null,
+          "name": "id",
+          "type": "id('set id') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 104
+          },
+          "default": null,
+          "name": "title",
+          "type": "z.string().trim().min(1, 'set title must not be empty')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 105
+          },
+          "default": null,
+          "name": "description",
+          "type": "z.string().trim()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 108
+          },
+          "default": null,
+          "name": "project",
+          "type": "z.string().regex(PROJECT_NAME_PATTERN, 'project must be a FliHub folder name (kebab-case)').max(PROJECT_NAME_MAX, `project must be at most \u2026 \u2192 src/shared/domain.PROJECT_NAME_PATTERN, src/shared/domain.PROJECT_NAME_MAX"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 115
+          },
+          "default": null,
+          "name": "exportedTo",
+          "type": "z.string().regex(PROJECT_NAME_PATTERN, 'exportedTo must be a FliHub folder name (kebab-case)').max(PROJECT_NAME_MAX, `exportedTo must be at\u2026 \u2192 src/shared/domain.PROJECT_NAME_PATTERN, src/shared/domain.PROJECT_NAME_MAX"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 122
+          },
+          "default": null,
+          "name": "exportedBrand",
+          "type": "z.string().trim().min(1, 'exportedBrand must not be empty').nullish()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 123
+          },
+          "default": null,
+          "name": "onDemand",
+          "type": "z.boolean().optional()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 124
+          },
+          "default": null,
+          "name": "scripts",
+          "type": "z.array(scriptSchema) \u2192 src/shared/domain-schema.scriptSchema"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.scriptSetSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 137,
+        "file": "src/shared/domain-schema.ts",
+        "line": 127
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 128
+          },
+          "default": null,
+          "name": "wordsMin",
+          "type": "z.number().int().nonnegative()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 129
+          },
+          "default": null,
+          "name": "wordsMax",
+          "type": "z.number().int().positive()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 130
+          },
+          "default": null,
+          "name": "breathGroupMeanMin",
+          "type": "z.number().nonnegative()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 131
+          },
+          "default": null,
+          "name": "breaksPer100Max",
+          "type": "z.number().nonnegative()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 132
+          },
+          "default": null,
+          "name": "sentenceSdMin",
+          "type": "z.number().nonnegative()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 133
+          },
+          "default": null,
+          "name": "emDashMax",
+          "type": "z.number().int().nonnegative()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 134
+          },
+          "default": null,
+          "name": "antiVoice",
+          "type": "z.array(z.string().min(1))"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 135
+          },
+          "default": null,
+          "name": "bookends",
+          "type": "z.array(z.string().min(1))"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 136
+          },
+          "default": null,
+          "name": "source",
+          "type": "z.string().trim().min(1, 'an envelope must record where it was measured')"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.cadenceEnvelopeSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 143,
+        "file": "src/shared/domain-schema.ts",
+        "line": 139
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 140
+          },
+          "default": null,
+          "name": "id",
+          "type": "id('talent id') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 141
+          },
+          "default": null,
+          "name": "name",
+          "type": "z.string().trim().min(1, 'talent name must not be empty')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 142
+          },
+          "default": null,
+          "name": "envelope",
+          "type": "cadenceEnvelopeSchema \u2192 src/shared/domain-schema.cadenceEnvelopeSchema"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.talentSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 162,
+        "file": "src/shared/domain-schema.ts",
+        "line": 149
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 150
+          },
+          "default": null,
+          "name": "visible",
+          "type": "z.array(z.enum(RECORDING_SET)).min(1, 'a rig must show at least one zone') \u2192 src/shared/rig.RECORDING_SET"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 151
+          },
+          "default": null,
+          "name": "driven",
+          "type": "z.enum(RECORDING_SET) \u2192 src/shared/rig.RECORDING_SET"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 152
+          },
+          "default": null,
+          "name": "weights",
+          "type": "z.object({ major: z.number().finite(), minor: z.number().finite(), triggers: z.number().finite(), paragraph: z.number().finite() })"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 158
+          },
+          "default": null,
+          "name": "camera",
+          "type": "z.enum(CAMERA_SIDES) \u2192 src/shared/rig.CAMERA_SIDES"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 159
+          },
+          "default": null,
+          "name": "text",
+          "type": "z.enum(TEXT_PRESETS) \u2192 src/shared/rig.TEXT_PRESETS"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 160
+          },
+          "default": null,
+          "name": "mirror",
+          "type": "z.boolean()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 161
+          },
+          "default": null,
+          "name": "focus",
+          "type": "z.boolean()"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.rigLayoutSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 152
+      },
+      "bases": [],
+      "doc": null,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 153
+          },
+          "default": null,
+          "name": "major",
+          "type": "z.number().finite()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 154
+          },
+          "default": null,
+          "name": "minor",
+          "type": "z.number().finite()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 155
+          },
+          "default": null,
+          "name": "triggers",
+          "type": "z.number().finite()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 156
+          },
+          "default": null,
+          "name": "paragraph",
+          "type": "z.number().finite()"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.rigLayoutSchema.weights",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 168,
+        "file": "src/shared/domain-schema.ts",
+        "line": 164
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 165
+          },
+          "default": null,
+          "name": "id",
+          "type": "id('rig id') \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 166
+          },
+          "default": null,
+          "name": "label",
+          "type": "z.string().trim().min(1, 'a rig needs a name to be pickable')"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 167
+          },
+          "default": null,
+          "name": "layout",
+          "type": "rigLayoutSchema \u2192 src/shared/domain-schema.rigLayoutSchema"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.rigSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "end_line": 183,
+        "file": "src/shared/domain-schema.ts",
+        "line": 170
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 171
+          },
+          "default": null,
+          "name": "layout",
+          "type": "rigLayoutSchema.nullable() \u2192 src/shared/domain-schema.rigLayoutSchema"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 172
+          },
+          "default": null,
+          "name": "rigId",
+          "type": "id('rig id').nullable() \u2192 src/shared/domain-schema.id"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 174
+          },
+          "default": null,
+          "name": "position",
+          "type": "z.object({ setId: z.string().nullable(), scriptId: z.string().nullable(), transcriptId: z.string().nullable(), style: z.enum(TRIGGER_STYLES\u2026 \u2192 src/shared/domain.TRIGGER_STYLES"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.workspaceSchema",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain-schema.ts",
+        "line": 174
+      },
+      "bases": [],
+      "doc": null,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 176
+          },
+          "default": null,
+          "name": "setId",
+          "type": "z.string().nullable()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 177
+          },
+          "default": null,
+          "name": "scriptId",
+          "type": "z.string().nullable()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 178
+          },
+          "default": null,
+          "name": "transcriptId",
+          "type": "z.string().nullable()"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 179
+          },
+          "default": null,
+          "name": "style",
+          "type": "z.enum(TRIGGER_STYLES).nullable() \u2192 src/shared/domain.TRIGGER_STYLES"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain-schema.ts",
+            "line": 180
+          },
+          "default": null,
+          "name": "paragraphId",
+          "type": "z.string().nullable()"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain-schema.workspaceSchema.position",
+      "kind": "zod-object"
+    },
+    {
+      "anchor": {
         "end_line": 102,
         "file": "src/shared/domain.ts",
         "line": 98
@@ -5232,7 +6741,7 @@
           },
           "default": null,
           "name": "platform",
-          "type": "NodeJS.Platform \u2192 NodeJS (node_modules/@types/node/compatibility/iterators.d.ts), Platform (node_modules/@types/node/process.d.ts)"
+          "type": "NodeJS.Platform \u2192 NodeJS (@types/node), Platform (@types/node)"
         }
       ],
       "grade": "declared",
@@ -5456,7 +6965,7 @@
           "default": null,
           "doc": "Relative flex weight per zone \u2014 proportions, so they survive a resize.",
           "name": "weights",
-          "type": "Record<RecordingZone, number> \u2192 Record (node_modules/typescript/lib/lib.es5.d.ts), src/shared/rig.RecordingZone"
+          "type": "Record<RecordingZone, number> \u2192 src/shared/rig.RecordingZone"
         },
         {
           "anchor": {
@@ -5648,9 +7157,417 @@
     }
   ],
   "target": {
-    "commit": "806729c89bd7963ec07fd99af62c3e102ce184de",
-    "root": "/Users/davidcruwys/dev/ad/flivideo/teletubby",
+    "commit": "6547ecae5f55d0a3f7c3dfd1107599abb08517c6",
+    "root": "..",
     "stack": "typescript"
   },
-  "unresolved": []
+  "unresolved": [
+    {
+      "census": true,
+      "family": "constant (other form)",
+      "looked_at": [
+        "src/core/active-context.ts:27"
+      ],
+      "reason": "declared but not read: constant (other form). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/active-context.ACTIVE_CONTEXT_TTL_MS` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/active-context.ts:48"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/active-context.ActiveContextHolder` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "union of named or mixed types",
+      "looked_at": [
+        "src/core/active-context.ts:38"
+      ],
+      "reason": "declared but not read: union of named or mixed types. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/active-context.ActiveContext` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "object constant",
+      "looked_at": [
+        "src/core/input-shapes.ts:78"
+      ],
+      "reason": "declared but not read: object constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/input-shapes.INPUT` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/open-context.ts:250"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/open-context.OpenContextHolder` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "object constant",
+      "looked_at": [
+        "src/core/repository.ts:35"
+      ],
+      "reason": "declared but not read: object constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/repository.EMPTY_DOCUMENT` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/repository.ts:109"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/repository.FileRepository` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/repository.ts:80"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/repository.MemoryRepository` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/safety.ts:305"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/safety.AuditLog` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "constant (other form)",
+      "looked_at": [
+        "src/core/safety.ts:123"
+      ],
+      "reason": "declared but not read: constant (other form). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/safety.CONFIRMATION_TTL_MS` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/safety.ts:40"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/safety.CapabilityFailure` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/safety.ts:125"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/safety.ConfirmationLedger` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/safety.ts:220"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/safety.IdempotencyLedger` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/core/safety.ts:259"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/core/safety.RateLimiter` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/main/file-author.ts:32"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/main/file-author.FileAuthor` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/main/ipc-router.ts:19"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/main/ipc-router.IpcRouter` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/main/process-supervisor.ts:54"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/main/process-supervisor.Managed` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/main/process-supervisor.ts:31"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/main/process-supervisor.ProcessSupervisor` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/main/updater.ts:25"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/main/updater.Updater` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "class",
+      "looked_at": [
+        "src/main/window-manager.ts:20"
+      ],
+      "reason": "declared but not read: class. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/main/window-manager.WindowManager` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "object constant",
+      "looked_at": [
+        "src/renderer/src/store.ts:88"
+      ],
+      "reason": "declared but not read: object constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/renderer/src/store.ZONE_LABEL` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "const built by a call (helper or non-zod call)",
+      "looked_at": [
+        "src/renderer/src/store.ts:408"
+      ],
+      "reason": "declared but not read: const built by a call (helper or non-zod call). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/renderer/src/store.useProm` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "array constant",
+      "looked_at": [
+        "src/shared/capabilities.ts:166"
+      ],
+      "reason": "declared but not read: array constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/capabilities.CAPABILITIES` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "instance constant (`new ...`)",
+      "looked_at": [
+        "src/shared/capabilities.ts:340"
+      ],
+      "reason": "declared but not read: instance constant (`new ...`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/capabilities.CAPABILITY_BY_NAME` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "derived type (`keyof typeof`, indexed access, `typeof`)",
+      "looked_at": [
+        "src/shared/capabilities.ts:338"
+      ],
+      "reason": "declared but not read: derived type (`keyof typeof`, indexed access, `typeof`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/capabilities.CapabilityName` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "alias of a primitive",
+      "looked_at": [
+        "src/shared/domain.ts:47"
+      ],
+      "reason": "declared but not read: alias of a primitive (`= string`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/domain.ParagraphId` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "alias of a primitive",
+      "looked_at": [
+        "src/shared/domain.ts:44"
+      ],
+      "reason": "declared but not read: alias of a primitive (`= string`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/domain.ScriptId` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "alias of a primitive",
+      "looked_at": [
+        "src/shared/domain.ts:43"
+      ],
+      "reason": "declared but not read: alias of a primitive (`= string`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/domain.SetId` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "object constant",
+      "looked_at": [
+        "src/shared/domain.ts:84"
+      ],
+      "reason": "declared but not read: object constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/domain.TRIGGER_STYLE_LETTER` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "alias of a primitive",
+      "looked_at": [
+        "src/shared/domain.ts:49"
+      ],
+      "reason": "declared but not read: alias of a primitive (`= string`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/domain.TalentId` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "alias of a primitive",
+      "looked_at": [
+        "src/shared/domain.ts:46"
+      ],
+      "reason": "declared but not read: alias of a primitive (`= string`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/domain.TopicId` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "alias of a primitive",
+      "looked_at": [
+        "src/shared/domain.ts:45"
+      ],
+      "reason": "declared but not read: alias of a primitive (`= string`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/domain.TranscriptId` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "alias of a primitive",
+      "looked_at": [
+        "src/shared/domain.ts:48"
+      ],
+      "reason": "declared but not read: alias of a primitive (`= string`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/domain.TriggerId` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "object constant",
+      "looked_at": [
+        "src/shared/ipc.ts:21"
+      ],
+      "reason": "declared but not read: object constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/ipc.IPC` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "object constant",
+      "looked_at": [
+        "src/shared/rig.ts:142"
+      ],
+      "reason": "declared but not read: object constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/rig.DEFAULT_LAYOUT` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "object constant",
+      "looked_at": [
+        "src/shared/rig.ts:133"
+      ],
+      "reason": "declared but not read: object constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/rig.EMPTY_WORKSPACE` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "alias of a primitive",
+      "looked_at": [
+        "src/shared/rig.ts:32"
+      ],
+      "reason": "declared but not read: alias of a primitive (`= string`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/rig.RigId` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "object constant",
+      "looked_at": [
+        "src/shared/script-set.ts:17"
+      ],
+      "reason": "declared but not read: object constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/script-set.KYBERNESIS_PHASE_1` - declared but not read"
+    },
+    {
+      "census": true,
+      "family": "array constant",
+      "looked_at": [
+        "src/shared/script-set.ts:2110"
+      ],
+      "reason": "declared but not read: array constant. The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
+      "subject": "`src/shared/script-set.TALENTS` - declared but not read"
+    },
+    {
+      "looked_at": [
+        "appFileName({ app: 'tubby' }) (src/core/project-store.ts:27)"
+      ],
+      "reason": "built by calling `appFileName(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror",
+      "subject": "schemas built by `appFileName(...)` (1 use)"
+    },
+    {
+      "looked_at": [
+        "id('paragraph id') (src/shared/domain-schema.ts:48)",
+        "id('minor topic id') (src/shared/domain-schema.ts:53)",
+        "id('major topic id') (src/shared/domain-schema.ts:59)",
+        "id('trigger id') (src/shared/domain-schema.ts:65)",
+        "id('paragraph id') (src/shared/domain-schema.ts:67)",
+        "id('transcript id') (src/shared/domain-schema.ts:78)",
+        "id('corpus') (src/shared/domain-schema.ts:80)",
+        "id('talent id').nullable() (src/shared/domain-schema.ts:81)",
+        "id('script id') (src/shared/domain-schema.ts:88)",
+        "id('set id') (src/shared/domain-schema.ts:103)"
+      ],
+      "reason": "built by calling `id(...)`, which does not return a single zod expression this reader can follow",
+      "subject": "schemas built by `id(...)` (13 uses)"
+    },
+    {
+      "looked_at": [
+        "z.enum(CAMERA_SIDES)"
+      ],
+      "reason": "a z.enum whose members are computed or imported - this reader could not reach a literal list",
+      "subject": "src/core/input-shapes.layoutInput.camera"
+    },
+    {
+      "looked_at": [
+        "z.enum(RECORDING_SET)"
+      ],
+      "reason": "a z.enum whose members are computed or imported - this reader could not reach a literal list",
+      "subject": "src/core/input-shapes.layoutInput.driven"
+    },
+    {
+      "looked_at": [
+        "z.enum(TEXT_PRESETS)"
+      ],
+      "reason": "a z.enum whose members are computed or imported - this reader could not reach a literal list",
+      "subject": "src/core/input-shapes.layoutInput.text"
+    },
+    {
+      "looked_at": [
+        "z.enum(RECORDING_SET)"
+      ],
+      "reason": "a z.enum whose members are computed or imported - this reader could not reach a literal list",
+      "subject": "src/core/input-shapes.layoutInput.visible[]"
+    }
+  ],
+  "zod_detection": {
+    "call-shape": 0,
+    "import": 0,
+    "re-export": 5
+  }
 }
