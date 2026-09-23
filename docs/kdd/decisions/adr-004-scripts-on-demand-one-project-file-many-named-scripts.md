@@ -44,7 +44,8 @@ Delivered as C5 of deliver-2026-09-23-B584-B585, recommended by d01-work and tak
    optional video and optional triggers, and always writes to the OPEN project; naming another
    project is refused. A new name goes to the **top** (newest first). The same id is replaced **in
    place**, so a re-take doesn't move around the list, and the previous version is returned.
-4. **Teletubby never writes the words.** Paragraphs are the caller's text, split on blank lines and
+4. **Teletubby never writes the words.** It shows and edits scripts; a writer (Scribe, later)
+   produces them. Paragraphs are the caller's text, split on blank lines and
    kept verbatim. Triggers are optional and **caller-authored**, each bound to a 1-based paragraph
    number the caller chose. That is an authored map, not a positional guess (rule 3). With no
    triggers, the script is stored and listed, and column 2 says nobody has authored them.
@@ -65,5 +66,7 @@ Delivered as C5 of deliver-2026-09-23-B584-B585, recommended by d01-work and tak
   directory is the only place it knows to write.
 - The script's `takeaway` and `summary` default to its name. The schema requires them, and a
   two-line intro has no other honest value.
-- **Not built:** the chat that writes the scripts (L19, later), grouping the picker by video, and
-  any generation of text or triggers.
+- **Not built here, and not Teletubby's to build:** writing a script. Teletubby only **shows and
+  edits** scripts in a teleprompter. Writing them is a future app, **Scribe** (stage 1 of the suite;
+  David's correction, relayed 2026-09-23). `write_script` is the door a writer such as Scribe, or
+  an AI conversation, hands its text through. Also not built: grouping the picker by video.

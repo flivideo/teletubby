@@ -1,0 +1,5656 @@
+{
+  "closed_sets": [
+    {
+      "anchor": {
+        "end_line": 54,
+        "file": "src/core/cadence.ts",
+        "line": 46
+      },
+      "authority": "literal union type of `key` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/core/cadence.CadenceRule.key",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 47
+          },
+          "value": "length"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 48
+          },
+          "value": "breath-group"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 49
+          },
+          "value": "break-density"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 50
+          },
+          "value": "sentence-variation"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 51
+          },
+          "value": "em-dash"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 52
+          },
+          "value": "mandatory-terms"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 53
+          },
+          "value": "anti-voice"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 54
+          },
+          "value": "bookends"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/core/input-shapes.ts",
+        "line": 341
+      },
+      "authority": "`switch` on `def.typeName` - its type is not a literal union, no enum, no z.enum",
+      "finding": "REFACTOR: `def.typeName` is a closed set enforced only by control flow at src/core/input-shapes.ts:341. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "grade": "derived",
+      "id": "src/core/input-shapes.def.typeName (switch)",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 342
+          },
+          "value": "ZodOptional"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 343
+          },
+          "value": "ZodNullable"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 344
+          },
+          "value": "ZodDefault"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 346
+          },
+          "value": "ZodEffects"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 348
+          },
+          "value": "ZodString"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 350
+          },
+          "value": "ZodNumber"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 352
+          },
+          "value": "ZodBoolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 354
+          },
+          "value": "ZodEnum"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 356
+          },
+          "value": "ZodArray"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 358
+          },
+          "value": "ZodObject"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "end_line": 42,
+        "file": "src/core/open-context.ts",
+        "line": 35
+      },
+      "authority": "`as const` array `OPEN_REFUSAL_CODES`, typed from by `typeof OPEN_REFUSAL_CODES[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/core/open-context.OPEN_REFUSAL_CODES",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 36
+          },
+          "value": "missing"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 37
+          },
+          "value": "unknown-brand"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 38
+          },
+          "value": "no-brand-root"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 39
+          },
+          "value": "registry-unreadable"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 40
+          },
+          "value": "project-not-found"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 41
+          },
+          "value": "project-ambiguous"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/core/open-context.ts",
+        "line": 62
+      },
+      "authority": "literal union type of `membership` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/core/open-context.OpenContext.membership",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 62
+          },
+          "value": "project"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 62
+          },
+          "value": "folder"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "end_line": 67,
+        "file": "src/core/open-context.ts",
+        "line": 65
+      },
+      "authority": "the `kind` discriminator of union type `OpenResolution` - each value declared by a literal type in one variant",
+      "grade": "declared",
+      "id": "src/core/open-context.OpenResolution.kind",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 66
+          },
+          "value": "resolved"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 67
+          },
+          "value": "refused"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/main/control-server.ts",
+        "line": 255
+      },
+      "authority": "`switch` on `result.error.code` - its type is not a literal union, no enum, no z.enum",
+      "finding": "REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:255. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "grade": "derived",
+      "id": "src/main/control-server.result.error.code (switch)",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 256
+          },
+          "value": "not_found"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 258
+          },
+          "value": "invalid_input"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 259
+          },
+          "value": "domain_invalid"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 261
+          },
+          "value": "permission_denied"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 262
+          },
+          "value": "confirmation_required"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 263
+          },
+          "value": "confirmation_invalid"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 265
+          },
+          "value": "conflict"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 267
+          },
+          "value": "rate_limited"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 269
+          },
+          "value": "unavailable"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/main/process-supervisor.ts",
+        "line": 11
+      },
+      "authority": "literal union type alias `ProcessStatus` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/main/process-supervisor.ProcessStatus",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 11
+          },
+          "value": "running"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 11
+          },
+          "value": "exited"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 11
+          },
+          "value": "error"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/main/process-supervisor.ts",
+        "line": 13
+      },
+      "authority": "literal union type of `stream` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/main/process-supervisor.LogChunk.stream",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 13
+          },
+          "value": "stdout"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 13
+          },
+          "value": "stderr"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "end_line": 5,
+        "file": "src/main/updater.ts",
+        "line": 4
+      },
+      "authority": "literal union type alias `UpdateStatus` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/main/updater.UpdateStatus",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 5
+          },
+          "value": "idle"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 5
+          },
+          "value": "checking"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 5
+          },
+          "value": "available"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 5
+          },
+          "value": "not-available"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 5
+          },
+          "value": "downloading"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 5
+          },
+          "value": "downloaded"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 5
+          },
+          "value": "error"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/App.tsx",
+        "line": 665
+      },
+      "authority": "`switch` on `e.key` - its type is not a literal union, no enum, no z.enum",
+      "finding": "REFACTOR: `e.key` is a closed set enforced only by control flow at src/renderer/src/App.tsx:665. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "grade": "derived",
+      "id": "src/renderer/src/App.e.key (switch)",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 666
+          },
+          "value": "ArrowDown"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 667
+          },
+          "value": " "
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 671
+          },
+          "value": "ArrowUp"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 675
+          },
+          "value": "t"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 676
+          },
+          "value": "T"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 683
+          },
+          "value": "s"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 684
+          },
+          "value": "S"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 687
+          },
+          "value": "Escape"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 690
+          },
+          "value": "d"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 691
+          },
+          "value": "D"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 694
+          },
+          "value": "m"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 695
+          },
+          "value": "M"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 698
+          },
+          "value": "f"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 699
+          },
+          "value": "F"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/App.tsx",
+        "line": 737
+      },
+      "authority": "`switch` on `zone` - its type is not a literal union, no enum, no z.enum",
+      "finding": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:737. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "grade": "derived",
+      "id": "src/renderer/src/App.zone (switch)",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 738
+          },
+          "value": "major"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 748
+          },
+          "value": "minor"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 758
+          },
+          "value": "triggers"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/App.tsx",
+            "line": 762
+          },
+          "value": "paragraph"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/store.ts",
+        "line": 70
+      },
+      "authority": "`as const` array `ZONES`, typed from by `typeof ZONES[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/renderer/src/store.ZONES",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 70
+          },
+          "value": "major"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 70
+          },
+          "value": "minor"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 70
+          },
+          "value": "triggers"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 70
+          },
+          "value": "paragraph"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 70
+          },
+          "value": "transcript"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/store.ts",
+        "line": 267
+      },
+      "authority": "literal union type of `source` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/renderer/src/store.SetSummary.source",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 267
+          },
+          "value": "project"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 267
+          },
+          "value": "store"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/store.ts",
+        "line": 326
+      },
+      "authority": "literal union type alias `SetFilter` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/renderer/src/store.SetFilter",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 326
+          },
+          "value": "project"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 326
+          },
+          "value": "all"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/store.ts",
+        "line": 334
+      },
+      "authority": "literal union type of `reason` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/renderer/src/store.StageHold.reason",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 334
+          },
+          "value": "project-closed"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 334
+          },
+          "value": "unreadable"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/store.ts",
+        "line": 1179
+      },
+      "authority": "literal union type alias `Rank` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/renderer/src/store.Rank",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 1179
+          },
+          "value": "driven"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 1179
+          },
+          "value": "follower"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/capabilities.ts",
+        "line": 36
+      },
+      "authority": "`as const` array `PRINCIPALS`, typed from by `typeof PRINCIPALS[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/capabilities.PRINCIPALS",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 36
+          },
+          "value": "ui"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 36
+          },
+          "value": "agent"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "end_line": 48,
+        "file": "src/shared/capabilities.ts",
+        "line": 43
+      },
+      "authority": "`as const` array `SIDE_EFFECTS`, typed from by `typeof SIDE_EFFECTS[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/capabilities.SIDE_EFFECTS",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 44
+          },
+          "value": "read-only"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 45
+          },
+          "value": "reversible-write"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 46
+          },
+          "value": "destructive"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 47
+          },
+          "value": "external-side-effect"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/capabilities.ts",
+        "line": 51
+      },
+      "authority": "literal union type alias `CapabilityKind` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/capabilities.CapabilityKind",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 51
+          },
+          "value": "query"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 51
+          },
+          "value": "command"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "end_line": 70,
+        "file": "src/shared/capabilities.ts",
+        "line": 59
+      },
+      "authority": "`as const` array `ERROR_CODES`, typed from by `typeof ERROR_CODES[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/capabilities.ERROR_CODES",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 60
+          },
+          "value": "not_found"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 61
+          },
+          "value": "invalid_input"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 62
+          },
+          "value": "domain_invalid"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 63
+          },
+          "value": "conflict"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 64
+          },
+          "value": "permission_denied"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 65
+          },
+          "value": "confirmation_required"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 66
+          },
+          "value": "confirmation_invalid"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 67
+          },
+          "value": "rate_limited"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 68
+          },
+          "value": "unavailable"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 69
+          },
+          "value": "internal"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "end_line": 370,
+        "file": "src/shared/capabilities.ts",
+        "line": 369
+      },
+      "authority": "the `ok` discriminator of union type `InvokeResult` - each value declared by a literal type in one variant",
+      "grade": "declared",
+      "id": "src/shared/capabilities.InvokeResult.ok",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 370
+          },
+          "value": "true"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 370
+          },
+          "value": "false"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain.ts",
+        "line": 65
+      },
+      "authority": "`as const` array `TRANSCRIPT_KINDS`, typed from by `typeof TRANSCRIPT_KINDS[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain.TRANSCRIPT_KINDS",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 65
+          },
+          "value": "provenance"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 65
+          },
+          "value": "cadence"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain.ts",
+        "line": 80
+      },
+      "authority": "`as const` array `TRIGGER_STYLES`, typed from by `typeof TRIGGER_STYLES[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain.TRIGGER_STYLES",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 80
+          },
+          "value": "near-verbatim"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 80
+          },
+          "value": "compressed-concept"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 80
+          },
+          "value": "loose-keywords"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/domain.ts",
+        "line": 91
+      },
+      "authority": "`as const` array `AUTHORSHIPS`, typed from by `typeof AUTHORSHIPS[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/domain.AUTHORSHIPS",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 91
+          },
+          "value": "hand"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 91
+          },
+          "value": "agent"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/ipc.ts",
+        "line": 57
+      },
+      "authority": "literal union type of `principal` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/ipc.ControlChanged.principal",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 57
+          },
+          "value": "ui"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 57
+          },
+          "value": "agent"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/rig.ts",
+        "line": 47
+      },
+      "authority": "`as const` array `RECORDING_SET`, typed from by `typeof RECORDING_SET[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/rig.RECORDING_SET",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "major"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "minor"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "triggers"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 47
+          },
+          "value": "paragraph"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/rig.ts",
+        "line": 51
+      },
+      "authority": "`as const` array `CAMERA_SIDES`, typed from by `typeof CAMERA_SIDES[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/rig.CAMERA_SIDES",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 51
+          },
+          "value": "left"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 51
+          },
+          "value": "right"
+        }
+      ]
+    },
+    {
+      "anchor": {
+        "file": "src/shared/rig.ts",
+        "line": 55
+      },
+      "authority": "`as const` array `TEXT_PRESETS`, typed from by `typeof TEXT_PRESETS[number]` - a single declaring symbol",
+      "grade": "declared",
+      "id": "src/shared/rig.TEXT_PRESETS",
+      "members": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 55
+          },
+          "value": "standard"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 55
+          },
+          "value": "large"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 55
+          },
+          "value": "stage"
+        }
+      ]
+    }
+  ],
+  "extractor": "extract_typescript.py",
+  "findings": [
+    {
+      "anchor": {
+        "file": "src/core/input-shapes.ts",
+        "line": 341
+      },
+      "kind": "refactor_required",
+      "message": "REFACTOR: `def.typeName` is a closed set enforced only by control flow at src/core/input-shapes.ts:341. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "target": "src/core/input-shapes.def.typeName (switch)"
+    },
+    {
+      "anchor": {
+        "file": "src/main/control-server.ts",
+        "line": 255
+      },
+      "kind": "refactor_required",
+      "message": "REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:255. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "target": "src/main/control-server.result.error.code (switch)"
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/App.tsx",
+        "line": 665
+      },
+      "kind": "refactor_required",
+      "message": "REFACTOR: `e.key` is a closed set enforced only by control flow at src/renderer/src/App.tsx:665. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "target": "src/renderer/src/App.e.key (switch)"
+    },
+    {
+      "anchor": {
+        "file": "src/renderer/src/App.tsx",
+        "line": 737
+      },
+      "kind": "refactor_required",
+      "message": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:737. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "target": "src/renderer/src/App.zone (switch)"
+    }
+  ],
+  "generated": "2026-09-23T03:55:27+00:00",
+  "mirror_version": 1,
+  "parser": "typescript 5.9.3 (resolved from the target)",
+  "scope": {
+    "exclude": [
+      "*.test.ts",
+      "*.test.tsx",
+      "*.spec.ts",
+      "*.spec.tsx",
+      "*.stories.tsx",
+      "*.config.ts",
+      "*/test/*",
+      "*/tests/*",
+      "*/__tests__/*",
+      "*/e2e/*",
+      "*/__mocks__/*",
+      "*/fixtures/*"
+    ],
+    "include": [
+      "*.ts",
+      "*.tsx"
+    ]
+  },
+  "structures": [
+    {
+      "anchor": {
+        "end_line": 36,
+        "file": "src/core/active-context.ts",
+        "line": 29
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/active-context.ts",
+            "line": 30
+          },
+          "default": null,
+          "name": "setId",
+          "type": "SetId | null \u2192 SetId (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/active-context.ts",
+            "line": 31
+          },
+          "default": null,
+          "name": "scriptId",
+          "type": "ScriptId | null \u2192 ScriptId (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/active-context.ts",
+            "line": 32
+          },
+          "default": null,
+          "name": "transcriptId",
+          "type": "TranscriptId | null \u2192 TranscriptId (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/active-context.ts",
+            "line": 33
+          },
+          "default": null,
+          "name": "style",
+          "type": "TriggerStyle | null \u2192 TriggerStyle (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/active-context.ts",
+            "line": 35
+          },
+          "default": null,
+          "doc": "Index into the active trigger set. The talent's position in the take.",
+          "name": "step",
+          "type": "number | null"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/active-context.ActiveSelection",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 42,
+        "file": "src/core/cadence.ts",
+        "line": 29
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 30
+          },
+          "default": null,
+          "name": "words",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 31
+          },
+          "default": null,
+          "name": "sentences",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 32
+          },
+          "default": null,
+          "name": "sentenceMean",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 34
+          },
+          "default": null,
+          "doc": "Population standard deviation, matching score.py's `st.pstdev`.",
+          "name": "sentenceSd",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 36
+          },
+          "default": null,
+          "doc": "Mean words per breath group \u2014 the headline number. David \u2248 11.5.",
+          "name": "breathGroupMean",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 37
+          },
+          "default": null,
+          "name": "breaksPer100",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 38
+          },
+          "default": null,
+          "name": "emDash",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 39
+          },
+          "default": null,
+          "name": "antiVoice",
+          "type": "string[]"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 40
+          },
+          "default": null,
+          "name": "bookends",
+          "type": "string[]"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 41
+          },
+          "default": null,
+          "name": "missingTerms",
+          "type": "string[]"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/cadence.CadenceMeasurements",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 60,
+        "file": "src/core/cadence.ts",
+        "line": 44
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 46
+          },
+          "default": null,
+          "doc": "Stable key, so a UI can flag one rule without matching on prose.",
+          "name": "key",
+          "type": "| 'length' | 'breath-group' | 'break-density' | 'sentence-variation' | 'em-dash' | 'mandatory-terms' | 'anti-voice' | 'bookends'"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 55
+          },
+          "default": null,
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 56
+          },
+          "default": null,
+          "name": "pass",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 58
+          },
+          "default": null,
+          "doc": "What was measured, and what was required \u2014 both, always.",
+          "name": "actual",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 59
+          },
+          "default": null,
+          "name": "target",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/cadence.CadenceRule",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 68,
+        "file": "src/core/cadence.ts",
+        "line": 62
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 63
+          },
+          "default": null,
+          "name": "pass",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 64
+          },
+          "default": null,
+          "name": "measurements",
+          "type": "CadenceMeasurements \u2192 src/core/cadence.CadenceMeasurements"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 65
+          },
+          "default": null,
+          "name": "rules",
+          "type": "CadenceRule[] \u2192 src/core/cadence.CadenceRule"
+        },
+        {
+          "anchor": {
+            "file": "src/core/cadence.ts",
+            "line": 67
+          },
+          "default": null,
+          "doc": "Which envelope this was judged against. Never anonymous.",
+          "name": "envelopeSource",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/cadence.CadenceScore",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 90,
+        "file": "src/core/handlers.ts",
+        "line": 77
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 78
+          },
+          "default": null,
+          "name": "repository",
+          "type": "Repository \u2192 src/core/repository.Repository"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 79
+          },
+          "default": null,
+          "name": "active",
+          "type": "ActiveContextHolder"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 81
+          },
+          "default": null,
+          "doc": "The session's brand/project context (W6, door 2 + door 3). Never persisted.",
+          "name": "openContext",
+          "type": "OpenContextHolder"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 82
+          },
+          "default": null,
+          "name": "confirmations",
+          "type": "ConfirmationLedger"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 83
+          },
+          "default": null,
+          "name": "principal",
+          "type": "Principal \u2192 Principal (@shared/capabilities)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 84
+          },
+          "default": null,
+          "name": "capability",
+          "type": "CapabilityMeta \u2192 CapabilityMeta (@shared/capabilities)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 86
+          },
+          "default": null,
+          "doc": "True when the caller asked for a preview rather than an act.",
+          "name": "dryRun",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 87
+          },
+          "default": null,
+          "name": "confirmationId",
+          "type": "?: string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 89
+          },
+          "default": null,
+          "doc": "Hand the prior state to the audit log. Call it before you overwrite.",
+          "name": "recordPrior",
+          "type": "(prior: unknown) => void"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/handlers.HandlerContext",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 136,
+        "file": "src/core/handlers.ts",
+        "line": 131
+      },
+      "bases": [],
+      "doc": null,
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 132
+          },
+          "default": null,
+          "name": "document",
+          "type": "RepositoryDocument \u2192 src/core/repository.RepositoryDocument"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 133
+          },
+          "default": null,
+          "name": "set",
+          "type": "ScriptSet \u2192 ScriptSet (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 134
+          },
+          "default": null,
+          "name": "script",
+          "type": "Script \u2192 Script (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/handlers.ts",
+            "line": 135
+          },
+          "default": null,
+          "name": "transcript",
+          "type": "Transcript \u2192 Transcript (@shared/domain)"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/handlers.Resolved",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "file": "src/core/handlers.ts",
+        "line": 315
+      },
+      "bases": [
+        "ScriptSet"
+      ],
+      "doc": null,
+      "exported": false,
+      "fields": [],
+      "grade": "declared",
+      "id": "src/core/handlers.MaybeUnreadable",
+      "kind": "type"
+    },
+    {
+      "anchor": {
+        "end_line": 46,
+        "file": "src/core/index.ts",
+        "line": 40
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 41
+          },
+          "default": null,
+          "name": "repository",
+          "type": "Repository \u2192 src/core/repository.Repository"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 43
+          },
+          "default": null,
+          "doc": "Injectable so every time-dependent control is testable without sleeping.",
+          "name": "clock",
+          "type": "?: Clock \u2192 src/core/safety.Clock"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 45
+          },
+          "default": null,
+          "doc": "Where audit entries go beyond the in-memory ring \u2014 a logger, usually.",
+          "name": "auditSink",
+          "type": "?: (entry: AuditEntry) => void \u2192 src/core/safety.AuditEntry"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/index.CoreOptions",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 51,
+        "file": "src/core/index.ts",
+        "line": 48
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 49
+          },
+          "default": null,
+          "name": "principal",
+          "type": "Principal \u2192 Principal (@shared/capabilities)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 50
+          },
+          "default": null,
+          "name": "idempotencyKey",
+          "type": "?: string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/index.InvokeOptions",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 67,
+        "file": "src/core/index.ts",
+        "line": 63
+      },
+      "bases": [],
+      "doc": "Emitted after a command actually changes the DATA \u2014 not on a query, not on a",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 64
+          },
+          "default": null,
+          "name": "capability",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 65
+          },
+          "default": null,
+          "name": "principal",
+          "type": "Principal \u2192 Principal (@shared/capabilities)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 66
+          },
+          "default": null,
+          "name": "at",
+          "type": "number"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/index.ChangeEvent",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 79,
+        "file": "src/core/index.ts",
+        "line": 69
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 70
+          },
+          "default": null,
+          "name": "invoke",
+          "type": "(name: string, input: unknown, options: InvokeOptions): Promise<InvokeResult>"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 72
+          },
+          "default": null,
+          "doc": "Subscribe to state changes. Returns an unsubscribe function.",
+          "name": "onChange",
+          "type": "(listener: (event: ChangeEvent) => void): () => void"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 74
+          },
+          "default": null,
+          "doc": "The renderer's own selection state, so the UI can drive it directly.",
+          "name": "active",
+          "type": "ActiveContextHolder"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 76
+          },
+          "default": null,
+          "doc": "The session's brand/project context (W6) \u2014 set by door 2 or `context_select`, never persisted.",
+          "name": "openContext",
+          "type": "OpenContextHolder"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 77
+          },
+          "default": null,
+          "name": "audit",
+          "type": "AuditLog"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 78
+          },
+          "default": null,
+          "name": "repository",
+          "type": "Repository \u2192 src/core/repository.Repository"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/index.Core",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 330,
+        "file": "src/core/input-shapes.ts",
+        "line": 317
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 318
+          },
+          "default": null,
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 319
+          },
+          "default": null,
+          "name": "type",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 320
+          },
+          "default": null,
+          "name": "required",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 328
+          },
+          "default": null,
+          "doc": "Present when omitting the field APPLIES A VALUE rather than leaving it",
+          "name": "default",
+          "type": "?: unknown"
+        },
+        {
+          "anchor": {
+            "file": "src/core/input-shapes.ts",
+            "line": 329
+          },
+          "default": null,
+          "name": "note",
+          "type": "?: string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/input-shapes.InputField",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 52,
+        "file": "src/core/open-context.ts",
+        "line": 45
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 46
+          },
+          "default": null,
+          "name": "code",
+          "type": "OpenRefusalCode \u2192 src/core/open-context.OpenRefusalCode"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 47
+          },
+          "default": null,
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 49
+          },
+          "default": null,
+          "doc": "Present only when `code === 'missing'`.",
+          "name": "missing",
+          "type": "?: string[]"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 51
+          },
+          "default": null,
+          "doc": "Present only when `code === 'project-ambiguous'`: every folder that matched.",
+          "name": "candidates",
+          "type": "?: string[]"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/open-context.OpenRefusal",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 63,
+        "file": "src/core/open-context.ts",
+        "line": 54
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 56
+          },
+          "default": null,
+          "doc": "`brands.json` key.",
+          "name": "brand",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 58
+          },
+          "default": null,
+          "doc": "This machine's absolute root for that brand (A5).",
+          "name": "brandRoot",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 60
+          },
+          "default": null,
+          "doc": "The FliHub folder name, verbatim \u2014 the same identity `ScriptSet.project` already uses.",
+          "name": "project",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 62
+          },
+          "default": null,
+          "doc": "`'project'` when the folder holds a valid `fli.studio.json`; `'folder'` otherwise (see file header).",
+          "name": "membership",
+          "type": "'project' | 'folder'"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/open-context.OpenContext",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 67,
+        "file": "src/core/open-context.ts",
+        "line": 65
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 66
+          },
+          "default": null,
+          "name": "resolved",
+          "type": "{ kind: 'resolved'; context: OpenContext }"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 67
+          },
+          "default": null,
+          "name": "refused",
+          "type": "{ kind: 'refused'; refusal: OpenRefusal }"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/open-context.OpenResolution",
+      "kind": "type-union on `kind`"
+    },
+    {
+      "anchor": {
+        "file": "src/core/open-context.ts",
+        "line": 66
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 66
+          },
+          "default": null,
+          "name": "kind",
+          "type": "'resolved'"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 66
+          },
+          "default": null,
+          "name": "context",
+          "type": "OpenContext \u2192 src/core/open-context.OpenContext"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/open-context.OpenResolution[kind=resolved]",
+      "kind": "type"
+    },
+    {
+      "anchor": {
+        "file": "src/core/open-context.ts",
+        "line": 67
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 67
+          },
+          "default": null,
+          "name": "kind",
+          "type": "'refused'"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 67
+          },
+          "default": null,
+          "name": "refusal",
+          "type": "OpenRefusal \u2192 src/core/open-context.OpenRefusal"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/open-context.OpenResolution[kind=refused]",
+      "kind": "type"
+    },
+    {
+      "anchor": {
+        "end_line": 72,
+        "file": "src/core/open-context.ts",
+        "line": 69
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 71
+          },
+          "default": null,
+          "doc": "Home directory; default `os.homedir()`. Tests inject a fixture home so nothing real is ever touched.",
+          "name": "home",
+          "type": "?: string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/open-context.ResolveOpenArgsOptions",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 242,
+        "file": "src/core/open-context.ts",
+        "line": 239
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 240
+          },
+          "default": null,
+          "name": "context",
+          "type": "OpenContext | null \u2192 src/core/open-context.OpenContext"
+        },
+        {
+          "anchor": {
+            "file": "src/core/open-context.ts",
+            "line": 241
+          },
+          "default": null,
+          "name": "refused",
+          "type": "?: OpenRefusal \u2192 src/core/open-context.OpenRefusal"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/open-context.ContextReport",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 101,
+        "file": "src/core/project-store.ts",
+        "line": 98
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/project-store.ts",
+            "line": 99
+          },
+          "default": null,
+          "name": "file",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/project-store.ts",
+            "line": 100
+          },
+          "default": null,
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/project-store.UnreadableProjectFile",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 33,
+        "file": "src/core/repository.ts",
+        "line": 24
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/repository.ts",
+            "line": 26
+          },
+          "default": null,
+          "doc": "Bumped when the on-disk shape changes; read before trusting the contents.",
+          "name": "version",
+          "type": "2"
+        },
+        {
+          "anchor": {
+            "file": "src/core/repository.ts",
+            "line": 27
+          },
+          "default": null,
+          "name": "sets",
+          "type": "ScriptSet[] \u2192 ScriptSet (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/repository.ts",
+            "line": 28
+          },
+          "default": null,
+          "name": "talents",
+          "type": "Talent[] \u2192 Talent (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/repository.ts",
+            "line": 30
+          },
+          "default": null,
+          "doc": "Named arrangements \u2014 see `src/shared/rig.ts`.",
+          "name": "rigs",
+          "type": "Rig[] \u2192 Rig (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/repository.ts",
+            "line": 32
+          },
+          "default": null,
+          "doc": "The layout the talent last had on screen, restored on the next launch.",
+          "name": "workspace",
+          "type": "Workspace \u2192 Workspace (@shared/rig)"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/repository.RepositoryDocument",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 75,
+        "file": "src/core/repository.ts",
+        "line": 66
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/repository.ts",
+            "line": 67
+          },
+          "default": null,
+          "name": "read",
+          "type": "(): Promise<RepositoryDocument>"
+        },
+        {
+          "anchor": {
+            "file": "src/core/repository.ts",
+            "line": 69
+          },
+          "default": null,
+          "doc": "Read \u2192 mutate \u2192 write, serialised end-to-end. The only way to change data.",
+          "name": "update",
+          "type": "<T>(fn: (document: RepositoryDocument) => { document: RepositoryDocument; result: T; }): Promise<T>"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/repository.Repository",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 120,
+        "file": "src/core/safety.ts",
+        "line": 107
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 108
+          },
+          "default": null,
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 109
+          },
+          "default": null,
+          "name": "capability",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 111
+          },
+          "default": null,
+          "doc": "Who asked for it. An approval must be able to say what it is approving.",
+          "name": "requestedBy",
+          "type": "Principal \u2192 Principal (@shared/capabilities)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 113
+          },
+          "default": null,
+          "doc": "Human-readable consequences \u2014 what would be removed, not what was intended.",
+          "name": "preview",
+          "type": "unknown"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 115
+          },
+          "default": null,
+          "doc": "The exact input the approval is good for. A different input is a different act.",
+          "name": "inputFingerprint",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 116
+          },
+          "default": null,
+          "name": "createdAt",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 117
+          },
+          "default": null,
+          "name": "expiresAt",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 118
+          },
+          "default": null,
+          "name": "approved",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 119
+          },
+          "default": null,
+          "name": "approvedAt",
+          "type": "number | null"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/safety.PendingAction",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 303,
+        "file": "src/core/safety.ts",
+        "line": 288
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 289
+          },
+          "default": null,
+          "name": "at",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 291
+          },
+          "default": null,
+          "doc": "Human or agent \u2014 distinguishably. You must be able to answer \"who did this\".",
+          "name": "principal",
+          "type": "Principal \u2192 Principal (@shared/capabilities)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 292
+          },
+          "default": null,
+          "name": "capability",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 293
+          },
+          "default": null,
+          "name": "input",
+          "type": "unknown"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 294
+          },
+          "default": null,
+          "name": "ok",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 295
+          },
+          "default": null,
+          "name": "errorCode",
+          "type": "?: ErrorCode \u2192 ErrorCode (@shared/capabilities)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 300
+          },
+          "default": null,
+          "doc": "What it changed. Cheap to add now, expensive to retrofit, and the only",
+          "name": "prior",
+          "type": "?: unknown"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 301
+          },
+          "default": null,
+          "name": "dryRun",
+          "type": "?: boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/safety.ts",
+            "line": 302
+          },
+          "default": null,
+          "name": "replayed",
+          "type": "?: boolean"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/safety.AuditEntry",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 33,
+        "file": "src/core/text-script.ts",
+        "line": 21
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/text-script.ts",
+            "line": 23
+          },
+          "default": null,
+          "doc": "Script id; defaults to the slug of `name`.",
+          "name": "id",
+          "type": "?: string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/text-script.ts",
+            "line": 24
+          },
+          "default": null,
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/text-script.ts",
+            "line": 25
+          },
+          "default": null,
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/text-script.ts",
+            "line": 26
+          },
+          "default": null,
+          "name": "video",
+          "type": "?: string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/core/text-script.ts",
+            "line": 27
+          },
+          "default": null,
+          "name": "takeaway",
+          "type": "?: string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/text-script.ts",
+            "line": 28
+          },
+          "default": null,
+          "name": "source",
+          "type": "?: string"
+        },
+        {
+          "anchor": {
+            "file": "src/core/text-script.ts",
+            "line": 29
+          },
+          "default": null,
+          "name": "triggers",
+          "type": "?: { style: TriggerStyle; items: { text: string; paragraph: number }[]; } \u2192 TriggerStyle (@shared/domain)"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/text-script.TextScriptInput",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 32,
+        "file": "src/core/text-script.ts",
+        "line": 29
+      },
+      "bases": [],
+      "doc": null,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/text-script.ts",
+            "line": 30
+          },
+          "default": null,
+          "name": "style",
+          "type": "TriggerStyle \u2192 TriggerStyle (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/core/text-script.ts",
+            "line": 31
+          },
+          "default": null,
+          "name": "items",
+          "type": "{ text: string; paragraph: number }[]"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/text-script.TextScriptInput.triggers",
+      "kind": "type"
+    },
+    {
+      "anchor": {
+        "end_line": 42,
+        "file": "src/main/control-server.ts",
+        "line": 35
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 36
+          },
+          "default": null,
+          "name": "core",
+          "type": "Core \u2192 src/core/index.Core"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 38
+          },
+          "default": null,
+          "doc": "Where the discovery file goes \u2014 `app.getPath('userData')` in production.",
+          "name": "userDataPath",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 39
+          },
+          "default": null,
+          "name": "port",
+          "type": "?: number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 40
+          },
+          "default": null,
+          "name": "appVersion",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 41
+          },
+          "default": null,
+          "name": "log",
+          "type": "?: (message: string, detail?: unknown) => void"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/control-server.ControlServerOptions",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 51,
+        "file": "src/main/control-server.ts",
+        "line": 44
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 45
+          },
+          "default": null,
+          "name": "port",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 47
+          },
+          "default": null,
+          "doc": "The interface actually bound. Always 127.0.0.1; asserted by a test.",
+          "name": "address",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 48
+          },
+          "default": null,
+          "name": "token",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 49
+          },
+          "default": null,
+          "name": "discoveryPath",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/control-server.ts",
+            "line": 50
+          },
+          "default": null,
+          "name": "close",
+          "type": "(): Promise<void>"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/control-server.ControlServerHandle",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 12,
+        "file": "src/main/create-console.ts",
+        "line": 7
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/create-console.ts",
+            "line": 8
+          },
+          "default": null,
+          "name": "logger",
+          "type": "Logger \u2192 Logger (@appydave/core)"
+        },
+        {
+          "anchor": {
+            "file": "src/main/create-console.ts",
+            "line": 9
+          },
+          "default": null,
+          "name": "windows",
+          "type": "WindowManager"
+        },
+        {
+          "anchor": {
+            "file": "src/main/create-console.ts",
+            "line": 10
+          },
+          "default": null,
+          "name": "ipc",
+          "type": "IpcRouter"
+        },
+        {
+          "anchor": {
+            "file": "src/main/create-console.ts",
+            "line": 11
+          },
+          "default": null,
+          "name": "processes",
+          "type": "ProcessSupervisor"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/create-console.ConsoleContext",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 17,
+        "file": "src/main/create-console.ts",
+        "line": 14
+      },
+      "bases": [
+        "ConsoleContext"
+      ],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/create-console.ts",
+            "line": 15
+          },
+          "default": null,
+          "name": "lifecycle",
+          "type": "Lifecycle \u2192 Lifecycle (@appydave/core)"
+        },
+        {
+          "anchor": {
+            "file": "src/main/create-console.ts",
+            "line": 16
+          },
+          "default": null,
+          "name": "start",
+          "type": "(): Promise<void>"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/create-console.Console",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 26,
+        "file": "src/main/create-console.ts",
+        "line": 19
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/create-console.ts",
+            "line": 21
+          },
+          "default": null,
+          "doc": "App name \u2014 used as the logger binding.",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/create-console.ts",
+            "line": 23
+          },
+          "default": null,
+          "doc": "Register IPC handlers before the first window opens.",
+          "name": "registerIpc",
+          "type": "?: (ctx: ConsoleContext) => void \u2192 src/main/create-console.ConsoleContext"
+        },
+        {
+          "anchor": {
+            "file": "src/main/create-console.ts",
+            "line": 25
+          },
+          "default": null,
+          "doc": "Called once the app is ready \u2014 open your window(s) here.",
+          "name": "onReady",
+          "type": "(ctx: ConsoleContext) => void \u2192 src/main/create-console.ConsoleContext"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/create-console.CreateConsoleOptions",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 14,
+        "file": "src/main/file-author.ts",
+        "line": 9
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/file-author.ts",
+            "line": 11
+          },
+          "default": null,
+          "doc": "The scoped root. Every write/delete MUST resolve inside this directory.",
+          "name": "root",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/file-author.ts",
+            "line": 13
+          },
+          "default": null,
+          "doc": "Git-commit each change (a revert point per write). Default true.",
+          "name": "git",
+          "type": "?: boolean"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/file-author.FileAuthorOptions",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 22,
+        "file": "src/main/file-author.ts",
+        "line": 16
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/file-author.ts",
+            "line": 18
+          },
+          "default": null,
+          "doc": "Path relative to root.",
+          "name": "path",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/file-author.ts",
+            "line": 19
+          },
+          "default": null,
+          "name": "committed",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/main/file-author.ts",
+            "line": 21
+          },
+          "default": null,
+          "doc": "Commit SHA when committed.",
+          "name": "commit",
+          "type": "?: string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/file-author.AuthorResult",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 10,
+        "file": "src/main/ipc-router.ts",
+        "line": 4
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/ipc-router.ts",
+            "line": 6
+          },
+          "default": null,
+          "doc": "Channel name (from `@shared/ipc`'s `IPC` map).",
+          "name": "channel",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/ipc-router.ts",
+            "line": 8
+          },
+          "default": null,
+          "doc": "Optional Zod schema \u2014 the payload is validated before `handle` runs.",
+          "name": "input",
+          "type": "?: z.ZodType<In> \u2192 \"/Users/davidcruwys/dev/ad/flivideo/teletubby/node_modules/zod/v3/external\" (@appydave/core), ZodType (node_modules/zod/v3/types.d.cts)"
+        },
+        {
+          "anchor": {
+            "file": "src/main/ipc-router.ts",
+            "line": 9
+          },
+          "default": null,
+          "name": "handle",
+          "type": "(input: In) => Promise<Out> | Out \u2192 Promise (node_modules/typescript/lib/lib.es2015.promise.d.ts)"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/ipc-router.HandlerDef",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 9,
+        "file": "src/main/process-supervisor.ts",
+        "line": 4
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 5
+          },
+          "default": null,
+          "name": "command",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 6
+          },
+          "default": null,
+          "name": "args",
+          "type": "?: string[]"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 7
+          },
+          "default": null,
+          "name": "cwd",
+          "type": "?: string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 8
+          },
+          "default": null,
+          "name": "env",
+          "type": "?: NodeJS.ProcessEnv \u2192 NodeJS (node_modules/@types/node/compatibility/iterators.d.ts), ProcessEnv (node_modules/@types/node/process.d.ts)"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/process-supervisor.SpawnOptions",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 15,
+        "file": "src/main/process-supervisor.ts",
+        "line": 12
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 13
+          },
+          "default": null,
+          "name": "stream",
+          "type": "'stdout' | 'stderr'"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 14
+          },
+          "default": null,
+          "name": "data",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/process-supervisor.LogChunk",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 24,
+        "file": "src/main/process-supervisor.ts",
+        "line": 17
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 18
+          },
+          "default": null,
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 19
+          },
+          "default": null,
+          "name": "pid",
+          "type": "number | undefined"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 20
+          },
+          "default": null,
+          "name": "status",
+          "type": "ProcessStatus \u2192 src/main/process-supervisor.ProcessStatus"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 21
+          },
+          "default": null,
+          "name": "onLog",
+          "type": "(cb: (chunk: LogChunk) => void): () => void"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 22
+          },
+          "default": null,
+          "name": "onExit",
+          "type": "(cb: (code: number | null) => void): () => void"
+        },
+        {
+          "anchor": {
+            "file": "src/main/process-supervisor.ts",
+            "line": 23
+          },
+          "default": null,
+          "name": "stop",
+          "type": "(signal?: NodeJS.Signals): void"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/process-supervisor.ManagedProcess",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 12,
+        "file": "src/main/updater.ts",
+        "line": 7
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 8
+          },
+          "default": null,
+          "name": "status",
+          "type": "UpdateStatus \u2192 src/main/updater.UpdateStatus"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 9
+          },
+          "default": null,
+          "name": "version",
+          "type": "?: string"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 10
+          },
+          "default": null,
+          "name": "percent",
+          "type": "?: number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 11
+          },
+          "default": null,
+          "name": "error",
+          "type": "?: string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/updater.UpdateState",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 18,
+        "file": "src/main/updater.ts",
+        "line": 14
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 15
+          },
+          "default": null,
+          "name": "logger",
+          "type": "?: Logger \u2192 Logger (@appydave/core)"
+        },
+        {
+          "anchor": {
+            "file": "src/main/updater.ts",
+            "line": 17
+          },
+          "default": null,
+          "doc": "Auto-download once an update is found. Default false (user-initiated).",
+          "name": "autoDownload",
+          "type": "?: boolean"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/updater.UpdaterOptions",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 13,
+        "file": "src/main/window-manager.ts",
+        "line": 4
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/window-manager.ts",
+            "line": 5
+          },
+          "default": null,
+          "name": "width",
+          "type": "?: number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/window-manager.ts",
+            "line": 6
+          },
+          "default": null,
+          "name": "height",
+          "type": "?: number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/window-manager.ts",
+            "line": 8
+          },
+          "default": null,
+          "doc": "Omitted \u2192 Electron centres the window. Pass both to restore a saved spot.",
+          "name": "x",
+          "type": "?: number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/window-manager.ts",
+            "line": 9
+          },
+          "default": null,
+          "name": "y",
+          "type": "?: number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/window-manager.ts",
+            "line": 10
+          },
+          "default": null,
+          "name": "minWidth",
+          "type": "?: number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/window-manager.ts",
+            "line": 11
+          },
+          "default": null,
+          "name": "minHeight",
+          "type": "?: number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/window-manager.ts",
+            "line": 12
+          },
+          "default": null,
+          "name": "title",
+          "type": "?: string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/window-manager.WindowOptions",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 29,
+        "file": "src/renderer/src/components/CadencePanel.tsx",
+        "line": 23
+      },
+      "bases": [],
+      "doc": "WHAT \"CADENCE\" ACTUALLY MEANS, shown in the app.",
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/components/CadencePanel.tsx",
+            "line": 24
+          },
+          "default": null,
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/components/CadencePanel.tsx",
+            "line": 25
+          },
+          "default": null,
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/components/CadencePanel.tsx",
+            "line": 26
+          },
+          "default": null,
+          "name": "pass",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/components/CadencePanel.tsx",
+            "line": 27
+          },
+          "default": null,
+          "name": "actual",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/components/CadencePanel.tsx",
+            "line": 28
+          },
+          "default": null,
+          "name": "target",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/renderer/src/components/CadencePanel.Rule",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 35,
+        "file": "src/renderer/src/components/CadencePanel.tsx",
+        "line": 31
+      },
+      "bases": [],
+      "doc": null,
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/components/CadencePanel.tsx",
+            "line": 32
+          },
+          "default": null,
+          "name": "pass",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/components/CadencePanel.tsx",
+            "line": 33
+          },
+          "default": null,
+          "name": "rules",
+          "type": "Rule[] \u2192 src/renderer/src/components/CadencePanel.Rule"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/components/CadencePanel.tsx",
+            "line": 34
+          },
+          "default": null,
+          "name": "envelopeSource",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/renderer/src/components/CadencePanel.Score",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 101,
+        "file": "src/renderer/src/store.ts",
+        "line": 96
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 97
+          },
+          "default": null,
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 98
+          },
+          "default": null,
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 100
+          },
+          "default": null,
+          "doc": "Changes on every cue so the component can restart its dismiss timer.",
+          "name": "token",
+          "type": "number"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/renderer/src/store.CueCard",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 245,
+        "file": "src/renderer/src/store.ts",
+        "line": 103
+      },
+      "bases": [],
+      "doc": null,
+      "exported": false,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 105
+          },
+          "default": null,
+          "doc": "Null until the control API answers. The UI shows a waiting state, not an error.",
+          "name": "set",
+          "type": "ScriptSet | null \u2192 ScriptSet (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 106
+          },
+          "default": null,
+          "name": "scriptId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 107
+          },
+          "default": null,
+          "name": "transcriptId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 108
+          },
+          "default": null,
+          "name": "style",
+          "type": "TriggerStyle | null \u2192 TriggerStyle (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 111
+          },
+          "default": null,
+          "doc": "Index into the ACTIVE trigger set. THE position \u2014 everything derives from it.",
+          "name": "step",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 113
+          },
+          "default": null,
+          "name": "visible",
+          "type": "RecordingZone[] \u2192 RecordingZone (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 114
+          },
+          "default": null,
+          "name": "driven",
+          "type": "RecordingZone \u2192 RecordingZone (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 120
+          },
+          "default": null,
+          "doc": "Flex weight per zone, adjusted by dragging a divider. Relative, not pixels,",
+          "name": "weights",
+          "type": "Record<RecordingZone, number> \u2192 Record (node_modules/typescript/lib/lib.es5.d.ts), RecordingZone (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 121
+          },
+          "default": null,
+          "name": "camera",
+          "type": "CameraSide \u2192 CameraSide (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 123
+          },
+          "default": null,
+          "doc": "The full-transcript skim surface. Overlays; never displaces (see below).",
+          "name": "transcriptOpen",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 124
+          },
+          "default": null,
+          "name": "transcriptEdge",
+          "type": "CameraSide \u2192 CameraSide (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 141
+          },
+          "default": null,
+          "doc": "The setup panel \u2014 everything that BUILDS an arrangement, in one slide-out.",
+          "name": "setupOpen",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 143
+          },
+          "default": null,
+          "name": "mirror",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 144
+          },
+          "default": null,
+          "name": "focus",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 145
+          },
+          "default": null,
+          "name": "text",
+          "type": "TextPreset \u2192 TextPreset (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 155
+          },
+          "default": null,
+          "doc": "Named arrangements, and the one currently applied.",
+          "name": "rigs",
+          "type": "Rig[] \u2192 Rig (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 156
+          },
+          "default": null,
+          "name": "rigId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 165
+          },
+          "default": null,
+          "doc": "Whether the stored workspace has actually been read.",
+          "name": "rigsLoaded",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 172
+          },
+          "default": null,
+          "doc": "Whether a stored arrangement was actually applied \u2014 as opposed to the app",
+          "name": "restoredLayout",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 180
+          },
+          "default": null,
+          "doc": "The saved position, held between `loadRigs` (which recalls it) and `load`",
+          "name": "pendingPosition",
+          "type": "WorkspacePosition | null \u2192 WorkspacePosition (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 191
+          },
+          "default": null,
+          "doc": "Transcripts that arrived or changed since the talent last looked at them \u2014",
+          "name": "freshTranscripts",
+          "type": "Record<string, string[]> \u2192 Record (node_modules/typescript/lib/lib.es5.d.ts)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 193
+          },
+          "default": null,
+          "name": "cue",
+          "type": "CueCard | null \u2192 src/renderer/src/store.CueCard"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 195
+          },
+          "default": null,
+          "doc": "Increments each time a step was refused at the boundary, to replay the nudge.",
+          "name": "nudge",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 197
+          },
+          "default": null,
+          "name": "load",
+          "type": "(set: ScriptSet) => void \u2192 ScriptSet (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 198
+          },
+          "default": null,
+          "name": "refresh",
+          "type": "(set: ScriptSet) => void \u2192 ScriptSet (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 199
+          },
+          "default": null,
+          "name": "stepNext",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 200
+          },
+          "default": null,
+          "name": "stepPrev",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 201
+          },
+          "default": null,
+          "name": "selectScript",
+          "type": "(scriptId: string) => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 202
+          },
+          "default": null,
+          "name": "goToNextScript",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 203
+          },
+          "default": null,
+          "name": "goToPrevScript",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 204
+          },
+          "default": null,
+          "name": "selectTranscript",
+          "type": "(transcriptId: string) => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 205
+          },
+          "default": null,
+          "name": "selectStyle",
+          "type": "(style: TriggerStyle) => void \u2192 TriggerStyle (@shared/domain)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 206
+          },
+          "default": null,
+          "name": "toggleZone",
+          "type": "(zone: RecordingZone) => void \u2192 RecordingZone (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 207
+          },
+          "default": null,
+          "name": "setDriven",
+          "type": "(zone: RecordingZone) => void \u2192 RecordingZone (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 208
+          },
+          "default": null,
+          "name": "setCamera",
+          "type": "(side: CameraSide) => void \u2192 CameraSide (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 209
+          },
+          "default": null,
+          "name": "resizeZones",
+          "type": "(left: RecordingZone, right: RecordingZone, deltaPx: number) => void \u2192 RecordingZone (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 210
+          },
+          "default": null,
+          "name": "toggleTranscript",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 211
+          },
+          "default": null,
+          "name": "toggleSetup",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 212
+          },
+          "default": null,
+          "name": "closeSetup",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 213
+          },
+          "default": null,
+          "name": "toggleMirror",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 214
+          },
+          "default": null,
+          "name": "toggleFocus",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 215
+          },
+          "default": null,
+          "name": "setText",
+          "type": "(preset: TextPreset) => void \u2192 TextPreset (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 216
+          },
+          "default": null,
+          "name": "loadRigs",
+          "type": "(rigs: Rig[], workspace: Workspace) => void \u2192 Rig (@shared/rig), Workspace (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 217
+          },
+          "default": null,
+          "name": "setRigs",
+          "type": "(rigs: Rig[]) => void \u2192 Rig (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 224
+          },
+          "default": null,
+          "doc": "Every set (project) in the store, as summaries \u2014 for the setup panel's",
+          "name": "sets",
+          "type": "SetSummary[] \u2192 src/renderer/src/store.SetSummary"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 225
+          },
+          "default": null,
+          "name": "setSets",
+          "type": "(sets: SetSummary[]) => void \u2192 src/renderer/src/store.SetSummary"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 227
+          },
+          "default": null,
+          "doc": "The session's open project (W6 `context_get`), or null. Never persisted, like the context itself.",
+          "name": "openProject",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 229
+          },
+          "default": null,
+          "doc": "Records the open project; a CHANGE of project resets the filter to it.",
+          "name": "setOpenProject",
+          "type": "(project: string | null) => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 230
+          },
+          "default": null,
+          "name": "setFilter",
+          "type": "SetFilter \u2192 src/renderer/src/store.SetFilter"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 231
+          },
+          "default": null,
+          "name": "setSetFilter",
+          "type": "(filter: SetFilter) => void \u2192 src/renderer/src/store.SetFilter"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 233
+          },
+          "default": null,
+          "doc": "Non-null while a change event is holding the on-stage data (W6 S1/S2).",
+          "name": "stageHold",
+          "type": "StageHold | null \u2192 src/renderer/src/store.StageHold"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 234
+          },
+          "default": null,
+          "name": "setStageHold",
+          "type": "(hold: StageHold | null) => void \u2192 src/renderer/src/store.StageHold"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 236
+          },
+          "default": null,
+          "doc": "The open project's fli.tubby.json when it cannot be read, else null.",
+          "name": "unreadableFile",
+          "type": "UnreadableFile | null \u2192 src/renderer/src/store.UnreadableFile"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 237
+          },
+          "default": null,
+          "name": "setUnreadableFile",
+          "type": "(file: UnreadableFile | null) => void \u2192 src/renderer/src/store.UnreadableFile"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 238
+          },
+          "default": null,
+          "name": "requestedSetId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 239
+          },
+          "default": null,
+          "name": "requestSet",
+          "type": "(setId: string) => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 240
+          },
+          "default": null,
+          "name": "clearRequestedSet",
+          "type": "() => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 241
+          },
+          "default": null,
+          "name": "applyRig",
+          "type": "(rigId: string) => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 242
+          },
+          "default": null,
+          "name": "adoptRig",
+          "type": "(rig: Rig) => void \u2192 Rig (@shared/rig)"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 243
+          },
+          "default": null,
+          "name": "forgetRig",
+          "type": "(rigId: string) => void"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 244
+          },
+          "default": null,
+          "name": "dismissCue",
+          "type": "() => void"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/renderer/src/store.PrompterState",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 270,
+        "file": "src/renderer/src/store.ts",
+        "line": 252
+      },
+      "bases": [],
+      "doc": "What `list_sets` answers with \u2014 a project row for the setup panel.",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 253
+          },
+          "default": null,
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 254
+          },
+          "default": null,
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 255
+          },
+          "default": null,
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 257
+          },
+          "default": null,
+          "doc": "The FliHub folder name, verbatim, or null for an unattached set.",
+          "name": "project",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 258
+          },
+          "default": null,
+          "name": "scriptCount",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 260
+          },
+          "default": null,
+          "doc": "Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy.",
+          "name": "exportedTo",
+          "type": "?: string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 262
+          },
+          "default": null,
+          "doc": "An exported store copy seen without its project open \u2014 listed, never editable.",
+          "name": "readOnly",
+          "type": "?: boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 263
+          },
+          "default": null,
+          "name": "livesIn",
+          "type": "?: string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 265
+          },
+          "default": null,
+          "doc": "A project's on-demand named scripts (`write_script`) \u2014 listed by name, newest first.",
+          "name": "onDemand",
+          "type": "?: boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 267
+          },
+          "default": null,
+          "doc": "Where this row's data was read from: the open project's fli.tubby.json, or the app store.",
+          "name": "source",
+          "type": "?: 'project' | 'store'"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 269
+          },
+          "default": null,
+          "doc": "The open project's fli.tubby.json cannot be read, and this set may live there \u2014 get_set refuses it.",
+          "name": "unreadable",
+          "type": "?: boolean"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/renderer/src/store.SetSummary",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 276,
+        "file": "src/renderer/src/store.ts",
+        "line": 273
+      },
+      "bases": [],
+      "doc": "`list_sets.filter.unreadable` \u2014 the project file that could not be read, named.",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 274
+          },
+          "default": null,
+          "name": "file",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 275
+          },
+          "default": null,
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/renderer/src/store.UnreadableFile",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 336,
+        "file": "src/renderer/src/store.ts",
+        "line": 333
+      },
+      "bases": [],
+      "doc": "Why the set on stage is being HELD rather than refreshed \u2014 shown by the",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 334
+          },
+          "default": null,
+          "name": "reason",
+          "type": "'project-closed' | 'unreadable'"
+        },
+        {
+          "anchor": {
+            "file": "src/renderer/src/store.ts",
+            "line": 335
+          },
+          "default": null,
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/renderer/src/store.StageHold",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 101,
+        "file": "src/shared/capabilities.ts",
+        "line": 73
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 74
+          },
+          "default": null,
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 76
+          },
+          "default": null,
+          "doc": "One line, written for a caller that has never seen this app.",
+          "name": "summary",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 77
+          },
+          "default": null,
+          "name": "kind",
+          "type": "CapabilityKind \u2192 src/shared/capabilities.CapabilityKind"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 78
+          },
+          "default": null,
+          "name": "sideEffects",
+          "type": "SideEffect \u2192 src/shared/capabilities.SideEffect"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 80
+          },
+          "default": null,
+          "doc": "Which surfaces may invoke it. A verb absent from `agent` is UI-only.",
+          "name": "principals",
+          "type": "readonly Principal[] \u2192 src/shared/capabilities.Principal"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 82
+          },
+          "default": null,
+          "doc": "Same input, same effect, however many times.",
+          "name": "idempotent",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 84
+          },
+          "default": null,
+          "doc": "Refuses to execute without an approved confirmation.",
+          "name": "confirmationRequired",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 86
+          },
+          "default": null,
+          "doc": "Accepts `dryRun: true` and returns a preview instead of acting.",
+          "name": "supportsDryRun",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 97
+          },
+          "default": null,
+          "doc": "Whether a real change here wakes every other client.",
+          "name": "announces",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 99
+          },
+          "default": null,
+          "doc": "Honours `idempotencyKey` and replays the original result on retry.",
+          "name": "supportsIdempotencyKey",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 100
+          },
+          "default": null,
+          "name": "failureModes",
+          "type": "readonly ErrorCode[] \u2192 src/shared/capabilities.ErrorCode"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/capabilities.CapabilityMeta",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 360,
+        "file": "src/shared/capabilities.ts",
+        "line": 355
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 356
+          },
+          "default": null,
+          "name": "capability",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 357
+          },
+          "default": null,
+          "name": "input",
+          "type": "?: unknown"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 359
+          },
+          "default": null,
+          "doc": "Retry-safe key. On repeat the ORIGINAL result comes back, not a new one.",
+          "name": "idempotencyKey",
+          "type": "?: string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/capabilities.InvokeRequest",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 367,
+        "file": "src/shared/capabilities.ts",
+        "line": 362
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 363
+          },
+          "default": null,
+          "name": "code",
+          "type": "ErrorCode \u2192 src/shared/capabilities.ErrorCode"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 364
+          },
+          "default": null,
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 366
+          },
+          "default": null,
+          "doc": "Structural detail an agent can act on \u2014 which field, which id.",
+          "name": "details",
+          "type": "?: unknown"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/capabilities.CapabilityError",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 370,
+        "file": "src/shared/capabilities.ts",
+        "line": 369
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 370
+          },
+          "default": null,
+          "name": "true",
+          "type": "{ ok: true; data: T; replayed?: boolean }"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 370
+          },
+          "default": null,
+          "name": "false",
+          "type": "{ ok: false; error: CapabilityError }"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/capabilities.InvokeResult",
+      "kind": "type-union on `ok`"
+    },
+    {
+      "anchor": {
+        "file": "src/shared/capabilities.ts",
+        "line": 370
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 370
+          },
+          "default": null,
+          "name": "ok",
+          "type": "false"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 370
+          },
+          "default": null,
+          "name": "error",
+          "type": "CapabilityError \u2192 src/shared/capabilities.CapabilityError"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/capabilities.InvokeResult[ok=false]",
+      "kind": "type"
+    },
+    {
+      "anchor": {
+        "file": "src/shared/capabilities.ts",
+        "line": 370
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 370
+          },
+          "default": null,
+          "name": "ok",
+          "type": "true"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 370
+          },
+          "default": null,
+          "name": "data",
+          "type": "T"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/capabilities.ts",
+            "line": 370
+          },
+          "default": null,
+          "name": "replayed",
+          "type": "?: boolean"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/capabilities.InvokeResult[ok=true]",
+      "kind": "type"
+    },
+    {
+      "anchor": {
+        "end_line": 102,
+        "file": "src/shared/domain.ts",
+        "line": 98
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 99
+          },
+          "default": null,
+          "name": "id",
+          "type": "ParagraphId \u2192 src/shared/domain.ParagraphId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 101
+          },
+          "default": null,
+          "doc": "Verbatim. For a provenance transcript this is never rewritten.",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.Paragraph",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 109,
+        "file": "src/shared/domain.ts",
+        "line": 105
+      },
+      "bases": [],
+      "doc": "Zone 2 in requirements \u00a71 \u2014 the sub-point under the heading.",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 106
+          },
+          "default": null,
+          "name": "id",
+          "type": "TopicId \u2192 src/shared/domain.TopicId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 107
+          },
+          "default": null,
+          "name": "heading",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 108
+          },
+          "default": null,
+          "name": "paragraphs",
+          "type": "Paragraph[] \u2192 src/shared/domain.Paragraph"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.MinorTopic",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 116,
+        "file": "src/shared/domain.ts",
+        "line": 112
+      },
+      "bases": [],
+      "doc": "Zone 1 in requirements \u00a71 \u2014 where you are in the script.",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 113
+          },
+          "default": null,
+          "name": "id",
+          "type": "TopicId \u2192 src/shared/domain.TopicId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 114
+          },
+          "default": null,
+          "name": "heading",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 115
+          },
+          "default": null,
+          "name": "minors",
+          "type": "MinorTopic[] \u2192 src/shared/domain.MinorTopic"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.MajorTopic",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 131,
+        "file": "src/shared/domain.ts",
+        "line": 127
+      },
+      "bases": [],
+      "doc": "One trigger \u2014 a single step in column 2, bound to the paragraph it belongs to.",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 128
+          },
+          "default": null,
+          "name": "id",
+          "type": "TriggerId \u2192 src/shared/domain.TriggerId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 129
+          },
+          "default": null,
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 130
+          },
+          "default": null,
+          "name": "paragraphId",
+          "type": "ParagraphId \u2192 src/shared/domain.ParagraphId"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.Trigger",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 139,
+        "file": "src/shared/domain.ts",
+        "line": 133
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 134
+          },
+          "default": null,
+          "name": "style",
+          "type": "TriggerStyle \u2192 src/shared/domain.TriggerStyle"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 135
+          },
+          "default": null,
+          "name": "authoredBy",
+          "type": "Authorship \u2192 src/shared/domain.Authorship"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 137
+          },
+          "default": null,
+          "doc": "Free text \u2014 where these came from, so a bad set can be traced and dropped.",
+          "name": "note",
+          "type": "?: string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 138
+          },
+          "default": null,
+          "name": "triggers",
+          "type": "Trigger[] \u2192 src/shared/domain.Trigger"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.TriggerSet",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 157,
+        "file": "src/shared/domain.ts",
+        "line": 141
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 142
+          },
+          "default": null,
+          "name": "id",
+          "type": "TranscriptId \u2192 src/shared/domain.TranscriptId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 143
+          },
+          "default": null,
+          "name": "kind",
+          "type": "TranscriptKind \u2192 src/shared/domain.TranscriptKind"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 150
+          },
+          "default": null,
+          "doc": "Which body of text this is a member of \u2014 `tom-original`, `v0N-rewrite`.",
+          "name": "corpus",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 152
+          },
+          "default": null,
+          "doc": "Required on `cadence`, forbidden on `provenance`. Enforced below.",
+          "name": "talentId",
+          "type": "TalentId | null \u2192 src/shared/domain.TalentId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 154
+          },
+          "default": null,
+          "doc": "Where the text physically came from, for provenance auditing.",
+          "name": "source",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 155
+          },
+          "default": null,
+          "name": "topics",
+          "type": "MajorTopic[] \u2192 src/shared/domain.MajorTopic"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 156
+          },
+          "default": null,
+          "name": "triggerSets",
+          "type": "TriggerSet[] \u2192 src/shared/domain.TriggerSet"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.Transcript",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 176,
+        "file": "src/shared/domain.ts",
+        "line": 159
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 160
+          },
+          "default": null,
+          "name": "id",
+          "type": "ScriptId \u2192 src/shared/domain.ScriptId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 162
+          },
+          "default": null,
+          "doc": "Position in the set, 1-based. Display only \u2014 `id` is the identity.",
+          "name": "n",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 163
+          },
+          "default": null,
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 165
+          },
+          "default": null,
+          "doc": "The originator's approved takeaway. The landing line is held to this.",
+          "name": "takeaway",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 167
+          },
+          "default": null,
+          "doc": "Requirements \u00a76 \u2014 a set of twelve has to be scannable in one sitting.",
+          "name": "summary",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 168
+          },
+          "default": null,
+          "name": "transcripts",
+          "type": "Transcript[] \u2192 src/shared/domain.Transcript"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 175
+          },
+          "default": null,
+          "doc": "The D15 video this script is for \u2014 `videos/<name>/` in the project,",
+          "name": "video",
+          "type": "?: string | null"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.Script",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 236,
+        "file": "src/shared/domain.ts",
+        "line": 193
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 194
+          },
+          "default": null,
+          "name": "id",
+          "type": "SetId \u2192 src/shared/domain.SetId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 195
+          },
+          "default": null,
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 196
+          },
+          "default": null,
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 213
+          },
+          "default": null,
+          "doc": "THE FLIHUB PROJECT this set's scripts record into \u2014 the folder name",
+          "name": "project",
+          "type": "?: string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 222
+          },
+          "default": null,
+          "doc": "Set by `set_export_to_project` (W6, open-contract \u00a74): the FliHub folder",
+          "name": "exportedTo",
+          "type": "?: string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 228
+          },
+          "default": null,
+          "doc": "The `brands.json` key the export was made under \u2014 recorded beside",
+          "name": "exportedBrand",
+          "type": "?: string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 234
+          },
+          "default": null,
+          "doc": "A project's on-demand scripts (`write_script`, B585): many small NAMED",
+          "name": "onDemand",
+          "type": "?: boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 235
+          },
+          "default": null,
+          "name": "scripts",
+          "type": "Script[] \u2192 src/shared/domain.Script"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.ScriptSet",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 268,
+        "file": "src/shared/domain.ts",
+        "line": 251
+      },
+      "bases": [],
+      "doc": "The eight deterministic threshold rules from",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 252
+          },
+          "default": null,
+          "name": "wordsMin",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 253
+          },
+          "default": null,
+          "name": "wordsMax",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 255
+          },
+          "default": null,
+          "doc": "Mean words per breath group. David \u2248 11.5; Tom writes \u2248 7.",
+          "name": "breathGroupMeanMin",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 257
+          },
+          "default": null,
+          "doc": "Internal punctuation breaks per 100 words.",
+          "name": "breaksPer100Max",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 259
+          },
+          "default": null,
+          "doc": "Sentence-length standard deviation \u2014 flat rhythm reads as written.",
+          "name": "sentenceSdMin",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 261
+          },
+          "default": null,
+          "doc": "Em-dash appositives. Zero, for this talent.",
+          "name": "emDashMax",
+          "type": "number"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 263
+          },
+          "default": null,
+          "doc": "Words that do not belong in this talent's voice, as regex-safe literals.",
+          "name": "antiVoice",
+          "type": "string[]"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 265
+          },
+          "default": null,
+          "doc": "Channel bookends that must not appear inside a script body.",
+          "name": "bookends",
+          "type": "string[]"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 267
+          },
+          "default": null,
+          "doc": "Where these numbers were measured. Never guess this field.",
+          "name": "source",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.CadenceEnvelope",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 274,
+        "file": "src/shared/domain.ts",
+        "line": 270
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 271
+          },
+          "default": null,
+          "name": "id",
+          "type": "TalentId \u2192 src/shared/domain.TalentId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 272
+          },
+          "default": null,
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 273
+          },
+          "default": null,
+          "name": "envelope",
+          "type": "CadenceEnvelope \u2192 src/shared/domain.CadenceEnvelope"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.Talent",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 284,
+        "file": "src/shared/domain.ts",
+        "line": 281
+      },
+      "bases": [],
+      "doc": "A validation problem, phrased so an agent can act on it.",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 282
+          },
+          "default": null,
+          "name": "path",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/domain.ts",
+            "line": 283
+          },
+          "default": null,
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/domain.DomainViolation",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 42,
+        "file": "src/shared/ipc.ts",
+        "line": 35
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 36
+          },
+          "default": null,
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 37
+          },
+          "default": null,
+          "name": "version",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 38
+          },
+          "default": null,
+          "name": "electron",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 39
+          },
+          "default": null,
+          "name": "chrome",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 40
+          },
+          "default": null,
+          "name": "node",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 41
+          },
+          "default": null,
+          "name": "platform",
+          "type": "NodeJS.Platform \u2192 NodeJS (node_modules/@types/node/compatibility/iterators.d.ts), Platform (node_modules/@types/node/process.d.ts)"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/ipc.AppInfo",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 53,
+        "file": "src/shared/ipc.ts",
+        "line": 44
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 45
+          },
+          "default": null,
+          "name": "running",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 46
+          },
+          "default": null,
+          "name": "port",
+          "type": "number | null"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 52
+          },
+          "default": null,
+          "doc": "The path an agent reads the token from. The TOKEN ITSELF never crosses this",
+          "name": "discoveryPath",
+          "type": "string | null"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/ipc.ControlStatus",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 59,
+        "file": "src/shared/ipc.ts",
+        "line": 55
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 56
+          },
+          "default": null,
+          "name": "capability",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 57
+          },
+          "default": null,
+          "name": "principal",
+          "type": "'ui' | 'agent'"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 58
+          },
+          "default": null,
+          "name": "at",
+          "type": "number"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/ipc.ControlChanged",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 65,
+        "file": "src/shared/ipc.ts",
+        "line": 61
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 62
+          },
+          "default": null,
+          "name": "capability",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 63
+          },
+          "default": null,
+          "name": "input",
+          "type": "?: unknown"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 64
+          },
+          "default": null,
+          "name": "idempotencyKey",
+          "type": "?: string"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/ipc.InvokePayload",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 74,
+        "file": "src/shared/ipc.ts",
+        "line": 68
+      },
+      "bases": [],
+      "doc": "The API exposed to the renderer on `window.appytron`.",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 69
+          },
+          "default": null,
+          "name": "getAppInfo",
+          "type": "(): Promise<AppInfo>"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 70
+          },
+          "default": null,
+          "name": "invoke",
+          "type": "<T = unknown>(payload: InvokePayload): Promise<InvokeResult<T>>"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 71
+          },
+          "default": null,
+          "name": "getControlStatus",
+          "type": "(): Promise<ControlStatus>"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/ipc.ts",
+            "line": 73
+          },
+          "default": null,
+          "doc": "Subscribe to store changes. Returns an unsubscribe function.",
+          "name": "onControlChanged",
+          "type": "(listener: (event: ControlChanged) => void): () => void"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/ipc.AppytronApi",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 81,
+        "file": "src/shared/rig.ts",
+        "line": 69
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 71
+          },
+          "default": null,
+          "doc": "Which zones are on screen, in canonical order. Never empty.",
+          "name": "visible",
+          "type": "RecordingZone[] \u2192 src/shared/rig.RecordingZone"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 73
+          },
+          "default": null,
+          "doc": "Which one the arrow keys move, and which one carries the strong marker.",
+          "name": "driven",
+          "type": "RecordingZone \u2192 src/shared/rig.RecordingZone"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 75
+          },
+          "default": null,
+          "doc": "Relative flex weight per zone \u2014 proportions, so they survive a resize.",
+          "name": "weights",
+          "type": "Record<RecordingZone, number> \u2192 Record (node_modules/typescript/lib/lib.es5.d.ts), src/shared/rig.RecordingZone"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 76
+          },
+          "default": null,
+          "name": "camera",
+          "type": "CameraSide \u2192 src/shared/rig.CameraSide"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 77
+          },
+          "default": null,
+          "name": "text",
+          "type": "TextPreset \u2192 src/shared/rig.TextPreset"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 79
+          },
+          "default": null,
+          "doc": "Prompter glass. A property of the physical rig, which is why it is here.",
+          "name": "mirror",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 80
+          },
+          "default": null,
+          "name": "focus",
+          "type": "boolean"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/rig.RigLayout",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 92,
+        "file": "src/shared/rig.ts",
+        "line": 83
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 84
+          },
+          "default": null,
+          "name": "id",
+          "type": "RigId \u2192 src/shared/rig.RigId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 90
+          },
+          "default": null,
+          "doc": "The human name, and the ONE field that changes on its own. David: \"whatever",
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 91
+          },
+          "default": null,
+          "name": "layout",
+          "type": "RigLayout \u2192 src/shared/rig.RigLayout"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/rig.Rig",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 124,
+        "file": "src/shared/rig.ts",
+        "line": 118
+      },
+      "bases": [],
+      "doc": "Where the talent WAS \u2014 script, corpus, style, and the paragraph in front of",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 119
+          },
+          "default": null,
+          "name": "setId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 120
+          },
+          "default": null,
+          "name": "scriptId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 121
+          },
+          "default": null,
+          "name": "transcriptId",
+          "type": "string | null"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 122
+          },
+          "default": null,
+          "name": "style",
+          "type": "TriggerStyle | null \u2192 src/shared/domain.TriggerStyle"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 123
+          },
+          "default": null,
+          "name": "paragraphId",
+          "type": "string | null"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/rig.WorkspacePosition",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 131,
+        "file": "src/shared/rig.ts",
+        "line": 126
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 127
+          },
+          "default": null,
+          "name": "layout",
+          "type": "RigLayout | null \u2192 src/shared/rig.RigLayout"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 128
+          },
+          "default": null,
+          "name": "rigId",
+          "type": "RigId | null \u2192 src/shared/rig.RigId"
+        },
+        {
+          "anchor": {
+            "file": "src/shared/rig.ts",
+            "line": 130
+          },
+          "default": null,
+          "doc": "Absent in stores written before 2026-08-31; treat as null.",
+          "name": "position",
+          "type": "?: WorkspacePosition | null \u2192 src/shared/rig.WorkspacePosition"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/shared/rig.Workspace",
+      "kind": "interface"
+    }
+  ],
+  "target": {
+    "commit": "806729c89bd7963ec07fd99af62c3e102ce184de",
+    "root": "/Users/davidcruwys/dev/ad/flivideo/teletubby",
+    "stack": "typescript"
+  },
+  "unresolved": []
+}

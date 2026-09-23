@@ -1,0 +1,27 @@
+{
+  "pattern": "unknown",
+  "globs": {
+    "docs": ["docs/**/*.md"],
+    "types": ["src/shared/**/*.ts"],
+    "core": ["src/core/**/*.ts"],
+    "main": ["src/main/**/*.ts"],
+    "components": ["src/renderer/src/components/**/*.tsx"],
+    "views": ["src/renderer/src/App.tsx", "src/renderer/src/store.ts"],
+    "styles": ["src/renderer/src/**/*.css"],
+    "tests": ["test/**/*.test.ts"],
+    "config": ["*.config.*", "package.json"],
+    "context": ["CLAUDE.md", "docs/AGENT-NOTES.md"],
+    "narrative": ["docs/SYSTEM.md"]
+  },
+  "aliases": {
+    "backend": ["core", "main"],
+    "frontend": ["components", "views", "styles"],
+    "api": ["core", "types"],
+    "ui": ["components", "views", "styles"]
+  },
+  "composites": {
+    "understand": ["context", "docs", "types", "config"],
+    "codebase": ["core", "main", "components", "views"],
+    "full": ["*"]
+  }
+}
