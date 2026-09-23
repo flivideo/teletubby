@@ -1,10 +1,19 @@
 import { app, screen } from 'electron';
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { loadWindow, parseOpenArgs, placeWindow, trackWindow, windowKey } from '@flivideo/core';
+import {
+  appScriptArgs,
+  loadWindow,
+  parseOpenArgs,
+  placeWindow,
+  trackWindow,
+  windowKey,
+} from '@flivideo/core';
 import { IPC, type AppInfo, type ControlStatus, type InvokePayload } from '@shared/ipc';
 import type { InvokeResult } from '@shared/capabilities';
 import { KYBERNESIS_PHASE_1, TALENTS } from '@shared/script-set';
-import { FileRepository, createCore, seed, type Core } from '../core/index.js';
+import { FileRepository, createCore, seed, type Core, type LifecycleHooks } from '../core/index.js';
 import { startControlServer, type ControlServerHandle } from './control-server.js';
 import { createConsole } from './create-console.js';
 import type { WindowManager } from './window-manager.js';
@@ -34,6 +43,54 @@ function openPrompter(windows: WindowManager): void {
   const win = windows.create({ x: at.x, y: at.y, width: at.width, height: at.height });
   if (at.maximized) win.maximize();
   trackWindow(win, PROMPTER_KEY, { displayIdOf: (b) => screen.getDisplayMatching(b).id });
+}
+
+/**
+ * The host half of fli-core's lifecycle verbs. The core has already decided
+ * WHETHER (busy, the ★ on `force`) and replied; these only do it.
+ *
+ * Quit: `app.quit()` → `will-quit` below → the control server closes and its
+ * file is removed → Electron exits → overmind, whose only process it was,
+ * stops too.
+ *
+ * Restart: `app.relaunch()` cannot work under `electron-vite dev` (the dev
+ * server dies with the first process), so the app runs its own
+ * `scripts/app.sh restart` — the same door every outside caller uses. It is
+ * spawned DETACHED, in its own session, because `overmind quit` is about to
+ * kill everything in this process's tree; and with overmind's, tmux's and
+ * Electron's variables stripped, so the new `overmind start` is not nested
+ * inside the old one.
+ */
+function lifecycleHooks(): LifecycleHooks {
+  const startedAt = new Date().toISOString();
+  return {
+    app: 'teletubby',
+    version: app.getVersion(),
+    pid: process.pid,
+    startedAt,
+    quit: () => app.quit(),
+    restart: (open) => {
+      const root = app.getAppPath();
+      const script = join(root, 'scripts', 'app.sh');
+      if (!existsSync(script)) {
+        // A packaged build has no checkout to run; relaunch the binary instead.
+        app.relaunch();
+        app.quit();
+        return;
+      }
+      const env = Object.fromEntries(
+        Object.entries(process.env).filter(
+          ([key]) => !/^(OVERMIND_|TMUX|ELECTRON_|VITE_|FLIVIDEO_)/.test(key) && key !== 'PORT',
+        ),
+      );
+      spawn('bash', [script, ...appScriptArgs('restart', open ?? undefined)], {
+        cwd: root,
+        env,
+        detached: true,
+        stdio: 'ignore',
+      }).unref();
+    },
+  };
 }
 
 const desktop = createConsole({
@@ -119,6 +176,7 @@ const desktop = createConsole({
     // build, which would not be true if the bundle were the source of truth.
     const repository = new FileRepository(join(userData, 'teletubby.json'));
     core = createCore({
+      lifecycle: lifecycleHooks(),
       repository,
       auditSink: (entry) =>
         logger.info(
@@ -179,6 +237,21 @@ const desktop = createConsole({
 desktop.lifecycle.onStop(async () => {
   await control?.close();
   control = null;
+});
+
+/**
+ * ⌘Q and `system_quit` land here, and on macOS nothing else runs the stop
+ * hooks — which is how a control.json naming a dead pid was left behind.
+ * Hold the quit once, stop cleanly (the control file is removed), then let it
+ * go. `lifecycle.stop()` is memoised, so a signal-driven stop racing this one
+ * is harmless.
+ */
+let stopping = false;
+app.on('will-quit', (event) => {
+  if (stopping) return;
+  stopping = true;
+  event.preventDefault();
+  void desktop.lifecycle.stop().finally(() => app.quit());
 });
 
 void desktop.start();

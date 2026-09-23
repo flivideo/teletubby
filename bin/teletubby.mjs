@@ -74,6 +74,10 @@ async function request(method, route, body) {
       method,
       headers: {
         'content-type': 'application/json',
+        // Who is calling, by name (fli-core). The CLI is `cli` unless told
+        // otherwise; an agent driving it should say `--as agent:<name>`. A
+        // human name is refused by the app: nothing over HTTP is a person.
+        'x-fli-principal': flags.as ?? process.env.TELETUBBY_AS ?? 'cli',
         ...(token ? { authorization: `Bearer ${token}` } : {}),
       },
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -106,7 +110,11 @@ const USAGE = `teletubby — drive the running Teletubby app
 
   health                       Is the app up? (no token needed)
   capabilities                 Every verb this surface exposes, with its contract
-  call <capability> [--input <json>] [--idempotency-key <key>]
+  call <capability> [--input <json>] [--idempotency-key <key>] [--as agent:<name>]
+
+  The same surface over JSON-RPC 2.0 (family.verb names, e.g. script.write):
+    POST /api/rpc · spec GET /api/openrpc.json · reference GET /api/docs
+    console (pick a verb, fire it as agent:console) GET /api/console
 
   Input ALWAYS goes in --input. A bare JSON positional is refused, not ignored.
     teletubby call get_script --input '{"scriptId":"kybernesis-phase-1/01"}'
@@ -120,6 +128,7 @@ Environment:
   TELETUBBY_URL           default http://127.0.0.1:${DEFAULT_PORT}
   TELETUBBY_TOKEN         default: read from the running app's control.json
   TELETUBBY_CONTROL_FILE  where to find that file
+  TELETUBBY_AS            who you are (default cli); --as wins
 `;
 
 const { positional, flags } = parseArgs(process.argv.slice(2));

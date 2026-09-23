@@ -3,7 +3,7 @@ generated: 2026-09-23
 generator: system-context
 audience: human
 status: snapshot
-commit: 6547eca
+commit: 243e255
 sources:
   - CLAUDE.md
   - README.md
@@ -70,7 +70,11 @@ to recite. It writes no scripts; producing them is a future app, **Scribe**.
   an agent (principal `agent`, loopback HTTP on 7111) and the `teletubby` CLI (a wrapper over
   HTTP). The agent surface is the UI surface minus four UI-only verbs. This is how "scripts are
   editable" is met without the app growing an editor: agents edit through verbs, the window
-  re-renders.
+  re-renders. Since 2026-09-23 the same catalog is also projected through fli-core's
+  agent-drivable layer (ADR-005). That adds `family.verb` names over JSON-RPC, a committed OpenRPC
+  spec, a served reference page and console, callers named by `x-fli-principal`, fli-core's ★
+  fence in `core.invoke`, and the lifecycle verbs (`system.status/quit/restart`; quit refuses
+  `app-busy` while the talent is on the prompter).
 - **The open context** (`{ brand, project }`). It is set at launch (arguments or `FLIVIDEO_*`
   environment variables) or later with `context_select`, and resolved through `@flivideo/core`.
   It decides which project's `fli.tubby.json` is merged into every read, and which sets are

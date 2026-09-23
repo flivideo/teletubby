@@ -24,11 +24,36 @@
  */
 
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
-import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
-import { atomicWrite } from '@appydave/core';
+import {
+  PRINCIPAL_HEADER,
+  answerJsonRpc,
+  bearerMatches,
+  newControlToken,
+  removeControlFile,
+  renderApiPage,
+  writeControlFile,
+  type CallAnswer,
+} from '@flivideo/core';
 import type { Core } from '../core/index.js';
+import { FAILURE_CODES, RPC_PATH, SNAKE_NAME, teletubbyOpenRpc } from '../core/agent-layer.js';
 import type { InvokeResult } from '@shared/capabilities';
+
+/**
+ * THE AGENT-DRIVABLE ROUTES (fli-core v0.7.0, 2026-09-23). Same seam, more
+ * projections — nothing below decides anything `core.invoke` does not:
+ *
+ *   POST /api/invoke      snake names (`write_script`) — unchanged, the CLI's door
+ *   POST /api/rpc         JSON-RPC 2.0, family.verb names (`script.write`)
+ *   GET  /api/openrpc.json  the spec (committed as api/openrpc.json) — no token
+ *   GET  /api/docs        the reference page — no token, read-only
+ *   GET  /api/console     pick a verb, fill the fields, fire it as agent:console
+ *   GET  /api/session     the console's token, same-origin pages only
+ *
+ * The caller names itself in `x-fli-principal` (agent:<name> or cli). A name
+ * claiming to be human is refused in the core: nothing over HTTP is a person.
+ */
 
 export const CONTROL_PORT = 7111;
 
@@ -77,11 +102,25 @@ const readBody = async (request: IncomingMessage): Promise<unknown> => {
   return JSON.parse(Buffer.concat(chunks).toString('utf8')) as unknown;
 };
 
-/** Constant-time compare, so the token cannot be recovered a byte at a time. */
-const tokenMatches = (presented: string, expected: string): boolean => {
-  const a = Buffer.from(presented);
-  const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
+/** The caller's own name for itself, or undefined (the core then says agent:http). */
+const principalOf = (request: IncomingMessage): string | undefined => {
+  const named = request.headers[PRINCIPAL_HEADER];
+  return typeof named === 'string' && named.trim() ? named.trim() : undefined;
+};
+
+/** The generated page runs one inline script: allow exactly that script by its hash, nothing else. */
+const sendPage = (response: ServerResponse, html: string): void => {
+  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(
+    (m) => `'sha256-${createHash('sha256').update(m[1] ?? '').digest('base64')}'`,
+  );
+  response.writeHead(200, {
+    'content-type': 'text/html; charset=utf-8',
+    'content-security-policy':
+      `default-src 'none'; script-src ${scripts.join(' ')}; style-src 'unsafe-inline'; ` +
+      "connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+    'x-content-type-options': 'nosniff',
+  });
+  response.end(html);
 };
 
 /**
@@ -100,7 +139,7 @@ export async function startControlServer(
 
   // Minted per launch rather than stored. A stable secret on disk outlives the
   // app that issued it; this one dies with the window.
-  const token = randomBytes(32).toString('hex');
+  const token = newControlToken();
   const discoveryPath = join(options.userDataPath, 'control.json');
 
   const server: Server = createServer((request, response) => {
@@ -132,9 +171,44 @@ export async function startControlServer(
       return;
     }
 
-    const header = request.headers.authorization ?? '';
-    const presented = header.startsWith('Bearer ') ? header.slice(7) : '';
-    if (!presented || !tokenMatches(presented, token)) {
+    // The spec and the reference page are read-only and safe unauthenticated —
+    // the whole point is that an agent can read the surface before it has a
+    // token. The console is the same page plus a Fire button; it fetches its
+    // token from /api/session, which only a same-origin page may read.
+    if (request.method === 'GET' && url.pathname === '/api/openrpc.json') {
+      json(response, 200, openRpc());
+      return;
+    }
+    if (request.method === 'GET' && url.pathname === '/api/docs') {
+      sendPage(response, renderApiPage(openRpc(), { otherPage: { href: '/api/console', label: 'Console' } }));
+      return;
+    }
+    if (request.method === 'GET' && url.pathname === '/api/console') {
+      sendPage(
+        response,
+        renderApiPage(openRpc(), {
+          console: { rpcPath: RPC_PATH, principal: 'agent:console', tokenPath: '/api/session' },
+          otherPage: { href: '/api/docs', label: 'Reference' },
+        }),
+      );
+      return;
+    }
+    if (request.method === 'GET' && url.pathname === '/api/session') {
+      // Browsers set Sec-Fetch-Site; another site's page gets `cross-site`. A
+      // local process can still read control.json — the token keeps out the
+      // web, not you.
+      if (request.headers['sec-fetch-site'] !== 'same-origin') {
+        json(response, 403, {
+          ok: false,
+          error: { code: 'permission_denied', failureMode: 'forbidden', message: 'the session token is for Teletubby’s own pages' },
+        });
+        return;
+      }
+      json(response, 200, { token });
+      return;
+    }
+
+    if (!bearerMatches(request.headers.authorization, token)) {
       json(response, 401, {
         ok: false,
         error: {
@@ -171,12 +245,50 @@ export async function startControlServer(
         return;
       }
       const result: InvokeResult = await options.core.invoke(body.capability, body.input ?? {}, {
-        // The principal is set HERE and cannot be supplied by the caller.
-        // Anything that reaches this server is an agent, whatever it claims.
+        // The SURFACE is set here and cannot be supplied by the caller:
+        // anything that reaches this server is an agent or the CLI, whatever
+        // it claims. Its NAME is its own (`x-fli-principal`).
         principal: 'agent',
+        as: principalOf(request),
         idempotencyKey: typeof body.idempotencyKey === 'string' ? body.idempotencyKey : undefined,
       });
       json(response, result.ok ? 200 : statusFor(result), result);
+      return;
+    }
+
+    if (request.method === 'POST' && url.pathname === RPC_PATH) {
+      const as = principalOf(request);
+      const answer = await answerJsonRpc(
+        await readBody(request),
+        async (method, params): Promise<CallAnswer> => {
+          const snake = SNAKE_NAME[method];
+          if (!snake)
+            return {
+              ok: false,
+              error: {
+                failureMode: 'unknown-capability',
+                message: `no capability "${method}"`,
+                details: { available: Object.keys(SNAKE_NAME).sort() },
+              },
+            };
+          const result = await options.core.invoke(snake, params, { principal: 'agent', as });
+          if (result.ok) return { ok: true, value: result.data };
+          const { failureMode, message, details } = result.error;
+          return {
+            ok: false,
+            error: { failureMode: failureMode ?? 'internal', message, ...(details === undefined ? {} : { details }) },
+          };
+        },
+        {
+          codes: FAILURE_CODES,
+          names: { unknownCapability: 'unknown-capability', invalidInput: 'invalid-input', internal: 'internal' },
+        },
+      );
+      if (answer === null) {
+        response.writeHead(204).end();
+        return;
+      }
+      json(response, 200, answer);
       return;
     }
 
@@ -186,16 +298,38 @@ export async function startControlServer(
         code: 'not_found',
         message: `no route ${request.method} ${url.pathname}`,
         details: {
-          routes: ['GET /api/health', 'GET /api/capabilities', 'POST /api/invoke'],
+          routes: [
+            'GET /api/health',
+            'GET /api/openrpc.json',
+            'GET /api/docs',
+            'GET /api/console',
+            'GET /api/capabilities',
+            'POST /api/invoke',
+            `POST ${RPC_PATH}`,
+          ],
         },
       },
     });
   }
 
-  const close = (): Promise<void> =>
+  // Built once: the catalog is fixed for the life of the process.
+  let doc: ReturnType<typeof teletubbyOpenRpc> | null = null;
+  const openRpc = (): ReturnType<typeof teletubbyOpenRpc> => (doc ??= teletubbyOpenRpc());
+
+  const closeServer = (): Promise<void> =>
     new Promise<void>((resolve) => {
       server.close(() => resolve());
     });
+
+  /**
+   * Stop listening AND take the control file down, so a reader sees `absent`
+   * rather than a door that no longer answers. `removeControlFile` only
+   * removes it while it is still this process's — a newer run's file survives.
+   */
+  const close = async (): Promise<void> => {
+    await closeServer();
+    await removeControlFile(discoveryPath, process.pid).catch(() => false);
+  };
 
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
@@ -219,22 +353,18 @@ export async function startControlServer(
   // is actually bound. A surface nobody can address is worse than no surface:
   // the caller falls back to guessing and the log reports success.
   try {
-    await atomicWrite(
-      discoveryPath,
-      `${JSON.stringify(
-        {
-          port: boundPort,
-          token,
-          pid: process.pid,
-          startedAt: new Date().toISOString(),
-        },
-        null,
-        2,
-      )}\n`,
-      { mode: 0o600 },
-    );
+    // fli-core's shape and mode (0600, with pid), so every Fli reader —
+    // FliStudio's included — reads it the same way, and `stale` when the pid
+    // is gone.
+    await writeControlFile(discoveryPath, {
+      port: boundPort,
+      token,
+      pid: process.pid,
+      startedAt: new Date().toISOString(),
+      version: options.appVersion,
+    });
   } catch (error) {
-    await close();
+    await closeServer();
     throw error;
   }
 
@@ -263,6 +393,7 @@ function statusFor(result: InvokeResult): number {
     case 'confirmation_invalid':
       return 403;
     case 'conflict':
+    case 'app_busy':
       return 409;
     case 'rate_limited':
       return 429;

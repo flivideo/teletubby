@@ -3,13 +3,13 @@
 > Generated from the code, not written about it. Do not hand-edit — every line below is anchored to a `file:line` and is re-derived on every run. `verify_mirror.py` fails when this page no longer matches its JSON. To record a gap the extractor cannot find, use `docs/schema-mirror.known-gaps.json`.
 
 - **stack** `typescript` · **extractor** `extract_typescript.py`
-- **commit** `6547ecae5f55` · **generated** 2026-09-23T08:05:24+00:00
+- **commit** `243e25517551` · **generated** 2026-09-23T10:41:40+00:00
 - **scope** include `*.ts`, `*.tsx` · exclude `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx`, `*.stories.tsx`, `*.config.ts`, `*/test/*`, `*/tests/*`, `*/__tests__/*`, `*/e2e/*`, `*/__mocks__/*`, `*/fixtures/*`, `*.d.ts`, `*/dist/*`, `*/build/*`, `*/out/*`
-- **zod bound** in 0 file(s) by a direct import, 5 through a re-export, 0 by call shape only
+- **zod bound** in 0 file(s) by a direct import, 6 through a re-export, 0 by call shape only
 
 | shapes | declared sets | derived sets | gaps | declared but not read | findings |
 |---|---|---|---|---|---|
-| 97 | 32 | 2 | 6 | 39 | 2 |
+| 99 | 32 | 4 | 9 | 43 | 4 |
 
 > **Read the gaps, the census and the never-read list before trusting the shape.** Derived sets have no declaring symbol and will drift silently. Gaps are things this mirror could not reach — they are not absences in the code.
 
@@ -19,15 +19,16 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 
 - `src/core/active-context.ts` — `ActiveSelection` :29
 - `src/core/cadence.ts` — `CadenceMeasurements` :29 · `CadenceRule` :44 · `CadenceScore` :62
-- `src/core/handlers.ts` — `HandlerContext` :77 · `Resolved` :131 · `MaybeUnreadable` :315
-- `src/core/index.ts` — `CoreOptions` :40 · `InvokeOptions` :48 · `ChangeEvent` :63 · `Core` :69
-- `src/core/input-shapes.ts` — `slug` :25 · `projectName` :28 · `paragraphInput` :34 · `minorInput` :39 · `majorInput` :45 · `layoutInput` :56 · `triggerInput` :71 · `InputField` :317
+- `src/core/handlers.ts` — `HandlerContext` :78 · `Resolved` :134 · `MaybeUnreadable` :318
+- `src/core/index.ts` — `CoreOptions` :48 · `LifecycleHooks` :63 · `InvokeOptions` :74 · `ChangeEvent` :96 · `Core` :102
+- `src/core/input-shapes.ts` — `slug` :25 · `projectName` :28 · `paragraphInput` :34 · `minorInput` :39 · `majorInput` :45 · `layoutInput` :56 · `triggerInput` :71 · `InputField` :325
 - `src/core/open-context.ts` — `OPEN_REFUSAL_CODES` (set) :35 · `OpenRefusal` :45 · `OpenContext` :54 · `OpenResolution` :65 · `ResolveOpenArgsOptions` :69 · `ContextReport` :239
 - `src/core/project-store.ts` — `projectFileSchema` :33 · `UnreadableProjectFile` :98
 - `src/core/repository.ts` — `RepositoryDocument` :24 · `Repository` :66
 - `src/core/safety.ts` — `PendingAction` :107 · `AuditEntry` :288
 - `src/core/text-script.ts` — `TextScriptInput` :21
-- `src/main/control-server.ts` — `ControlServerOptions` :35 · `ControlServerHandle` :44
+- `src/core/zod3-json-schema.ts` — `Def` :23
+- `src/main/control-server.ts` — `ControlServerOptions` :60 · `ControlServerHandle` :69
 - `src/main/create-console.ts` — `ConsoleContext` :7 · `Console` :14 · `CreateConsoleOptions` :19
 - `src/main/file-author.ts` — `FileAuthorOptions` :9 · `AuthorResult` :16
 - `src/main/ipc-router.ts` — `HandlerDef` :4
@@ -37,7 +38,7 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 - `src/renderer/src/App.tsx` — `zone (switch)` (set) :737
 - `src/renderer/src/components/CadencePanel.tsx` — `Rule` :23 · `Score` :31
 - `src/renderer/src/store.ts` — `ZONES` (set) :70 · `CueCard` :96 · `PrompterState` :103 · `SetSummary` :252 · `UnreadableFile` :273 · `SetFilter` (set) :326 · `StageHold` :333 · `Rank` (set) :1179
-- `src/shared/capabilities.ts` — `PRINCIPALS` (set) :36 · `SIDE_EFFECTS` (set) :43 · `CapabilityKind` (set) :51 · `ERROR_CODES` (set) :59 · `CapabilityMeta` :73 · `InvokeRequest` :355 · `CapabilityError` :362 · `InvokeResult` :369
+- `src/shared/capabilities.ts` — `PRINCIPALS` (set) :36 · `SIDE_EFFECTS` (set) :43 · `CapabilityKind` (set) :51 · `ERROR_CODES` (set) :59 · `CapabilityMeta` :75 · `InvokeRequest` :389 · `CapabilityError` :396 · `InvokeResult` :405
 - `src/shared/domain-schema.ts` — `paragraphSchema` :47 · `minorTopicSchema` :52 · `majorTopicSchema` :58 · `triggerSchema` :64 · `triggerSetSchema` :70 · `transcriptSchema` :77 · `scriptSchema` :87 · `scriptSetSchema` :102 · `cadenceEnvelopeSchema` :127 · `talentSchema` :139 · `rigLayoutSchema` :149 · `rigSchema` :164 · `workspaceSchema` :170
 - `src/shared/domain.ts` — `TRANSCRIPT_KINDS` (set) :65 · `TRIGGER_STYLES` (set) :80 · `AUTHORSHIPS` (set) :91 · `Paragraph` :98 · `MinorTopic` :105 · `MajorTopic` :112 · `Trigger` :127 · `TriggerSet` :133 · `Transcript` :141 · `Script` :159 · `ScriptSet` :193 · `CadenceEnvelope` :251 · `Talent` :270 · `DomainViolation` :281
 - `src/shared/ipc.ts` — `AppInfo` :35 · `ControlStatus` :44 · `ControlChanged` :55 · `InvokePayload` :61 · `AppytronApi` :68
@@ -61,18 +62,20 @@ These constructs are outside what this extractor reads **on every run, in every 
 
 ## Coverage census
 
-**148** top-level declarations counted = **108** mirrored + **1** listed as gaps + **39** declared but not read.
+**156** top-level declarations counted = **110** mirrored + **3** listed as gaps + **43** declared but not read.
 
 Counted: every top-level interface, enum, class and type alias (exported or not) and every exported constant, in the files in scope.
-Not counted, as not schema-bearing: 29 functions, 2 function types, 4 literal constants.
+Not counted, as not schema-bearing: 30 functions, 2 function types, 7 literal constants.
 
 | file | declared | mirrored | gaps | not read |
 |---|---|---|---|---|
 | `src/core/active-context.ts` | 4 | 1 | 0 | **3** |
+| `src/core/agent-layer.ts` | 4 | 0 | 2 | **2** |
 | `src/core/input-shapes.ts` | 2 | 1 | 0 | **1** |
 | `src/core/open-context.ts` | 8 | 7 | 0 | **1** |
 | `src/core/repository.ts` | 5 | 2 | 0 | **3** |
 | `src/core/safety.ts` | 8 | 2 | 0 | **6** |
+| `src/core/zod3-json-schema.ts` | 3 | 1 | 0 | **2** |
 | `src/main/file-author.ts` | 3 | 2 | 0 | **1** |
 | `src/main/ipc-router.ts` | 2 | 1 | 0 | **1** |
 | `src/main/process-supervisor.ts` | 6 | 4 | 0 | **2** |
@@ -251,7 +254,7 @@ Where this row's data was read from: the open project's fli.tubby.json, or the a
 | `query` | `src/shared/capabilities.ts:51` |
 | `command` | `src/shared/capabilities.ts:51` |
 
-### `src/shared/capabilities.ERROR_CODES` — `src/shared/capabilities.ts:59-70`
+### `src/shared/capabilities.ERROR_CODES` — `src/shared/capabilities.ts:59-72`
 
 *`as const` array `ERROR_CODES`, typed from by `typeof ERROR_CODES[number]` - a single declaring symbol*
 
@@ -267,15 +270,16 @@ Where this row's data was read from: the open project's fli.tubby.json, or the a
 | `rate_limited` | `src/shared/capabilities.ts:67` |
 | `unavailable` | `src/shared/capabilities.ts:68` |
 | `internal` | `src/shared/capabilities.ts:69` |
+| `app_busy` | `src/shared/capabilities.ts:71` |
 
-### `src/shared/capabilities.InvokeResult.ok` — `src/shared/capabilities.ts:369-370`
+### `src/shared/capabilities.InvokeResult.ok` — `src/shared/capabilities.ts:405-406`
 
 *the `ok` discriminator of union type `InvokeResult` - each value declared by a literal type in one variant*
 
 | value | declared at |
 |---|---|
-| `true` | `src/shared/capabilities.ts:370` |
-| `false` | `src/shared/capabilities.ts:370` |
+| `true` | `src/shared/capabilities.ts:406` |
+| `false` | `src/shared/capabilities.ts:406` |
 
 ### `src/shared/domain-schema.triggerSetSchema.style` — `src/shared/domain-schema.ts:71`
 
@@ -427,23 +431,51 @@ Where this row's data was read from: the open project's fli.tubby.json, or the a
 
 Each set below was read out of the real authority — control flow, membership tests, dispatch tables — because nothing declares it. **Correct as of this commit and fragile after it.** Each carries the refactor that would make it declared.
 
-### `src/main/control-server.result.error.code (switch)` — `src/main/control-server.ts:255`
+### `src/core/zod3-json-schema.check.kind (branching)` — `src/core/zod3-json-schema.ts:61`
+
+*if/else-if chain on `check.kind` - its type is not a literal union, no enum, no z.enum*
+
+| value | read from |
+|---|---|
+| `min` | `src/core/zod3-json-schema.ts:61` |
+| `max` | `src/core/zod3-json-schema.ts:62` |
+
+> ⚠️ **This set may be incomplete.** Branches this reader could not resolve:
+
+> - `check.kind === 'regex' && check.regex (line 63)`
+
+> **REFACTOR: `check.kind` is a closed set enforced only by control flow at src/core/zod3-json-schema.ts:61. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
+
+### `src/core/zod3-json-schema.check.kind (branching) #2` — `src/core/zod3-json-schema.ts:70`
+
+*if/else-if chain on `check.kind` - its type is not a literal union, no enum, no z.enum*
+
+| value | read from |
+|---|---|
+| `int` | `src/core/zod3-json-schema.ts:70` |
+| `min` | `src/core/zod3-json-schema.ts:71` |
+| `max` | `src/core/zod3-json-schema.ts:73` |
+
+> **REFACTOR: `check.kind` is a closed set enforced only by control flow at src/core/zod3-json-schema.ts:70. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
+
+### `src/main/control-server.result.error.code (switch)` — `src/main/control-server.ts:385`
 
 *`switch` on `result.error.code` - its type is not a literal union, no enum, no z.enum*
 
 | value | read from |
 |---|---|
-| `not_found` | `src/main/control-server.ts:256` |
-| `invalid_input` | `src/main/control-server.ts:258` |
-| `domain_invalid` | `src/main/control-server.ts:259` |
-| `permission_denied` | `src/main/control-server.ts:261` |
-| `confirmation_required` | `src/main/control-server.ts:262` |
-| `confirmation_invalid` | `src/main/control-server.ts:263` |
-| `conflict` | `src/main/control-server.ts:265` |
-| `rate_limited` | `src/main/control-server.ts:267` |
-| `unavailable` | `src/main/control-server.ts:269` |
+| `not_found` | `src/main/control-server.ts:386` |
+| `invalid_input` | `src/main/control-server.ts:388` |
+| `domain_invalid` | `src/main/control-server.ts:389` |
+| `permission_denied` | `src/main/control-server.ts:391` |
+| `confirmation_required` | `src/main/control-server.ts:392` |
+| `confirmation_invalid` | `src/main/control-server.ts:393` |
+| `conflict` | `src/main/control-server.ts:395` |
+| `app_busy` | `src/main/control-server.ts:396` |
+| `rate_limited` | `src/main/control-server.ts:398` |
+| `unavailable` | `src/main/control-server.ts:400` |
 
-> **REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:255. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
+> **REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:385. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
 
 ### `src/renderer/src/App.zone (switch)` — `src/renderer/src/App.tsx:737`
 
@@ -458,7 +490,7 @@ Each set below was read out of the real authority — control flow, membership t
 
 > **REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:737. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
 
-> 2 comparison(s) against vocabularies this app does not own (DOM key names, HTTP headers, library internals) were **not** treated as closed sets and carry no refactor advice: `src/core/input-shapes.def.typeName (switch)` (every value is a zod internal type name), `src/renderer/src/App.e.key (switch)` (the subject is a property declared by TypeScript's lib or a package).
+> 3 comparison(s) against vocabularies this app does not own (DOM key names, HTTP headers, library internals) were **not** treated as closed sets and carry no refactor advice: `src/core/input-shapes.def.typeName (switch)` (every value is a zod internal type name), `src/core/zod3-json-schema.def.typeName (switch)` (every value is a zod internal type name), `src/renderer/src/App.e.key (switch)` (the subject is a property declared by TypeScript's lib or a package).
 
 ## Shapes
 
@@ -506,70 +538,86 @@ Each set below was read out of the real authority — control flow, membership t
 | `rules` | `CadenceRule[] → src/core/cadence.CadenceRule` | — | `src/core/cadence.ts:65` |  |
 | `envelopeSource` | `string` | — | `src/core/cadence.ts:67` | Which envelope this was judged against. Never anonymous. |
 
-### `src/core/handlers.HandlerContext` — interface — `src/core/handlers.ts:77-90`
+### `src/core/handlers.HandlerContext` — interface — `src/core/handlers.ts:78-93`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/handlers.ts:78` |  |
-| `active` | `ActiveContextHolder` | — | `src/core/handlers.ts:79` |  |
-| `openContext` | `OpenContextHolder` | — | `src/core/handlers.ts:81` | The session's brand/project context (W6, door 2 + door 3). Never persisted. |
-| `confirmations` | `ConfirmationLedger` | — | `src/core/handlers.ts:82` |  |
-| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/handlers.ts:83` |  |
-| `capability` | `CapabilityMeta → CapabilityMeta (@shared/capabilities)` | — | `src/core/handlers.ts:84` |  |
-| `dryRun` | `boolean` | — | `src/core/handlers.ts:86` | True when the caller asked for a preview rather than an act. |
-| `confirmationId` | `?: string` | — | `src/core/handlers.ts:87` |  |
-| `recordPrior` | `(prior: unknown) => void` | — | `src/core/handlers.ts:89` | Hand the prior state to the audit log. Call it before you overwrite. |
+| `lifecycle` | `?: LifecycleHooks → src/core/index.LifecycleHooks` | — | `src/core/handlers.ts:80` | The host process, for the lifecycle verbs. Absent headless. |
+| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/handlers.ts:81` |  |
+| `active` | `ActiveContextHolder` | — | `src/core/handlers.ts:82` |  |
+| `openContext` | `OpenContextHolder` | — | `src/core/handlers.ts:84` | The session's brand/project context (W6, door 2 + door 3). Never persisted. |
+| `confirmations` | `ConfirmationLedger` | — | `src/core/handlers.ts:85` |  |
+| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/handlers.ts:86` |  |
+| `capability` | `CapabilityMeta → CapabilityMeta (@shared/capabilities)` | — | `src/core/handlers.ts:87` |  |
+| `dryRun` | `boolean` | — | `src/core/handlers.ts:89` | True when the caller asked for a preview rather than an act. |
+| `confirmationId` | `?: string` | — | `src/core/handlers.ts:90` |  |
+| `recordPrior` | `(prior: unknown) => void` | — | `src/core/handlers.ts:92` | Hand the prior state to the audit log. Call it before you overwrite. |
 
-### `src/core/handlers.Resolved` — interface — `src/core/handlers.ts:131-136`
+### `src/core/handlers.Resolved` — interface — `src/core/handlers.ts:134-139`
 
 | field | type | default | at |
 |---|---|---|---|
-| `document` | `RepositoryDocument → src/core/repository.RepositoryDocument` | — | `src/core/handlers.ts:132` |
-| `set` | `ScriptSet → ScriptSet (@shared/domain)` | — | `src/core/handlers.ts:133` |
-| `script` | `Script → Script (@shared/domain)` | — | `src/core/handlers.ts:134` |
-| `transcript` | `Transcript → Transcript (@shared/domain)` | — | `src/core/handlers.ts:135` |
+| `document` | `RepositoryDocument → src/core/repository.RepositoryDocument` | — | `src/core/handlers.ts:135` |
+| `set` | `ScriptSet → ScriptSet (@shared/domain)` | — | `src/core/handlers.ts:136` |
+| `script` | `Script → Script (@shared/domain)` | — | `src/core/handlers.ts:137` |
+| `transcript` | `Transcript → Transcript (@shared/domain)` | — | `src/core/handlers.ts:138` |
 
-### `src/core/handlers.MaybeUnreadable` — type — `src/core/handlers.ts:315`
+### `src/core/handlers.MaybeUnreadable` — type — `src/core/handlers.ts:318`
 
 *extends* `ScriptSet`
 
 *No annotated fields found — this shape declares its fields elsewhere.*
 
-### `src/core/index.CoreOptions` — interface — `src/core/index.ts:40-46`
+### `src/core/index.CoreOptions` — interface — `src/core/index.ts:48-60`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:41` |  |
-| `clock` | `?: Clock → src/core/safety.Clock` | — | `src/core/index.ts:43` | Injectable so every time-dependent control is testable without sleeping. |
-| `auditSink` | `?: (entry: AuditEntry) => void → src/core/safety.AuditEntry` | — | `src/core/index.ts:45` | Where audit entries go beyond the in-memory ring — a logger, usually. |
+| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:49` |  |
+| `clock` | `?: Clock → src/core/safety.Clock` | — | `src/core/index.ts:51` | Injectable so every time-dependent control is testable without sleeping. |
+| `auditSink` | `?: (entry: AuditEntry) => void → src/core/safety.AuditEntry` | — | `src/core/index.ts:53` | Where audit entries go beyond the in-memory ring — a logger, usually. |
+| `lifecycle` | `?: LifecycleHooks → src/core/index.LifecycleHooks` | — | `src/core/index.ts:59` | The process around the core, for `system_status` / `system_quit` / |
 
-### `src/core/index.InvokeOptions` — interface — `src/core/index.ts:48-51`
+### `src/core/index.LifecycleHooks` — interface — `src/core/index.ts:63-72`
 
-| field | type | default | at |
-|---|---|---|---|
-| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:49` |
-| `idempotencyKey` | `?: string` | — | `src/core/index.ts:50` |
+What only the host process can do. The core decides WHETHER; the host does it.
 
-### `src/core/index.ChangeEvent` — interface — `src/core/index.ts:63-67`
+| field | type | default | at | note |
+|---|---|---|---|---|
+| `app` | `string` | — | `src/core/index.ts:64` |  |
+| `version` | `string` | — | `src/core/index.ts:65` |  |
+| `pid` | `number` | — | `src/core/index.ts:66` |  |
+| `startedAt` | `string` | — | `src/core/index.ts:67` |  |
+| `quit` | `(): void` | — | `src/core/index.ts:69` | Called after the reply is sent. |
+| `restart` | `(open: { brand: string; project: string } \| null): void` | — | `src/core/index.ts:71` | Called after the reply is sent, with the context to reopen on. |
+
+### `src/core/index.InvokeOptions` — interface — `src/core/index.ts:74-84`
+
+| field | type | default | at | note |
+|---|---|---|---|---|
+| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:75` |  |
+| `as` | `?: string` | — | `src/core/index.ts:82` | Who is calling, by name (fli-core): `human:<surface>`, `agent:<name>` or |
+| `idempotencyKey` | `?: string` | — | `src/core/index.ts:83` |  |
+
+### `src/core/index.ChangeEvent` — interface — `src/core/index.ts:96-100`
 
 Emitted after a command actually changes the DATA — not on a query, not on a
 
 | field | type | default | at |
 |---|---|---|---|
-| `capability` | `string` | — | `src/core/index.ts:64` |
-| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:65` |
-| `at` | `number` | — | `src/core/index.ts:66` |
+| `capability` | `string` | — | `src/core/index.ts:97` |
+| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:98` |
+| `at` | `number` | — | `src/core/index.ts:99` |
 
-### `src/core/index.Core` — interface — `src/core/index.ts:69-79`
+### `src/core/index.Core` — interface — `src/core/index.ts:102-112`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `invoke` | `(name: string, input: unknown, options: InvokeOptions): Promise<InvokeResult>` | — | `src/core/index.ts:70` |  |
-| `onChange` | `(listener: (event: ChangeEvent) => void): () => void` | — | `src/core/index.ts:72` | Subscribe to state changes. Returns an unsubscribe function. |
-| `active` | `ActiveContextHolder` | — | `src/core/index.ts:74` | The renderer's own selection state, so the UI can drive it directly. |
-| `openContext` | `OpenContextHolder` | — | `src/core/index.ts:76` | The session's brand/project context (W6) — set by door 2 or `context_select`, never persisted. |
-| `audit` | `AuditLog` | — | `src/core/index.ts:77` |  |
-| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:78` |  |
+| `invoke` | `(name: string, input: unknown, options: InvokeOptions): Promise<InvokeResult>` | — | `src/core/index.ts:103` |  |
+| `onChange` | `(listener: (event: ChangeEvent) => void): () => void` | — | `src/core/index.ts:105` | Subscribe to state changes. Returns an unsubscribe function. |
+| `active` | `ActiveContextHolder` | — | `src/core/index.ts:107` | The renderer's own selection state, so the UI can drive it directly. |
+| `openContext` | `OpenContextHolder` | — | `src/core/index.ts:109` | The session's brand/project context (W6) — set by door 2 or `context_select`, never persisted. |
+| `audit` | `AuditLog` | — | `src/core/index.ts:110` |  |
+| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:111` |  |
 
 ### `src/core/input-shapes.slug` — zod-scalar — `src/core/input-shapes.ts:25`
 
@@ -635,15 +683,15 @@ A layout as a caller supplies it. `visible` is canonicalised on the way in
 | `text` | `z.string().min(1)` | — | `src/core/input-shapes.ts:73` |
 | `paragraphId` | `slug → src/core/input-shapes.slug` | — | `src/core/input-shapes.ts:74` |
 
-### `src/core/input-shapes.InputField` — interface — `src/core/input-shapes.ts:317-330`
+### `src/core/input-shapes.InputField` — interface — `src/core/input-shapes.ts:325-338`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `name` | `string` | — | `src/core/input-shapes.ts:318` |  |
-| `type` | `string` | — | `src/core/input-shapes.ts:319` |  |
-| `required` | `boolean` | — | `src/core/input-shapes.ts:320` |  |
-| `default` | `?: unknown` | — | `src/core/input-shapes.ts:328` | Present when omitting the field APPLIES A VALUE rather than leaving it |
-| `note` | `?: string` | — | `src/core/input-shapes.ts:329` |  |
+| `name` | `string` | — | `src/core/input-shapes.ts:326` |  |
+| `type` | `string` | — | `src/core/input-shapes.ts:327` |  |
+| `required` | `boolean` | — | `src/core/input-shapes.ts:328` |  |
+| `default` | `?: unknown` | — | `src/core/input-shapes.ts:336` | Present when omitting the field APPLIES A VALUE rather than leaving it |
+| `note` | `?: string` | — | `src/core/input-shapes.ts:337` |  |
 
 ### `src/core/open-context.OpenRefusal` — interface — `src/core/open-context.ts:45-52`
 
@@ -776,25 +824,41 @@ A layout as a caller supplies it. `visible` is canonicalised on the way in
 | `style` | `TriggerStyle → TriggerStyle (@shared/domain)` | — | `src/core/text-script.ts:30` |
 | `items` | `{ text: string; paragraph: number }[]` | — | `src/core/text-script.ts:31` |
 
-### `src/main/control-server.ControlServerOptions` — interface — `src/main/control-server.ts:35-42`
+### `src/core/zod3-json-schema.Def` — interface — `src/core/zod3-json-schema.ts:23-35`
+
+| field | type | default | at |
+|---|---|---|---|
+| `typeName` | `string` | — | `src/core/zod3-json-schema.ts:24` |
+| `innerType` | `?: z.ZodTypeAny → "/Users/davidcruwys/dev/ad/flivideo/teletubby/node_modules/zod/v3/external" (@appydave/core), ZodTypeAny (zod)` | — | `src/core/zod3-json-schema.ts:25` |
+| `schema` | `?: z.ZodTypeAny → "/Users/davidcruwys/dev/ad/flivideo/teletubby/node_modules/zod/v3/external" (@appydave/core), ZodTypeAny (zod)` | — | `src/core/zod3-json-schema.ts:26` |
+| `type` | `?: z.ZodTypeAny → "/Users/davidcruwys/dev/ad/flivideo/teletubby/node_modules/zod/v3/external" (@appydave/core), ZodTypeAny (zod)` | — | `src/core/zod3-json-schema.ts:27` |
+| `values` | `?: readonly string[]` | — | `src/core/zod3-json-schema.ts:28` |
+| `shape` | `?: () => Record<string, z.ZodTypeAny> → "/Users/davidcruwys/dev/ad/flivideo/teletubby/node_modules/zod/v3/external" (@appydave/core), ZodTypeAny (zod)` | — | `src/core/zod3-json-schema.ts:29` |
+| `checks` | `?: { kind: string; value?: unknown; inclusive?: boolean; regex?: RegExp }[]` | — | `src/core/zod3-json-schema.ts:30` |
+| `minLength` | `?: { value: number } \| null` | — | `src/core/zod3-json-schema.ts:31` |
+| `maxLength` | `?: { value: number } \| null` | — | `src/core/zod3-json-schema.ts:32` |
+| `defaultValue` | `?: () => unknown` | — | `src/core/zod3-json-schema.ts:33` |
+| `description` | `?: string` | — | `src/core/zod3-json-schema.ts:34` |
+
+### `src/main/control-server.ControlServerOptions` — interface — `src/main/control-server.ts:60-67`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `core` | `Core → src/core/index.Core` | — | `src/main/control-server.ts:36` |  |
-| `userDataPath` | `string` | — | `src/main/control-server.ts:38` | Where the discovery file goes — `app.getPath('userData')` in production. |
-| `port` | `?: number` | — | `src/main/control-server.ts:39` |  |
-| `appVersion` | `string` | — | `src/main/control-server.ts:40` |  |
-| `log` | `?: (message: string, detail?: unknown) => void` | — | `src/main/control-server.ts:41` |  |
+| `core` | `Core → src/core/index.Core` | — | `src/main/control-server.ts:61` |  |
+| `userDataPath` | `string` | — | `src/main/control-server.ts:63` | Where the discovery file goes — `app.getPath('userData')` in production. |
+| `port` | `?: number` | — | `src/main/control-server.ts:64` |  |
+| `appVersion` | `string` | — | `src/main/control-server.ts:65` |  |
+| `log` | `?: (message: string, detail?: unknown) => void` | — | `src/main/control-server.ts:66` |  |
 
-### `src/main/control-server.ControlServerHandle` — interface — `src/main/control-server.ts:44-51`
+### `src/main/control-server.ControlServerHandle` — interface — `src/main/control-server.ts:69-76`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `port` | `number` | — | `src/main/control-server.ts:45` |  |
-| `address` | `string` | — | `src/main/control-server.ts:47` | The interface actually bound. Always 127.0.0.1; asserted by a test. |
-| `token` | `string` | — | `src/main/control-server.ts:48` |  |
-| `discoveryPath` | `string` | — | `src/main/control-server.ts:49` |  |
-| `close` | `(): Promise<void>` | — | `src/main/control-server.ts:50` |  |
+| `port` | `number` | — | `src/main/control-server.ts:70` |  |
+| `address` | `string` | — | `src/main/control-server.ts:72` | The interface actually bound. Always 127.0.0.1; asserted by a test. |
+| `token` | `string` | — | `src/main/control-server.ts:73` |  |
+| `discoveryPath` | `string` | — | `src/main/control-server.ts:74` |  |
+| `close` | `(): Promise<void>` | — | `src/main/control-server.ts:75` |  |
 
 ### `src/main/create-console.ConsoleContext` — interface — `src/main/create-console.ts:7-12`
 
@@ -1030,59 +1094,60 @@ Why the set on stage is being HELD rather than refreshed — shown by the
 | `reason` | `'project-closed' \| 'unreadable'` | — | `src/renderer/src/store.ts:334` |
 | `message` | `string` | — | `src/renderer/src/store.ts:335` |
 
-### `src/shared/capabilities.CapabilityMeta` — interface — `src/shared/capabilities.ts:73-101`
+### `src/shared/capabilities.CapabilityMeta` — interface — `src/shared/capabilities.ts:75-103`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `name` | `string` | — | `src/shared/capabilities.ts:74` |  |
-| `summary` | `string` | — | `src/shared/capabilities.ts:76` | One line, written for a caller that has never seen this app. |
-| `kind` | `CapabilityKind → src/shared/capabilities.CapabilityKind` | — | `src/shared/capabilities.ts:77` |  |
-| `sideEffects` | `SideEffect → src/shared/capabilities.SideEffect` | — | `src/shared/capabilities.ts:78` |  |
-| `principals` | `readonly Principal[] → src/shared/capabilities.Principal` | — | `src/shared/capabilities.ts:80` | Which surfaces may invoke it. A verb absent from `agent` is UI-only. |
-| `idempotent` | `boolean` | — | `src/shared/capabilities.ts:82` | Same input, same effect, however many times. |
-| `confirmationRequired` | `boolean` | — | `src/shared/capabilities.ts:84` | Refuses to execute without an approved confirmation. |
-| `supportsDryRun` | `boolean` | — | `src/shared/capabilities.ts:86` | Accepts `dryRun: true` and returns a preview instead of acting. |
-| `announces` | `boolean` | — | `src/shared/capabilities.ts:97` | Whether a real change here wakes every other client. |
-| `supportsIdempotencyKey` | `boolean` | — | `src/shared/capabilities.ts:99` | Honours `idempotencyKey` and replays the original result on retry. |
-| `failureModes` | `readonly ErrorCode[] → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:100` |  |
+| `name` | `string` | — | `src/shared/capabilities.ts:76` |  |
+| `summary` | `string` | — | `src/shared/capabilities.ts:78` | One line, written for a caller that has never seen this app. |
+| `kind` | `CapabilityKind → src/shared/capabilities.CapabilityKind` | — | `src/shared/capabilities.ts:79` |  |
+| `sideEffects` | `SideEffect → src/shared/capabilities.SideEffect` | — | `src/shared/capabilities.ts:80` |  |
+| `principals` | `readonly Principal[] → src/shared/capabilities.Principal` | — | `src/shared/capabilities.ts:82` | Which surfaces may invoke it. A verb absent from `agent` is UI-only. |
+| `idempotent` | `boolean` | — | `src/shared/capabilities.ts:84` | Same input, same effect, however many times. |
+| `confirmationRequired` | `boolean` | — | `src/shared/capabilities.ts:86` | Refuses to execute without an approved confirmation. |
+| `supportsDryRun` | `boolean` | — | `src/shared/capabilities.ts:88` | Accepts `dryRun: true` and returns a preview instead of acting. |
+| `announces` | `boolean` | — | `src/shared/capabilities.ts:99` | Whether a real change here wakes every other client. |
+| `supportsIdempotencyKey` | `boolean` | — | `src/shared/capabilities.ts:101` | Honours `idempotencyKey` and replays the original result on retry. |
+| `failureModes` | `readonly ErrorCode[] → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:102` |  |
 
-### `src/shared/capabilities.InvokeRequest` — interface — `src/shared/capabilities.ts:355-360`
-
-| field | type | default | at | note |
-|---|---|---|---|---|
-| `capability` | `string` | — | `src/shared/capabilities.ts:356` |  |
-| `input` | `?: unknown` | — | `src/shared/capabilities.ts:357` |  |
-| `idempotencyKey` | `?: string` | — | `src/shared/capabilities.ts:359` | Retry-safe key. On repeat the ORIGINAL result comes back, not a new one. |
-
-### `src/shared/capabilities.CapabilityError` — interface — `src/shared/capabilities.ts:362-367`
+### `src/shared/capabilities.InvokeRequest` — interface — `src/shared/capabilities.ts:389-394`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `code` | `ErrorCode → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:363` |  |
-| `message` | `string` | — | `src/shared/capabilities.ts:364` |  |
-| `details` | `?: unknown` | — | `src/shared/capabilities.ts:366` | Structural detail an agent can act on — which field, which id. |
+| `capability` | `string` | — | `src/shared/capabilities.ts:390` |  |
+| `input` | `?: unknown` | — | `src/shared/capabilities.ts:391` |  |
+| `idempotencyKey` | `?: string` | — | `src/shared/capabilities.ts:393` | Retry-safe key. On repeat the ORIGINAL result comes back, not a new one. |
 
-### `src/shared/capabilities.InvokeResult` — type-union on `ok` — `src/shared/capabilities.ts:369-370`
+### `src/shared/capabilities.CapabilityError` — interface — `src/shared/capabilities.ts:396-403`
+
+| field | type | default | at | note |
+|---|---|---|---|---|
+| `code` | `ErrorCode → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:397` |  |
+| `failureMode` | `?: string` | — | `src/shared/capabilities.ts:399` | The suite's kebab name for this refusal (fli-core), with a frozen JSON-RPC number. |
+| `message` | `string` | — | `src/shared/capabilities.ts:400` |  |
+| `details` | `?: unknown` | — | `src/shared/capabilities.ts:402` | Structural detail an agent can act on — which field, which id. |
+
+### `src/shared/capabilities.InvokeResult` — type-union on `ok` — `src/shared/capabilities.ts:405-406`
 
 | variant | shape | default | at |
 |---|---|---|---|
-| `true` | `{ ok: true; data: T; replayed?: boolean }` | — | `src/shared/capabilities.ts:370` |
-| `false` | `{ ok: false; error: CapabilityError }` | — | `src/shared/capabilities.ts:370` |
+| `true` | `{ ok: true; data: T; replayed?: boolean }` | — | `src/shared/capabilities.ts:406` |
+| `false` | `{ ok: false; error: CapabilityError }` | — | `src/shared/capabilities.ts:406` |
 
-### `src/shared/capabilities.InvokeResult[ok=false]` — type — `src/shared/capabilities.ts:370`
-
-| field | type | default | at |
-|---|---|---|---|
-| `ok` | `false` | — | `src/shared/capabilities.ts:370` |
-| `error` | `CapabilityError → src/shared/capabilities.CapabilityError` | — | `src/shared/capabilities.ts:370` |
-
-### `src/shared/capabilities.InvokeResult[ok=true]` — type — `src/shared/capabilities.ts:370`
+### `src/shared/capabilities.InvokeResult[ok=false]` — type — `src/shared/capabilities.ts:406`
 
 | field | type | default | at |
 |---|---|---|---|
-| `ok` | `true` | — | `src/shared/capabilities.ts:370` |
-| `data` | `T` | — | `src/shared/capabilities.ts:370` |
-| `replayed` | `?: boolean` | — | `src/shared/capabilities.ts:370` |
+| `ok` | `false` | — | `src/shared/capabilities.ts:406` |
+| `error` | `CapabilityError → src/shared/capabilities.CapabilityError` | — | `src/shared/capabilities.ts:406` |
+
+### `src/shared/capabilities.InvokeResult[ok=true]` — type — `src/shared/capabilities.ts:406`
+
+| field | type | default | at |
+|---|---|---|---|
+| `ok` | `true` | — | `src/shared/capabilities.ts:406` |
+| `data` | `T` | — | `src/shared/capabilities.ts:406` |
+| `replayed` | `?: boolean` | — | `src/shared/capabilities.ts:406` |
 
 ### `src/shared/domain-schema.paragraphSchema` — zod-object — `src/shared/domain-schema.ts:47-50`
 
@@ -1439,11 +1504,14 @@ These were looked at and could not be resolved to an authority. **Nothing is gue
 | subject | why | looked at |
 |---|---|---|
 | schemas built by `appFileName(...)` (1 use) | built by calling `appFileName(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `appFileName({ app: 'tubby' }) (src/core/project-store.ts:27)` |
+| schemas built by `defineCapabilities(...)` (1 use) | built by calling `defineCapabilities(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineCapabilities(Object.fromEntries(CAPABILITIES.map((meta) => [DOTTED_NAME[meta.name]!, contractFor(meta)]))) (src/core/agent-layer.ts:175)` |
+| schemas built by `defineFailureCodes(...)` (1 use) | built by calling `defineFailureCodes(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineFailureCodes({ 'invalid-input': JSONRPC_CODES.invalidParams, 'unknown-capability': JSONRPC_CODES.methodNotFound, internal: JSONRPC_CO… (src/core/agent-layer.ts:105)` |
 | schemas built by `id(...)` (13 uses) | built by calling `id(...)`, which does not return a single zod expression this reader can follow | `id('paragraph id') (src/shared/domain-schema.ts:48)`<br>`id('minor topic id') (src/shared/domain-schema.ts:53)`<br>`id('major topic id') (src/shared/domain-schema.ts:59)`<br>`id('trigger id') (src/shared/domain-schema.ts:65)`<br>`id('paragraph id') (src/shared/domain-schema.ts:67)`<br>`id('transcript id') (src/shared/domain-schema.ts:78)`<br>`id('corpus') (src/shared/domain-schema.ts:80)`<br>`id('talent id').nullable() (src/shared/domain-schema.ts:81)`<br>`id('script id') (src/shared/domain-schema.ts:88)`<br>`id('set id') (src/shared/domain-schema.ts:103)` |
 | src/core/input-shapes.layoutInput.camera | a z.enum whose members are computed or imported - this reader could not reach a literal list | `z.enum(CAMERA_SIDES)` |
 | src/core/input-shapes.layoutInput.driven | a z.enum whose members are computed or imported - this reader could not reach a literal list | `z.enum(RECORDING_SET)` |
 | src/core/input-shapes.layoutInput.text | a z.enum whose members are computed or imported - this reader could not reach a literal list | `z.enum(TEXT_PRESETS)` |
 | src/core/input-shapes.layoutInput.visible[] | a z.enum whose members are computed or imported - this reader could not reach a literal list | `z.enum(RECORDING_SET)` |
+| src/core/zod3-json-schema.check.kind (branching) at src/core/zod3-json-schema.ts:61 | the branching has cases that are not comparisons against literals, so the derived set may be INCOMPLETE | `check.kind === 'regex' && check.regex (line 63)` |
 
 ### Declared but not read
 
@@ -1452,21 +1520,24 @@ The census found these top-level declarations and the extractor did not mirror t
 | family | count | declarations |
 |---|---|---|
 | class | 15 | `src/core/active-context.ActiveContextHolder` `src/core/active-context.ts:48`<br>`src/core/open-context.OpenContextHolder` `src/core/open-context.ts:250`<br>`src/core/repository.FileRepository` `src/core/repository.ts:109`<br>`src/core/repository.MemoryRepository` `src/core/repository.ts:80`<br>`src/core/safety.AuditLog` `src/core/safety.ts:305`<br>`src/core/safety.CapabilityFailure` `src/core/safety.ts:40`<br>`src/core/safety.ConfirmationLedger` `src/core/safety.ts:125`<br>`src/core/safety.IdempotencyLedger` `src/core/safety.ts:220`<br>`src/core/safety.RateLimiter` `src/core/safety.ts:259`<br>`src/main/file-author.FileAuthor` `src/main/file-author.ts:32`<br>`src/main/ipc-router.IpcRouter` `src/main/ipc-router.ts:19`<br>`src/main/process-supervisor.Managed` `src/main/process-supervisor.ts:54`<br>`src/main/process-supervisor.ProcessSupervisor` `src/main/process-supervisor.ts:31`<br>`src/main/updater.Updater` `src/main/updater.ts:25`<br>`src/main/window-manager.WindowManager` `src/main/window-manager.ts:20` |
+| object constant | 9 | `src/core/agent-layer.DOTTED_NAME` `src/core/agent-layer.ts:50`<br>`src/core/input-shapes.INPUT` `src/core/input-shapes.ts:78`<br>`src/core/repository.EMPTY_DOCUMENT` `src/core/repository.ts:35`<br>`src/renderer/src/store.ZONE_LABEL` `src/renderer/src/store.ts:88`<br>`src/shared/domain.TRIGGER_STYLE_LETTER` `src/shared/domain.ts:84`<br>`src/shared/ipc.IPC` `src/shared/ipc.ts:21`<br>`src/shared/rig.DEFAULT_LAYOUT` `src/shared/rig.ts:142`<br>`src/shared/rig.EMPTY_WORKSPACE` `src/shared/rig.ts:133`<br>`src/shared/script-set.KYBERNESIS_PHASE_1` `src/shared/script-set.ts:17` |
 | alias of a primitive | 8 | `src/shared/domain.ParagraphId` `src/shared/domain.ts:47`<br>`src/shared/domain.ScriptId` `src/shared/domain.ts:44`<br>`src/shared/domain.SetId` `src/shared/domain.ts:43`<br>`src/shared/domain.TalentId` `src/shared/domain.ts:49`<br>`src/shared/domain.TopicId` `src/shared/domain.ts:46`<br>`src/shared/domain.TranscriptId` `src/shared/domain.ts:45`<br>`src/shared/domain.TriggerId` `src/shared/domain.ts:48`<br>`src/shared/rig.RigId` `src/shared/rig.ts:32` |
-| object constant | 8 | `src/core/input-shapes.INPUT` `src/core/input-shapes.ts:78`<br>`src/core/repository.EMPTY_DOCUMENT` `src/core/repository.ts:35`<br>`src/renderer/src/store.ZONE_LABEL` `src/renderer/src/store.ts:88`<br>`src/shared/domain.TRIGGER_STYLE_LETTER` `src/shared/domain.ts:84`<br>`src/shared/ipc.IPC` `src/shared/ipc.ts:21`<br>`src/shared/rig.DEFAULT_LAYOUT` `src/shared/rig.ts:142`<br>`src/shared/rig.EMPTY_WORKSPACE` `src/shared/rig.ts:133`<br>`src/shared/script-set.KYBERNESIS_PHASE_1` `src/shared/script-set.ts:17` |
-| array constant | 2 | `src/shared/capabilities.CAPABILITIES` `src/shared/capabilities.ts:166`<br>`src/shared/script-set.TALENTS` `src/shared/script-set.ts:2110` |
+| array constant | 3 | `src/core/zod3-json-schema.UNCONVERTED` `src/core/zod3-json-schema.ts:40`<br>`src/shared/capabilities.CAPABILITIES` `src/shared/capabilities.ts:168`<br>`src/shared/script-set.TALENTS` `src/shared/script-set.ts:2110` |
+| const built by a call (helper or non-zod call) | 2 | `src/core/agent-layer.SNAKE_NAME` `src/core/agent-layer.ts:87`<br>`src/renderer/src/store.useProm` `src/renderer/src/store.ts:408` |
 | constant (other form) | 2 | `src/core/active-context.ACTIVE_CONTEXT_TTL_MS` `src/core/active-context.ts:27`<br>`src/core/safety.CONFIRMATION_TTL_MS` `src/core/safety.ts:123` |
-| const built by a call (helper or non-zod call) | 1 | `src/renderer/src/store.useProm` `src/renderer/src/store.ts:408` |
-| derived type (`keyof typeof`, indexed access, `typeof`) | 1 | `src/shared/capabilities.CapabilityName` `src/shared/capabilities.ts:338` |
-| instance constant (`new ...`) | 1 | `src/shared/capabilities.CAPABILITY_BY_NAME` `src/shared/capabilities.ts:340` |
+| derived type (`keyof typeof`, indexed access, `typeof`) | 1 | `src/shared/capabilities.CapabilityName` `src/shared/capabilities.ts:372` |
+| instance constant (`new ...`) | 1 | `src/shared/capabilities.CAPABILITY_BY_NAME` `src/shared/capabilities.ts:374` |
 | union of named or mixed types | 1 | `src/core/active-context.ActiveContext` `src/core/active-context.ts:38` |
+| utility-type alias (`Pick` / `Omit` / `Record` / generic instance) | 1 | `src/core/zod3-json-schema.JsonSchema` `src/core/zod3-json-schema.ts:21` |
 
 ## Findings — changes needed in the target application
 
 These are refactors of the **application**, not of this mirror. Each one converts a derived section into a declared one.
 
-1. `src/main/control-server.ts:255` — REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:255. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
-2. `src/renderer/src/App.tsx:737` — REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:737. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
+1. `src/core/zod3-json-schema.ts:61` — REFACTOR: `check.kind` is a closed set enforced only by control flow at src/core/zod3-json-schema.ts:61. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
+2. `src/core/zod3-json-schema.ts:70` — REFACTOR: `check.kind` is a closed set enforced only by control flow at src/core/zod3-json-schema.ts:70. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
+3. `src/main/control-server.ts:385` — REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:385. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
+4. `src/renderer/src/App.tsx:737` — REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:737. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
 
 ---
 

@@ -51,6 +51,9 @@ const UI_SURFACE = [
   'score_transcript',
   'set_active_context',
   'set_export_to_project',
+  'system_quit',
+  'system_restart',
+  'system_status',
   'update_script',
   'upsert_talent',
   'write_script',
@@ -86,6 +89,9 @@ const AGENT_SURFACE = [
   'save_rig',
   'score_transcript',
   'set_export_to_project',
+  'system_quit',
+  'system_restart',
+  'system_status',
   'update_script',
   'upsert_talent',
   'write_script',
@@ -220,6 +226,13 @@ describe('the external consumer contract', () => {
  */
 describe('the change event', () => {
   const WORKING_STATE_ONLY = ['set_active_context', 'remember_layout'];
+  /**
+   * Quit and restart change no DATA — they end the process. Waking every
+   * window to re-fetch a set that did not change, a quarter-second before
+   * the app goes away, would be noise. Listed on their own, deliberately
+   * (fli-core lifecycle, 2026-09-23).
+   */
+  const PROCESS_ONLY = ['system_quit', 'system_restart'];
 
   it.each(WORKING_STATE_ONLY)('%s does not wake other clients', (name) => {
     expect(CAPABILITY_BY_NAME.get(name)?.announces).toBe(false);
@@ -230,7 +243,7 @@ describe('the change event', () => {
       (c) => c.name,
     );
     // Enumerated, so a new command cannot be quietly born silent.
-    expect(silent.sort()).toEqual([...WORKING_STATE_ONLY].sort());
+    expect(silent.sort()).toEqual([...WORKING_STATE_ONLY, ...PROCESS_ONLY].sort());
   });
 
   it('is never on for a query', () => {

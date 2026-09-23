@@ -54,6 +54,7 @@ Seeded 2026-08-19 from the first build session. Every entry below was paid for t
 | [002](decisions/adr-002-typecheck-is-the-static-check-lint-is-davids-call.md) | Typecheck is the static check; a lint config is David's call | accepted |
 | [003](decisions/adr-003-an-empty-project-opens-empty-not-on-the-remembered-set.md) | An empty project opens empty, not on the remembered set | accepted |
 | [004](decisions/adr-004-scripts-on-demand-one-project-file-many-named-scripts.md) | Scripts on demand — one project file, many named scripts, an optional video tag | accepted |
+| [005](decisions/adr-005-fli-core-agent-layer-as-a-projection-with-dotted-names.md) | The fli-core agent layer is a projection of the catalog, with authored family.verb names | accepted |
 
 ---
 

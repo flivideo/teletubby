@@ -67,6 +67,8 @@ export const ERROR_CODES = [
   'rate_limited',
   'unavailable',
   'internal',
+  /** A quit or restart would interrupt the talent mid-session (fli-core `app-busy`). */
+  'app_busy',
 ] as const;
 export type ErrorCode = (typeof ERROR_CODES)[number];
 
@@ -333,6 +335,38 @@ export const CAPABILITIES: readonly CapabilityMeta[] = [
     principals: ['ui'],
     failureModes: [],
   }),
+
+  /* Lifecycle — fli-core's LIFECYCLE_CAPABILITIES (system.status / quit /
+   * restart), bound here. The reply goes out BEFORE the process does. Quit
+   * and restart refuse `app_busy` while the talent is on the prompter;
+   * `force` is human-only (fli-core's fence, applied in core.invoke). */
+  query(
+    'system_status',
+    'Is the app up, which run is it, what project is open, and is the talent mid-session (busy).',
+    { failureModes: [] },
+  ),
+  command(
+    'system_quit',
+    'Quit Teletubby. Refused (app_busy) while the talent is on the prompter, unless a person forces it.',
+    {
+      sideEffects: 'external-side-effect',
+      supportsDryRun: false,
+      supportsIdempotencyKey: false,
+      announces: false,
+      failureModes: ['app_busy', 'permission_denied'],
+    },
+  ),
+  command(
+    'system_restart',
+    'Quit and start again on the same brand and project (scripts/app.sh restart). Refused (app_busy) like quit.',
+    {
+      sideEffects: 'external-side-effect',
+      supportsDryRun: false,
+      supportsIdempotencyKey: false,
+      announces: false,
+      failureModes: ['app_busy', 'permission_denied', 'unavailable'],
+    },
+  ),
 ] as const;
 
 export type CapabilityName = (typeof CAPABILITIES)[number]['name'];
@@ -361,6 +395,8 @@ export interface InvokeRequest {
 
 export interface CapabilityError {
   code: ErrorCode;
+  /** The suite's kebab name for this refusal (fli-core), with a frozen JSON-RPC number. */
+  failureMode?: string;
   message: string;
   /** Structural detail an agent can act on — which field, which id. */
   details?: unknown;

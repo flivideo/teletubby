@@ -1,7 +1,7 @@
 {
   "name": "teletubby",
   "version": "0.1.0",
-  "description": "Three-column glance-based teleprompter — topic, trigger words, transcript.",
+  "description": "Three-column glance-based teleprompter \u2014 topic, trigger words, transcript.",
   "private": true,
   "packageManager": "npm@11.11.0",
   "type": "module",
@@ -28,11 +28,13 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "test": "vitest run",
     "test:watch": "vitest",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "api:openrpc": "UPDATE_OPENRPC=1 vitest run test/agent-layer.test.ts -t \"api/openrpc.json is current\"",
+    "api:check": "vitest run test/agent-layer.test.ts -t \"api/openrpc.json is current\""
   },
   "dependencies": {
     "@appydave/core": "^0.1.0",
-    "@flivideo/core": "github:flivideo/fli-core#v0.4.1",
+    "@flivideo/core": "github:flivideo/fli-core#v0.7.0",
     "electron-updater": "^6.8.9",
     "zustand": "^5.0.3"
   },

@@ -3,7 +3,7 @@ generated: 2026-09-23
 generator: system-context
 audience: agent
 status: snapshot
-commit: 6547eca
+commit: 243e255
 ---
 
 # Teletubby — Agent Notes
@@ -14,8 +14,13 @@ launching, the capability core, the open contract, the styling rules and the got
 ## Tooling
 
 - Launch with `npm run app` (overmind, detached). Never `npm run dev` from an agent.
-- Drive the app with `bin/teletubby.mjs call <verb> --input '<json>'`. Read verb shapes from
-  `teletubby capabilities` (generated), not from any doc.
+- Drive the app with `bin/teletubby.mjs call <verb> --input '<json>' --as agent:<name>`. Read
+  verb shapes from `teletubby capabilities` (generated), not from any doc.
+- **Two names per verb, both live** (ADR-005): snake on `/api/invoke` and the CLI (`write_script`),
+  `family.verb` on JSON-RPC `/api/rpc`, the spec and the console (`script.write`). The map is
+  `DOTTED_NAME` in `src/core/agent-layer.ts`. A new verb needs an entry there, or the import fails.
+- After changing a verb, a field or a refusal code, run `npm run api:openrpc` and commit
+  `api/openrpc.json`. `npm run api:check` (and `npm test`) fail on a stale spec.
 - Schema drift check: `python3 /Users/davidcruwys/dev/ad/appydave-plugins/dev-team/skills/schema-mirror/scripts/verify_mirror.py docs/schema-mirror.json`.
   Regenerate with `extract_typescript.py` + `render_mirror.py` after any change to
   `src/shared/*` or `src/core/input-shapes.ts`.

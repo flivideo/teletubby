@@ -312,6 +312,14 @@ export const INPUT: Record<string, z.ZodObject<z.ZodRawShape>> = {
   approve_pending: z.object({ pendingId: z.string().min(1) }),
 
   delete_rig: z.object({ id: slug, ...commandEnvelope }),
+
+  system_status: z.object({}),
+  system_quit: z.object({
+        force: z.boolean().optional().describe('quit even while busy — a person only, never an agent'),
+      }),
+  system_restart: z.object({
+        force: z.boolean().optional().describe('restart even while busy — a person only, never an agent'),
+      }),
 };
 
 export interface InputField {

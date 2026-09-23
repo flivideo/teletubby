@@ -48,6 +48,7 @@ import {
   type Principal,
 } from '@shared/capabilities';
 import type { ActiveContextHolder } from './active-context.js';
+import type { LifecycleHooks } from './index.js';
 import {
   emptyOnDemandSet,
   onDemandSetId,
@@ -75,6 +76,8 @@ import type { Repository, RepositoryDocument } from './repository.js';
 import { ConfirmationLedger, fail, fingerprint } from './safety.js';
 
 export interface HandlerContext {
+  /** The host process, for the lifecycle verbs. Absent headless. */
+  lifecycle?: LifecycleHooks;
   repository: Repository;
   active: ActiveContextHolder;
   /** The session's brand/project context (W6, door 2 + door 3). Never persisted. */
@@ -960,6 +963,66 @@ export function createHandlers(): Record<string, Handler> {
       };
     });
   };
+
+  /* ---------------------------------------------------------------- *
+   * Lifecycle (fli-core LIFECYCLE_CAPABILITIES) — the core decides
+   * WHETHER; the host process does it, after the reply has gone out.
+   * ---------------------------------------------------------------- */
+
+  /**
+   * "Busy" is the talent on the prompter: a selection touched in the last
+   * five minutes (the same freshness `get_active_context` uses). Teletubby
+   * cannot see Ecamm, so this is the honest signal it has — a quit that lands
+   * while someone is mid-take is exactly what `app-busy` exists to stop.
+   */
+  const busyOf = (context: HandlerContext): { what: string; since: string }[] => {
+    const active = context.active.get();
+    if (!active.active) return [];
+    const where = [active.setId, active.scriptId].filter(Boolean).join(' / ') || 'a script';
+    return [{ what: `prompter session on ${where}`, since: new Date(active.updatedAt).toISOString() }];
+  };
+
+  const hostOf = (context: HandlerContext): LifecycleHooks => {
+    if (!context.lifecycle)
+      fail('unavailable', 'no host process to control — this core is running headless');
+    return context.lifecycle;
+  };
+
+  handlers.system_status = async (input, context) => {
+    parse(INPUT.system_status, input);
+    const host = hostOf(context);
+    const open = context.openContext.get().context;
+    return {
+      app: host.app,
+      version: host.version,
+      pid: host.pid,
+      startedAt: host.startedAt,
+      context: open ? { brand: open.brand, project: open.project } : null,
+      busy: busyOf(context),
+    };
+  };
+
+  /** Long enough for the reply to leave the socket; short enough to feel immediate. */
+  const QUIT_DELAY_MS = 250;
+
+  const leave = (verb: 'quit' | 'restart') => async (input: unknown, context: HandlerContext) => {
+    const parsed = parse(INPUT[`system_${verb}`]!, input) as { force?: boolean };
+    const host = hostOf(context);
+    const busy = busyOf(context);
+    // `force` from an agent never reaches here: fli-core's fence refused it.
+    if (busy.length > 0 && !parsed.force)
+      fail('app_busy', `the talent is on the prompter (${busy[0]!.what}); wait, or a person can force it`, {
+        busy,
+      });
+    const open = context.openContext.get().context;
+    setTimeout(
+      () => (verb === 'quit' ? host.quit() : host.restart(open ? { brand: open.brand, project: open.project } : null)),
+      QUIT_DELAY_MS,
+    );
+    return { pid: host.pid, quittingInMs: QUIT_DELAY_MS };
+  };
+  handlers.system_quit = leave('quit');
+  handlers.system_restart = leave('restart');
 
   handlers.update_script = async (input, context) => {
     const parsed = parse(INPUT.update_script, input);

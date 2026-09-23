@@ -19,8 +19,16 @@
  * environment with a MemoryRepository.
  */
 
+import { authorize, principalKind } from '@flivideo/core';
 import type { CapabilityMeta, InvokeResult, Principal } from '@shared/capabilities';
 import { ActiveContextHolder } from './active-context.js';
+import {
+  ANONYMOUS_AGENT,
+  DOTTED_NAME,
+  UI_PRINCIPAL,
+  contractOf,
+  failureModeOf,
+} from './agent-layer.js';
 import { createHandlers, type Handler, type HandlerContext } from './handlers.js';
 import { OpenContextHolder } from './open-context.js';
 import type { Repository } from './repository.js';
@@ -43,10 +51,35 @@ export interface CoreOptions {
   clock?: Clock;
   /** Where audit entries go beyond the in-memory ring — a logger, usually. */
   auditSink?: (entry: AuditEntry) => void;
+  /**
+   * The process around the core, for `system_status` / `system_quit` /
+   * `system_restart`. Absent in tests and headless use — those verbs then
+   * answer `unavailable` rather than pretending.
+   */
+  lifecycle?: LifecycleHooks;
+}
+
+/** What only the host process can do. The core decides WHETHER; the host does it. */
+export interface LifecycleHooks {
+  app: string;
+  version: string;
+  pid: number;
+  startedAt: string;
+  /** Called after the reply is sent. */
+  quit(): void;
+  /** Called after the reply is sent, with the context to reopen on. */
+  restart(open: { brand: string; project: string } | null): void;
 }
 
 export interface InvokeOptions {
   principal: Principal;
+  /**
+   * Who is calling, by name (fli-core): `human:<surface>`, `agent:<name>` or
+   * `cli`. Defaults to `human:prompter` over the UI bridge and `agent:http`
+   * over HTTP. A name whose kind contradicts the surface is refused — nothing
+   * reaching the HTTP door may call itself human.
+   */
+  as?: string;
   idempotencyKey?: string;
 }
 
@@ -112,6 +145,21 @@ export function createCore(options: CoreOptions): Core {
       capability = resolveCapability(name);
 
       // 1 · The gate. Before anything else, and identical for every adapter.
+      //     Two fences, both beneath every door: fli-core's ★ (`authorize`,
+      //     by principal NAME and, for `force`, by input) and the surface
+      //     gate this app has always had (`ui` vs `agent`).
+      const principalName = invokeOptions.as ?? (principal === 'ui' ? UI_PRINCIPAL : ANONYMOUS_AGENT);
+      const kind = principalKind(principalName);
+      if (kind === null || (kind === 'human') !== (principal === 'ui'))
+        throw new CapabilityFailure(
+          'permission_denied',
+          `"${principalName}" cannot call over the ${principal} surface — ` +
+            (principal === 'ui' ? 'the prompter window is human' : 'name yourself agent:<name> or cli'),
+          { capability: name, principal: principalName, surface: principal },
+        );
+      const gate = authorize(DOTTED_NAME[name]!, contractOf(name)!, principalName, input ?? {});
+      if (!gate.ok)
+        throw new CapabilityFailure('permission_denied', gate.refusal.message, gate.refusal.details);
       assertPrincipalMay(capability, principal);
 
       const envelope = (input ?? {}) as Record<string, unknown>;
@@ -148,6 +196,7 @@ export function createCore(options: CoreOptions): Core {
         };
 
       const context: HandlerContext = {
+        lifecycle: options.lifecycle,
         repository: options.repository,
         active,
         openContext,
@@ -188,13 +237,18 @@ export function createCore(options: CoreOptions): Core {
     } catch (error) {
       if (error instanceof CapabilityFailure) {
         record(false, { errorCode: error.code });
-        return { ok: false, error: error.toError() };
+        const failure = error.toError();
+        // The suite's name for it, on every door. An unknown verb is its own
+        // name — `not-found` would read as "that set does not exist".
+        failure.failureMode = capability ? failureModeOf(failure) : 'unknown-capability';
+        return { ok: false, error: failure };
       }
       record(false, { errorCode: 'internal' });
       return {
         ok: false,
         error: {
           code: 'internal',
+          failureMode: 'internal',
           message: error instanceof Error ? error.message : String(error),
         },
       };
