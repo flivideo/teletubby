@@ -4,11 +4,10 @@
  * Teletubby's `z` is zod 3 (via `@appydave/core`); fli-core's contracts,
  * `toOpenRpc` and the console page are zod 4 and read a schema's internals.
  * A contract's `input` must therefore be built by the SAME zod 4 that
- * fli-core reads it with, and fli-core does not re-export `z`. So it is
- * imported from where npm installed it, beneath fli-core.
+ * fli-core reads it with — which fli-core re-exports as `z` since v0.7.3.
  *
- * If this import ever fails to resolve, npm has hoisted zod differently
- * (e.g. Teletubby moved to zod 4 itself) — then import `z` from 'zod' here
- * and delete this note. It fails at build time, never silently.
+ * This used to import zod by path from beneath fli-core's node_modules. That
+ * resolved the runtime to one copy and the types to another, so tsc saw two
+ * unrelated zod 4 type trees (TS2719 in agent-layer.ts) while tests passed.
  */
-export { z } from '../../node_modules/@flivideo/core/node_modules/zod/index.js';
+export { z } from '@flivideo/core';

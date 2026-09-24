@@ -1,7 +1,7 @@
 {
   "name": "teletubby",
   "version": "0.1.0",
-  "description": "Three-column glance-based teleprompter \u2014 topic, trigger words, transcript.",
+  "description": "Three-column glance-based teleprompter — topic, trigger words, transcript.",
   "private": true,
   "packageManager": "npm@11.11.0",
   "type": "module",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@appydave/core": "^0.1.0",
-    "@flivideo/core": "github:flivideo/fli-core#v0.7.0",
+    "@flivideo/core": "github:flivideo/fli-core#v0.7.3",
     "electron-updater": "^6.8.9",
     "zustand": "^5.0.3"
   },
