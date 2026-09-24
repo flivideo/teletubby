@@ -60,12 +60,27 @@ export interface CoreOptions {
   lifecycle?: LifecycleHooks;
 }
 
+/** Read back from the window after a raise — never what was asked for. */
+export interface WindowShown {
+  visible: boolean;
+  focused: boolean;
+  minimized: boolean;
+  /** No window existed, so one was created. */
+  created: boolean;
+}
+
 /** What only the host process can do. The core decides WHETHER; the host does it. */
 export interface LifecycleHooks {
   app: string;
   version: string;
   pid: number;
   startedAt: string;
+  /**
+   * Bring the prompter in front — create, restore, show, raise, focus — and
+   * report what the window says afterwards. Absent → `system_show` answers
+   * `unavailable`.
+   */
+  show?(): Promise<WindowShown>;
   /** Called after the reply is sent. */
   quit(): void;
   /** Called after the reply is sent, with the context to reopen on. */

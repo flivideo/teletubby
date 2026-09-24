@@ -3,13 +3,13 @@
 > Generated from the code, not written about it. Do not hand-edit — every line below is anchored to a `file:line` and is re-derived on every run. `verify_mirror.py` fails when this page no longer matches its JSON. To record a gap the extractor cannot find, use `docs/schema-mirror.known-gaps.json`.
 
 - **stack** `typescript` · **extractor** `extract_typescript.py`
-- **commit** `6e3f2dacf848` · **generated** 2026-09-23T15:39:46+00:00
+- **commit** `cc5645ae5c3a` · **generated** 2026-09-24T14:40:42+00:00
 - **scope** include `*.ts`, `*.tsx` · exclude `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx`, `*.stories.tsx`, `*.config.ts`, `*/test/*`, `*/tests/*`, `*/__tests__/*`, `*/e2e/*`, `*/__mocks__/*`, `*/fixtures/*`, `*.d.ts`, `*/dist/*`, `*/build/*`, `*/out/*`
 - **zod bound** in 0 file(s) by a direct import, 6 through a re-export, 0 by call shape only
 
 | shapes | declared sets | derived sets | gaps | declared but not read | findings |
 |---|---|---|---|---|---|
-| 101 | 32 | 4 | 9 | 46 | 4 |
+| 104 | 32 | 4 | 9 | 46 | 4 |
 
 > **Read the gaps, the census and the never-read list before trusting the shape.** Derived sets have no declaring symbol and will drift silently. Gaps are things this mirror could not reach — they are not absences in the code.
 
@@ -20,8 +20,8 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 - `src/core/active-context.ts` — `ActiveSelection` :29
 - `src/core/cadence.ts` — `CadenceMeasurements` :29 · `CadenceRule` :44 · `CadenceScore` :62
 - `src/core/handlers.ts` — `HandlerContext` :80 · `Resolved` :142 · `MaybeUnreadable` :341
-- `src/core/index.ts` — `CoreOptions` :49 · `LifecycleHooks` :64 · `InvokeOptions` :75 · `ChangeEvent` :97 · `Core` :103
-- `src/core/input-shapes.ts` — `slug` :25 · `projectName` :28 · `paragraphInput` :34 · `minorInput` :39 · `majorInput` :45 · `layoutInput` :56 · `triggerInput` :71 · `InputField` :332
+- `src/core/index.ts` — `CoreOptions` :49 · `WindowShown` :64 · `LifecycleHooks` :73 · `InvokeOptions` :90 · `ChangeEvent` :112 · `Core` :118
+- `src/core/input-shapes.ts` — `slug` :25 · `projectName` :28 · `paragraphInput` :34 · `minorInput` :39 · `majorInput` :45 · `layoutInput` :56 · `triggerInput` :71 · `InputField` :333
 - `src/core/open-context.ts` — `OPEN_REFUSAL_CODES` (set) :35 · `OpenRefusal` :45 · `OpenContext` :54 · `OpenResolution` :65 · `ResolveOpenArgsOptions` :69 · `ContextReport` :239
 - `src/core/project-store.ts` — `projectFileSchema` :33 · `UnreadableProjectFile` :98
 - `src/core/repository.ts` — `RepositoryDocument` :24 · `Repository` :66
@@ -34,12 +34,13 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 - `src/main/file-author.ts` — `FileAuthorOptions` :9 · `AuthorResult` :16
 - `src/main/ipc-router.ts` — `HandlerDef` :4
 - `src/main/process-supervisor.ts` — `SpawnOptions` :4 · `ProcessStatus` (set) :11 · `LogChunk` :12 · `ManagedProcess` :17
+- `src/main/show-window.ts` — `ShowableWindow` :4 · `ShowDeps` :16
 - `src/main/updater.ts` — `UpdateStatus` (set) :4 · `UpdateState` :7 · `UpdaterOptions` :14
 - `src/main/window-manager.ts` — `WindowOptions` :4
 - `src/renderer/src/App.tsx` — `zone (switch)` (set) :758
 - `src/renderer/src/components/CadencePanel.tsx` — `Rule` :23 · `Score` :31
 - `src/renderer/src/store.ts` — `ZONES` (set) :71 · `CueCard` :97 · `PrompterState` :104 · `SetSummary` :265 · `UnreadableFile` :286 · `SetFilter` (set) :339 · `StageHold` :346 · `Rank` (set) :1201
-- `src/shared/capabilities.ts` — `PRINCIPALS` (set) :36 · `SIDE_EFFECTS` (set) :43 · `CapabilityKind` (set) :51 · `ERROR_CODES` (set) :59 · `CapabilityMeta` :75 · `InvokeRequest` :406 · `CapabilityError` :413 · `InvokeResult` :422
+- `src/shared/capabilities.ts` — `PRINCIPALS` (set) :36 · `SIDE_EFFECTS` (set) :43 · `CapabilityKind` (set) :51 · `ERROR_CODES` (set) :59 · `CapabilityMeta` :75 · `InvokeRequest` :420 · `CapabilityError` :427 · `InvokeResult` :436
 - `src/shared/domain-schema.ts` — `paragraphSchema` :47 · `minorTopicSchema` :52 · `majorTopicSchema` :58 · `triggerSchema` :64 · `triggerSetSchema` :70 · `transcriptSchema` :77 · `scriptSchema` :87 · `scriptSetSchema` :102 · `cadenceEnvelopeSchema` :127 · `talentSchema` :139 · `rigLayoutSchema` :149 · `rigSchema` :164 · `workspaceSchema` :170
 - `src/shared/domain.ts` — `TRANSCRIPT_KINDS` (set) :65 · `TRIGGER_STYLES` (set) :80 · `AUTHORSHIPS` (set) :91 · `Paragraph` :98 · `MinorTopic` :105 · `MajorTopic` :112 · `Trigger` :127 · `TriggerSet` :133 · `Transcript` :141 · `Script` :159 · `ScriptSet` :216 · `CadenceEnvelope` :274 · `Talent` :293 · `DomainViolation` :304
 - `src/shared/ipc.ts` — `AppInfo` :35 · `ControlStatus` :44 · `ControlChanged` :55 · `InvokePayload` :61 · `AppytronApi` :68
@@ -63,7 +64,7 @@ These constructs are outside what this extractor reads **on every run, in every 
 
 ## Coverage census
 
-**161** top-level declarations counted = **112** mirrored + **3** listed as gaps + **46** declared but not read.
+**164** top-level declarations counted = **115** mirrored + **3** listed as gaps + **46** declared but not read.
 
 Counted: every top-level interface, enum, class and type alias (exported or not) and every exported constant, in the files in scope.
 Not counted, as not schema-bearing: 32 functions, 2 function types, 7 literal constants.
@@ -274,14 +275,14 @@ Where this row's data was read from: the open project's fli.tubby.json, or the a
 | `internal` | `src/shared/capabilities.ts:69` |
 | `app_busy` | `src/shared/capabilities.ts:71` |
 
-### `src/shared/capabilities.InvokeResult.ok` — `src/shared/capabilities.ts:422-423`
+### `src/shared/capabilities.InvokeResult.ok` — `src/shared/capabilities.ts:436-437`
 
 *the `ok` discriminator of union type `InvokeResult` - each value declared by a literal type in one variant*
 
 | value | declared at |
 |---|---|
-| `true` | `src/shared/capabilities.ts:423` |
-| `false` | `src/shared/capabilities.ts:423` |
+| `true` | `src/shared/capabilities.ts:437` |
+| `false` | `src/shared/capabilities.ts:437` |
 
 ### `src/shared/domain-schema.triggerSetSchema.style` — `src/shared/domain-schema.ts:71`
 
@@ -582,47 +583,59 @@ Each set below was read out of the real authority — control flow, membership t
 | `auditSink` | `?: (entry: AuditEntry) => void → src/core/safety.AuditEntry` | — | `src/core/index.ts:54` | Where audit entries go beyond the in-memory ring — a logger, usually. |
 | `lifecycle` | `?: LifecycleHooks → src/core/index.LifecycleHooks` | — | `src/core/index.ts:60` | The process around the core, for `system_status` / `system_quit` / |
 
-### `src/core/index.LifecycleHooks` — interface — `src/core/index.ts:64-73`
+### `src/core/index.WindowShown` — interface — `src/core/index.ts:64-70`
+
+Read back from the window after a raise — never what was asked for.
+
+| field | type | default | at | note |
+|---|---|---|---|---|
+| `visible` | `boolean` | — | `src/core/index.ts:65` |  |
+| `focused` | `boolean` | — | `src/core/index.ts:66` |  |
+| `minimized` | `boolean` | — | `src/core/index.ts:67` |  |
+| `created` | `boolean` | — | `src/core/index.ts:69` | No window existed, so one was created. |
+
+### `src/core/index.LifecycleHooks` — interface — `src/core/index.ts:73-88`
 
 What only the host process can do. The core decides WHETHER; the host does it.
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `app` | `string` | — | `src/core/index.ts:65` |  |
-| `version` | `string` | — | `src/core/index.ts:66` |  |
-| `pid` | `number` | — | `src/core/index.ts:67` |  |
-| `startedAt` | `string` | — | `src/core/index.ts:68` |  |
-| `quit` | `(): void` | — | `src/core/index.ts:70` | Called after the reply is sent. |
-| `restart` | `(open: { brand: string; project: string } \| null): void` | — | `src/core/index.ts:72` | Called after the reply is sent, with the context to reopen on. |
+| `app` | `string` | — | `src/core/index.ts:74` |  |
+| `version` | `string` | — | `src/core/index.ts:75` |  |
+| `pid` | `number` | — | `src/core/index.ts:76` |  |
+| `startedAt` | `string` | — | `src/core/index.ts:77` |  |
+| `show` | `(): Promise<WindowShown>` | — | `src/core/index.ts:83` | Bring the prompter in front — create, restore, show, raise, focus — and |
+| `quit` | `(): void` | — | `src/core/index.ts:85` | Called after the reply is sent. |
+| `restart` | `(open: { brand: string; project: string } \| null): void` | — | `src/core/index.ts:87` | Called after the reply is sent, with the context to reopen on. |
 
-### `src/core/index.InvokeOptions` — interface — `src/core/index.ts:75-85`
+### `src/core/index.InvokeOptions` — interface — `src/core/index.ts:90-100`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:76` |  |
-| `as` | `?: string` | — | `src/core/index.ts:83` | Who is calling, by name (fli-core): `human:<surface>`, `agent:<name>` or |
-| `idempotencyKey` | `?: string` | — | `src/core/index.ts:84` |  |
+| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:91` |  |
+| `as` | `?: string` | — | `src/core/index.ts:98` | Who is calling, by name (fli-core): `human:<surface>`, `agent:<name>` or |
+| `idempotencyKey` | `?: string` | — | `src/core/index.ts:99` |  |
 
-### `src/core/index.ChangeEvent` — interface — `src/core/index.ts:97-101`
+### `src/core/index.ChangeEvent` — interface — `src/core/index.ts:112-116`
 
 Emitted after a command actually changes the DATA — not on a query, not on a
 
 | field | type | default | at |
 |---|---|---|---|
-| `capability` | `string` | — | `src/core/index.ts:98` |
-| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:99` |
-| `at` | `number` | — | `src/core/index.ts:100` |
+| `capability` | `string` | — | `src/core/index.ts:113` |
+| `principal` | `Principal → Principal (@shared/capabilities)` | — | `src/core/index.ts:114` |
+| `at` | `number` | — | `src/core/index.ts:115` |
 
-### `src/core/index.Core` — interface — `src/core/index.ts:103-113`
+### `src/core/index.Core` — interface — `src/core/index.ts:118-128`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `invoke` | `(name: string, input: unknown, options: InvokeOptions): Promise<InvokeResult>` | — | `src/core/index.ts:104` |  |
-| `onChange` | `(listener: (event: ChangeEvent) => void): () => void` | — | `src/core/index.ts:106` | Subscribe to state changes. Returns an unsubscribe function. |
-| `active` | `ActiveContextHolder` | — | `src/core/index.ts:108` | The renderer's own selection state, so the UI can drive it directly. |
-| `openContext` | `OpenContextHolder` | — | `src/core/index.ts:110` | The session's brand/project context (W6) — set by door 2 or `context_select`, never persisted. |
-| `audit` | `AuditLog` | — | `src/core/index.ts:111` |  |
-| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:112` |  |
+| `invoke` | `(name: string, input: unknown, options: InvokeOptions): Promise<InvokeResult>` | — | `src/core/index.ts:119` |  |
+| `onChange` | `(listener: (event: ChangeEvent) => void): () => void` | — | `src/core/index.ts:121` | Subscribe to state changes. Returns an unsubscribe function. |
+| `active` | `ActiveContextHolder` | — | `src/core/index.ts:123` | The renderer's own selection state, so the UI can drive it directly. |
+| `openContext` | `OpenContextHolder` | — | `src/core/index.ts:125` | The session's brand/project context (W6) — set by door 2 or `context_select`, never persisted. |
+| `audit` | `AuditLog` | — | `src/core/index.ts:126` |  |
+| `repository` | `Repository → src/core/repository.Repository` | — | `src/core/index.ts:127` |  |
 
 ### `src/core/input-shapes.slug` — zod-scalar — `src/core/input-shapes.ts:25`
 
@@ -688,15 +701,15 @@ A layout as a caller supplies it. `visible` is canonicalised on the way in
 | `text` | `z.string().min(1)` | — | `src/core/input-shapes.ts:73` |
 | `paragraphId` | `slug → src/core/input-shapes.slug` | — | `src/core/input-shapes.ts:74` |
 
-### `src/core/input-shapes.InputField` — interface — `src/core/input-shapes.ts:332-345`
+### `src/core/input-shapes.InputField` — interface — `src/core/input-shapes.ts:333-346`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `name` | `string` | — | `src/core/input-shapes.ts:333` |  |
-| `type` | `string` | — | `src/core/input-shapes.ts:334` |  |
-| `required` | `boolean` | — | `src/core/input-shapes.ts:335` |  |
-| `default` | `?: unknown` | — | `src/core/input-shapes.ts:343` | Present when omitting the field APPLIES A VALUE rather than leaving it |
-| `note` | `?: string` | — | `src/core/input-shapes.ts:344` |  |
+| `name` | `string` | — | `src/core/input-shapes.ts:334` |  |
+| `type` | `string` | — | `src/core/input-shapes.ts:335` |  |
+| `required` | `boolean` | — | `src/core/input-shapes.ts:336` |  |
+| `default` | `?: unknown` | — | `src/core/input-shapes.ts:344` | Present when omitting the field APPLIES A VALUE rather than leaving it |
+| `note` | `?: string` | — | `src/core/input-shapes.ts:345` |  |
 
 ### `src/core/open-context.OpenRefusal` — interface — `src/core/open-context.ts:45-52`
 
@@ -959,6 +972,32 @@ A layout as a caller supplies it. `visible` is canonicalised on the way in
 | `onExit` | `(cb: (code: number \| null) => void): () => void` | — | `src/main/process-supervisor.ts:22` |
 | `stop` | `(signal?: NodeJS.Signals): void` | — | `src/main/process-supervisor.ts:23` |
 
+### `src/main/show-window.ShowableWindow` — interface — `src/main/show-window.ts:4-14`
+
+The slice of a BrowserWindow a raise touches — a fake in tests, so no window ever pops.
+
+| field | type | default | at |
+|---|---|---|---|
+| `isDestroyed` | `(): boolean` | — | `src/main/show-window.ts:5` |
+| `isMinimized` | `(): boolean` | — | `src/main/show-window.ts:6` |
+| `isVisible` | `(): boolean` | — | `src/main/show-window.ts:7` |
+| `isFocused` | `(): boolean` | — | `src/main/show-window.ts:8` |
+| `restore` | `(): void` | — | `src/main/show-window.ts:9` |
+| `show` | `(): void` | — | `src/main/show-window.ts:10` |
+| `moveTop` | `(): void` | — | `src/main/show-window.ts:11` |
+| `focus` | `(): void` | — | `src/main/show-window.ts:12` |
+| `once` | `(event: 'ready-to-show', listener: () => void): void` | — | `src/main/show-window.ts:13` |
+
+### `src/main/show-window.ShowDeps` — interface — `src/main/show-window.ts:16-27`
+
+| field | type | default | at | note |
+|---|---|---|---|---|
+| `windows` | `(): W[]` | — | `src/main/show-window.ts:18` | The prompter windows that exist now. |
+| `open` | `(): W` | — | `src/main/show-window.ts:20` | Build the prompter (it is created hidden and shows on ready-to-show). |
+| `activateApp` | `(): void` | — | `src/main/show-window.ts:22` | `app.show()` on macOS (un-hides the app) + `app.focus({ steal: true })`. |
+| `settleMs` | `?: number` | — | `src/main/show-window.ts:24` | Focus is applied by the window server asynchronously; wait this long before reading it back. |
+| `readyTimeoutMs` | `?: number` | — | `src/main/show-window.ts:26` | A fresh window that never paints still gets an honest answer after this. |
+
 ### `src/main/updater.UpdateState` — interface — `src/main/updater.ts:7-12`
 
 | field | type | default | at |
@@ -1135,44 +1174,44 @@ Why the set on stage is being HELD rather than refreshed — shown by the
 | `supportsIdempotencyKey` | `boolean` | — | `src/shared/capabilities.ts:101` | Honours `idempotencyKey` and replays the original result on retry. |
 | `failureModes` | `readonly ErrorCode[] → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:102` |  |
 
-### `src/shared/capabilities.InvokeRequest` — interface — `src/shared/capabilities.ts:406-411`
+### `src/shared/capabilities.InvokeRequest` — interface — `src/shared/capabilities.ts:420-425`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `capability` | `string` | — | `src/shared/capabilities.ts:407` |  |
-| `input` | `?: unknown` | — | `src/shared/capabilities.ts:408` |  |
-| `idempotencyKey` | `?: string` | — | `src/shared/capabilities.ts:410` | Retry-safe key. On repeat the ORIGINAL result comes back, not a new one. |
+| `capability` | `string` | — | `src/shared/capabilities.ts:421` |  |
+| `input` | `?: unknown` | — | `src/shared/capabilities.ts:422` |  |
+| `idempotencyKey` | `?: string` | — | `src/shared/capabilities.ts:424` | Retry-safe key. On repeat the ORIGINAL result comes back, not a new one. |
 
-### `src/shared/capabilities.CapabilityError` — interface — `src/shared/capabilities.ts:413-420`
+### `src/shared/capabilities.CapabilityError` — interface — `src/shared/capabilities.ts:427-434`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `code` | `ErrorCode → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:414` |  |
-| `failureMode` | `?: string` | — | `src/shared/capabilities.ts:416` | The suite's kebab name for this refusal (fli-core), with a frozen JSON-RPC number. |
-| `message` | `string` | — | `src/shared/capabilities.ts:417` |  |
-| `details` | `?: unknown` | — | `src/shared/capabilities.ts:419` | Structural detail an agent can act on — which field, which id. |
+| `code` | `ErrorCode → src/shared/capabilities.ErrorCode` | — | `src/shared/capabilities.ts:428` |  |
+| `failureMode` | `?: string` | — | `src/shared/capabilities.ts:430` | The suite's kebab name for this refusal (fli-core), with a frozen JSON-RPC number. |
+| `message` | `string` | — | `src/shared/capabilities.ts:431` |  |
+| `details` | `?: unknown` | — | `src/shared/capabilities.ts:433` | Structural detail an agent can act on — which field, which id. |
 
-### `src/shared/capabilities.InvokeResult` — type-union on `ok` — `src/shared/capabilities.ts:422-423`
+### `src/shared/capabilities.InvokeResult` — type-union on `ok` — `src/shared/capabilities.ts:436-437`
 
 | variant | shape | default | at |
 |---|---|---|---|
-| `true` | `{ ok: true; data: T; replayed?: boolean }` | — | `src/shared/capabilities.ts:423` |
-| `false` | `{ ok: false; error: CapabilityError }` | — | `src/shared/capabilities.ts:423` |
+| `true` | `{ ok: true; data: T; replayed?: boolean }` | — | `src/shared/capabilities.ts:437` |
+| `false` | `{ ok: false; error: CapabilityError }` | — | `src/shared/capabilities.ts:437` |
 
-### `src/shared/capabilities.InvokeResult[ok=false]` — type — `src/shared/capabilities.ts:423`
-
-| field | type | default | at |
-|---|---|---|---|
-| `ok` | `false` | — | `src/shared/capabilities.ts:423` |
-| `error` | `CapabilityError → src/shared/capabilities.CapabilityError` | — | `src/shared/capabilities.ts:423` |
-
-### `src/shared/capabilities.InvokeResult[ok=true]` — type — `src/shared/capabilities.ts:423`
+### `src/shared/capabilities.InvokeResult[ok=false]` — type — `src/shared/capabilities.ts:437`
 
 | field | type | default | at |
 |---|---|---|---|
-| `ok` | `true` | — | `src/shared/capabilities.ts:423` |
-| `data` | `T` | — | `src/shared/capabilities.ts:423` |
-| `replayed` | `?: boolean` | — | `src/shared/capabilities.ts:423` |
+| `ok` | `false` | — | `src/shared/capabilities.ts:437` |
+| `error` | `CapabilityError → src/shared/capabilities.CapabilityError` | — | `src/shared/capabilities.ts:437` |
+
+### `src/shared/capabilities.InvokeResult[ok=true]` — type — `src/shared/capabilities.ts:437`
+
+| field | type | default | at |
+|---|---|---|---|
+| `ok` | `true` | — | `src/shared/capabilities.ts:437` |
+| `data` | `T` | — | `src/shared/capabilities.ts:437` |
+| `replayed` | `?: boolean` | — | `src/shared/capabilities.ts:437` |
 
 ### `src/shared/domain-schema.paragraphSchema` — zod-object — `src/shared/domain-schema.ts:47-50`
 
@@ -1529,8 +1568,8 @@ These were looked at and could not be resolved to an authority. **Nothing is gue
 | subject | why | looked at |
 |---|---|---|
 | schemas built by `appFileName(...)` (1 use) | built by calling `appFileName(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `appFileName({ app: 'tubby' }) (src/core/project-store.ts:27)` |
-| schemas built by `defineCapabilities(...)` (1 use) | built by calling `defineCapabilities(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineCapabilities(Object.fromEntries(CAPABILITIES.map((meta) => [DOTTED_NAME[meta.name]!, contractFor(meta)]))) (src/core/agent-layer.ts:177)` |
-| schemas built by `defineFailureCodes(...)` (1 use) | built by calling `defineFailureCodes(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineFailureCodes({ 'invalid-input': JSONRPC_CODES.invalidParams, 'unknown-capability': JSONRPC_CODES.methodNotFound, internal: JSONRPC_CO… (src/core/agent-layer.ts:107)` |
+| schemas built by `defineCapabilities(...)` (1 use) | built by calling `defineCapabilities(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineCapabilities(Object.fromEntries(CAPABILITIES.map((meta) => [DOTTED_NAME[meta.name]!, contractFor(meta)]))) (src/core/agent-layer.ts:178)` |
+| schemas built by `defineFailureCodes(...)` (1 use) | built by calling `defineFailureCodes(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror | `defineFailureCodes({ 'invalid-input': JSONRPC_CODES.invalidParams, 'unknown-capability': JSONRPC_CODES.methodNotFound, internal: JSONRPC_CO… (src/core/agent-layer.ts:108)` |
 | schemas built by `id(...)` (13 uses) | built by calling `id(...)`, which does not return a single zod expression this reader can follow | `id('paragraph id') (src/shared/domain-schema.ts:48)`<br>`id('minor topic id') (src/shared/domain-schema.ts:53)`<br>`id('major topic id') (src/shared/domain-schema.ts:59)`<br>`id('trigger id') (src/shared/domain-schema.ts:65)`<br>`id('paragraph id') (src/shared/domain-schema.ts:67)`<br>`id('transcript id') (src/shared/domain-schema.ts:78)`<br>`id('corpus') (src/shared/domain-schema.ts:80)`<br>`id('talent id').nullable() (src/shared/domain-schema.ts:81)`<br>`id('script id') (src/shared/domain-schema.ts:88)`<br>`id('set id') (src/shared/domain-schema.ts:103)` |
 | src/core/input-shapes.layoutInput.camera | a z.enum whose members are computed or imported - this reader could not reach a literal list | `z.enum(CAMERA_SIDES)` |
 | src/core/input-shapes.layoutInput.driven | a z.enum whose members are computed or imported - this reader could not reach a literal list | `z.enum(RECORDING_SET)` |
@@ -1549,9 +1588,9 @@ The census found these top-level declarations and the extractor did not mirror t
 | alias of a primitive | 8 | `src/shared/domain.ParagraphId` `src/shared/domain.ts:47`<br>`src/shared/domain.ScriptId` `src/shared/domain.ts:44`<br>`src/shared/domain.SetId` `src/shared/domain.ts:43`<br>`src/shared/domain.TalentId` `src/shared/domain.ts:49`<br>`src/shared/domain.TopicId` `src/shared/domain.ts:46`<br>`src/shared/domain.TranscriptId` `src/shared/domain.ts:45`<br>`src/shared/domain.TriggerId` `src/shared/domain.ts:48`<br>`src/shared/rig.RigId` `src/shared/rig.ts:32` |
 | array constant | 3 | `src/core/zod3-json-schema.UNCONVERTED` `src/core/zod3-json-schema.ts:40`<br>`src/shared/capabilities.CAPABILITIES` `src/shared/capabilities.ts:168`<br>`src/shared/script-set.TALENTS` `src/shared/script-set.ts:2110` |
 | constant (other form) | 3 | `src/core/active-context.ACTIVE_CONTEXT_TTL_MS` `src/core/active-context.ts:27`<br>`src/core/safety.CONFIRMATION_TTL_MS` `src/core/safety.ts:123`<br>`src/core/stage.TALENT_BUSY_WINDOW_MS` `src/core/stage.ts:27` |
-| const built by a call (helper or non-zod call) | 2 | `src/core/agent-layer.SNAKE_NAME` `src/core/agent-layer.ts:89`<br>`src/renderer/src/store.useProm` `src/renderer/src/store.ts:421` |
-| derived type (`keyof typeof`, indexed access, `typeof`) | 1 | `src/shared/capabilities.CapabilityName` `src/shared/capabilities.ts:389` |
-| instance constant (`new ...`) | 1 | `src/shared/capabilities.CAPABILITY_BY_NAME` `src/shared/capabilities.ts:391` |
+| const built by a call (helper or non-zod call) | 2 | `src/core/agent-layer.SNAKE_NAME` `src/core/agent-layer.ts:90`<br>`src/renderer/src/store.useProm` `src/renderer/src/store.ts:421` |
+| derived type (`keyof typeof`, indexed access, `typeof`) | 1 | `src/shared/capabilities.CapabilityName` `src/shared/capabilities.ts:403` |
+| instance constant (`new ...`) | 1 | `src/shared/capabilities.CAPABILITY_BY_NAME` `src/shared/capabilities.ts:405` |
 | union of named or mixed types | 1 | `src/core/active-context.ActiveContext` `src/core/active-context.ts:38` |
 | utility-type alias (`Pick` / `Omit` / `Record` / generic instance) | 1 | `src/core/zod3-json-schema.JsonSchema` `src/core/zod3-json-schema.ts:21` |
 

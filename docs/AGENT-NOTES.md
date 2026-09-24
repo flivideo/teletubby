@@ -24,6 +24,10 @@ launching, the capability core, the open contract, the styling rules and the got
 - Schema drift check: `python3 /Users/davidcruwys/dev/ad/appydave-plugins/dev-team/skills/schema-mirror/scripts/verify_mirror.py docs/schema-mirror.json`.
   Regenerate with `extract_typescript.py` + `render_mirror.py` after any change to
   `src/shared/*` or `src/core/input-shapes.ts`.
+- **To bring the window in front: `scripts/app.sh show`** (it calls `system_show`). The app raises
+  itself (create, restore, show, `moveTop`, focus) and replies with `visible`/`focused` read from the
+  window. Exit 0 only when visible. Never start the app. Don't use `open -a Electron.app` or System
+  Events: they need Accessibility and can start a second Electron. Needs a restart to go live.
 - The mirror covers the domain zod schemas but **not the per-verb input schemas**. `INPUT` in
   `src/core/input-shapes.ts` is listed under "Declared but not read". Get verb inputs from
   `teletubby capabilities`, which is generated from `INPUT`.

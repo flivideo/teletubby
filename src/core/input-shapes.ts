@@ -321,6 +321,7 @@ export const INPUT: Record<string, z.ZodObject<z.ZodRawShape>> = {
   stage_get: z.object({}),
 
   system_status: z.object({}),
+  system_show: z.object({}),
   system_quit: z.object({
         force: z.boolean().optional().describe('quit even while busy — a person only, never an agent'),
       }),

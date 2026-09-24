@@ -55,6 +55,7 @@ const UI_SURFACE = [
   'stage_select',
   'system_quit',
   'system_restart',
+  'system_show',
   'system_status',
   'update_script',
   'upsert_talent',
@@ -95,6 +96,7 @@ const AGENT_SURFACE = [
   'stage_select',
   'system_quit',
   'system_restart',
+  'system_show',
   'system_status',
   'update_script',
   'upsert_talent',
@@ -237,6 +239,8 @@ describe('the change event', () => {
    * (fli-core lifecycle, 2026-09-23).
    */
   const PROCESS_ONLY = ['system_quit', 'system_restart'];
+  /** Raising the window changes no data either (FliStudio's "in front now"). */
+  const WINDOW_ONLY = ['system_show'];
 
   it.each(WORKING_STATE_ONLY)('%s does not wake other clients', (name) => {
     expect(CAPABILITY_BY_NAME.get(name)?.announces).toBe(false);
@@ -247,7 +251,7 @@ describe('the change event', () => {
       (c) => c.name,
     );
     // Enumerated, so a new command cannot be quietly born silent.
-    expect(silent.sort()).toEqual([...WORKING_STATE_ONLY, ...PROCESS_ONLY].sort());
+    expect(silent.sort()).toEqual([...WORKING_STATE_ONLY, ...PROCESS_ONLY, ...WINDOW_ONLY].sort());
   });
 
   it('is never on for a query', () => {

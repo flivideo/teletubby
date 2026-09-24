@@ -1,4 +1,4 @@
-import { app, screen } from 'electron';
+import { app, screen, type BrowserWindow } from 'electron';
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -16,6 +16,7 @@ import { KYBERNESIS_PHASE_1, TALENTS } from '@shared/script-set';
 import { FileRepository, createCore, seed, type Core, type LifecycleHooks } from '../core/index.js';
 import { startControlServer, type ControlServerHandle } from './control-server.js';
 import { createConsole } from './create-console.js';
+import { showPrompter } from './show-window.js';
 import type { WindowManager } from './window-manager.js';
 
 let core: Core | null = null;
@@ -30,7 +31,7 @@ let control: ControlServerHandle | null = null;
  */
 const PROMPTER_KEY = windowKey('teletubby', 'prompter');
 
-function openPrompter(windows: WindowManager): void {
+function openPrompter(windows: WindowManager): BrowserWindow {
   const primaryId = screen.getPrimaryDisplay().id;
   const displays = screen.getAllDisplays().map((d) => ({
     id: d.id,
@@ -43,6 +44,7 @@ function openPrompter(windows: WindowManager): void {
   const win = windows.create({ x: at.x, y: at.y, width: at.width, height: at.height });
   if (at.maximized) win.maximize();
   trackWindow(win, PROMPTER_KEY, { displayIdOf: (b) => screen.getDisplayMatching(b).id });
+  return win;
 }
 
 /**
@@ -61,13 +63,22 @@ function openPrompter(windows: WindowManager): void {
  * Electron's variables stripped, so the new `overmind start` is not nested
  * inside the old one.
  */
-function lifecycleHooks(): LifecycleHooks {
+function lifecycleHooks(windows: WindowManager): LifecycleHooks {
   const startedAt = new Date().toISOString();
   return {
     app: 'teletubby',
     version: app.getVersion(),
     pid: process.pid,
     startedAt,
+    show: () =>
+      showPrompter({
+        windows: () => windows.all(),
+        open: () => openPrompter(windows),
+        activateApp: () => {
+          if (process.platform === 'darwin') app.show();
+          app.focus({ steal: true });
+        },
+      }),
     quit: () => app.quit(),
     restart: (open) => {
       const root = app.getAppPath();
@@ -176,7 +187,7 @@ const desktop = createConsole({
     // build, which would not be true if the bundle were the source of truth.
     const repository = new FileRepository(join(userData, 'teletubby.json'));
     core = createCore({
-      lifecycle: lifecycleHooks(),
+      lifecycle: lifecycleHooks(windows),
       repository,
       auditSink: (entry) =>
         logger.info(

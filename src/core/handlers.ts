@@ -1086,6 +1086,13 @@ export function createHandlers(): Record<string, Handler> {
     };
   };
 
+  handlers.system_show = async (input, context) => {
+    parse(INPUT.system_show, input);
+    const host = hostOf(context);
+    if (!host.show) fail('unavailable', 'this host cannot show a window');
+    return host.show();
+  };
+
   /** Long enough for the reply to leave the socket; short enough to feel immediate. */
   const QUIT_DELAY_MS = 250;
 

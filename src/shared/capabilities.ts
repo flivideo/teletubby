@@ -362,6 +362,20 @@ export const CAPABILITIES: readonly CapabilityMeta[] = [
     'Is the app up, which run is it, what project is open, and is the talent mid-session (busy).',
     { failureModes: [] },
   ),
+  /* Bring the window in front (FliStudio's "open it for me"). Changes no
+   * data, so it wakes nobody; it moves nothing on stage, so it is not
+   * busy-gated — the talent mid-take is already looking at this window. */
+  command(
+    'system_show',
+    'Bring the prompter window in front: create it if none, restore if minimised, raise and focus it. Replies with visible/focused READ from the window, never assumed.',
+    {
+      sideEffects: 'external-side-effect',
+      supportsDryRun: false,
+      supportsIdempotencyKey: false,
+      announces: false,
+      failureModes: ['unavailable'],
+    },
+  ),
   command(
     'system_quit',
     'Quit Teletubby. Refused (app_busy) while the talent is on the prompter, unless a person forces it.',

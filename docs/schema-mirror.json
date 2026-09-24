@@ -1,6 +1,6 @@
 {
   "census": {
-    "declared": 161,
+    "declared": 164,
     "files": {
       "src/core/active-context.ts": {
         "declared": 4,
@@ -31,9 +31,9 @@
         "not_schema_bearing": 1
       },
       "src/core/index.ts": {
-        "declared": 5,
+        "declared": 6,
         "gaps": 0,
-        "mirrored": 5,
+        "mirrored": 6,
         "not_read": 0,
         "not_schema_bearing": 0
       },
@@ -128,6 +128,13 @@
         "not_read": 2,
         "not_schema_bearing": 0
       },
+      "src/main/show-window.ts": {
+        "declared": 2,
+        "gaps": 0,
+        "mirrored": 2,
+        "not_read": 0,
+        "not_schema_bearing": 0
+      },
       "src/main/updater.ts": {
         "declared": 4,
         "gaps": 0,
@@ -200,7 +207,7 @@
       }
     },
     "gaps": 3,
-    "mirrored": 112,
+    "mirrored": 115,
     "not_read": 46,
     "not_schema_bearing": 41,
     "not_schema_bearing_by_family": {
@@ -1015,9 +1022,9 @@
     },
     {
       "anchor": {
-        "end_line": 423,
+        "end_line": 437,
         "file": "src/shared/capabilities.ts",
-        "line": 422
+        "line": 436
       },
       "authority": "the `ok` discriminator of union type `InvokeResult` - each value declared by a literal type in one variant",
       "grade": "declared",
@@ -1026,14 +1033,14 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 423
+            "line": 437
           },
           "value": "true"
         },
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 423
+            "line": 437
           },
           "value": "false"
         }
@@ -1531,12 +1538,12 @@
       "target": "src/renderer/src/App.zone (switch)"
     }
   ],
-  "generated": "2026-09-23T15:39:46+00:00",
+  "generated": "2026-09-24T14:40:42+00:00",
   "ignored_derived": [
     {
       "anchor": {
         "file": "src/core/input-shapes.ts",
-        "line": 356
+        "line": 357
       },
       "subject": "src/core/input-shapes.def.typeName (switch)",
       "values": [
@@ -2179,12 +2186,12 @@
     },
     {
       "anchor": {
-        "end_line": 73,
+        "end_line": 70,
         "file": "src/core/index.ts",
         "line": 64
       },
       "bases": [],
-      "doc": "What only the host process can do. The core decides WHETHER; the host does it.",
+      "doc": "Read back from the window after a raise \u2014 never what was asked for.",
       "exported": true,
       "fields": [
         {
@@ -2193,13 +2200,65 @@
             "line": 65
           },
           "default": null,
+          "name": "visible",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 66
+          },
+          "default": null,
+          "name": "focused",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 67
+          },
+          "default": null,
+          "name": "minimized",
+          "type": "boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 69
+          },
+          "default": null,
+          "doc": "No window existed, so one was created.",
+          "name": "created",
+          "type": "boolean"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/core/index.WindowShown",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 88,
+        "file": "src/core/index.ts",
+        "line": 73
+      },
+      "bases": [],
+      "doc": "What only the host process can do. The core decides WHETHER; the host does it.",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 74
+          },
+          "default": null,
           "name": "app",
           "type": "string"
         },
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 66
+            "line": 75
           },
           "default": null,
           "name": "version",
@@ -2208,7 +2267,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 67
+            "line": 76
           },
           "default": null,
           "name": "pid",
@@ -2217,7 +2276,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 68
+            "line": 77
           },
           "default": null,
           "name": "startedAt",
@@ -2226,7 +2285,17 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 70
+            "line": 83
+          },
+          "default": null,
+          "doc": "Bring the prompter in front \u2014 create, restore, show, raise, focus \u2014 and",
+          "name": "show",
+          "type": "(): Promise<WindowShown>"
+        },
+        {
+          "anchor": {
+            "file": "src/core/index.ts",
+            "line": 85
           },
           "default": null,
           "doc": "Called after the reply is sent.",
@@ -2236,7 +2305,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 72
+            "line": 87
           },
           "default": null,
           "doc": "Called after the reply is sent, with the context to reopen on.",
@@ -2250,9 +2319,9 @@
     },
     {
       "anchor": {
-        "end_line": 85,
+        "end_line": 100,
         "file": "src/core/index.ts",
-        "line": 75
+        "line": 90
       },
       "bases": [],
       "doc": null,
@@ -2261,7 +2330,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 76
+            "line": 91
           },
           "default": null,
           "name": "principal",
@@ -2270,7 +2339,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 83
+            "line": 98
           },
           "default": null,
           "doc": "Who is calling, by name (fli-core): `human:<surface>`, `agent:<name>` or",
@@ -2280,7 +2349,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 84
+            "line": 99
           },
           "default": null,
           "name": "idempotencyKey",
@@ -2293,9 +2362,9 @@
     },
     {
       "anchor": {
-        "end_line": 101,
+        "end_line": 116,
         "file": "src/core/index.ts",
-        "line": 97
+        "line": 112
       },
       "bases": [],
       "doc": "Emitted after a command actually changes the DATA \u2014 not on a query, not on a",
@@ -2304,7 +2373,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 98
+            "line": 113
           },
           "default": null,
           "name": "capability",
@@ -2313,7 +2382,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 99
+            "line": 114
           },
           "default": null,
           "name": "principal",
@@ -2322,7 +2391,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 100
+            "line": 115
           },
           "default": null,
           "name": "at",
@@ -2335,9 +2404,9 @@
     },
     {
       "anchor": {
-        "end_line": 113,
+        "end_line": 128,
         "file": "src/core/index.ts",
-        "line": 103
+        "line": 118
       },
       "bases": [],
       "doc": null,
@@ -2346,7 +2415,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 104
+            "line": 119
           },
           "default": null,
           "name": "invoke",
@@ -2355,7 +2424,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 106
+            "line": 121
           },
           "default": null,
           "doc": "Subscribe to state changes. Returns an unsubscribe function.",
@@ -2365,7 +2434,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 108
+            "line": 123
           },
           "default": null,
           "doc": "The renderer's own selection state, so the UI can drive it directly.",
@@ -2375,7 +2444,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 110
+            "line": 125
           },
           "default": null,
           "doc": "The session's brand/project context (W6) \u2014 set by door 2 or `context_select`, never persisted.",
@@ -2385,7 +2454,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 111
+            "line": 126
           },
           "default": null,
           "name": "audit",
@@ -2394,7 +2463,7 @@
         {
           "anchor": {
             "file": "src/core/index.ts",
-            "line": 112
+            "line": 127
           },
           "default": null,
           "name": "repository",
@@ -2722,9 +2791,9 @@
     },
     {
       "anchor": {
-        "end_line": 345,
+        "end_line": 346,
         "file": "src/core/input-shapes.ts",
-        "line": 332
+        "line": 333
       },
       "bases": [],
       "doc": null,
@@ -2733,7 +2802,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 333
+            "line": 334
           },
           "default": null,
           "name": "name",
@@ -2742,7 +2811,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 334
+            "line": 335
           },
           "default": null,
           "name": "type",
@@ -2751,7 +2820,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 335
+            "line": 336
           },
           "default": null,
           "name": "required",
@@ -2760,7 +2829,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 343
+            "line": 344
           },
           "default": null,
           "doc": "Present when omitting the field APPLIES A VALUE rather than leaving it",
@@ -2770,7 +2839,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 344
+            "line": 345
           },
           "default": null,
           "name": "note",
@@ -4274,6 +4343,167 @@
     },
     {
       "anchor": {
+        "end_line": 14,
+        "file": "src/main/show-window.ts",
+        "line": 4
+      },
+      "bases": [],
+      "doc": "The slice of a BrowserWindow a raise touches \u2014 a fake in tests, so no window ever pops.",
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 5
+          },
+          "default": null,
+          "name": "isDestroyed",
+          "type": "(): boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 6
+          },
+          "default": null,
+          "name": "isMinimized",
+          "type": "(): boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 7
+          },
+          "default": null,
+          "name": "isVisible",
+          "type": "(): boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 8
+          },
+          "default": null,
+          "name": "isFocused",
+          "type": "(): boolean"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 9
+          },
+          "default": null,
+          "name": "restore",
+          "type": "(): void"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 10
+          },
+          "default": null,
+          "name": "show",
+          "type": "(): void"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 11
+          },
+          "default": null,
+          "name": "moveTop",
+          "type": "(): void"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 12
+          },
+          "default": null,
+          "name": "focus",
+          "type": "(): void"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 13
+          },
+          "default": null,
+          "name": "once",
+          "type": "(event: 'ready-to-show', listener: () => void): void"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/show-window.ShowableWindow",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
+        "end_line": 27,
+        "file": "src/main/show-window.ts",
+        "line": 16
+      },
+      "bases": [],
+      "doc": null,
+      "exported": true,
+      "fields": [
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 18
+          },
+          "default": null,
+          "doc": "The prompter windows that exist now.",
+          "name": "windows",
+          "type": "(): W[]"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 20
+          },
+          "default": null,
+          "doc": "Build the prompter (it is created hidden and shows on ready-to-show).",
+          "name": "open",
+          "type": "(): W"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 22
+          },
+          "default": null,
+          "doc": "`app.show()` on macOS (un-hides the app) + `app.focus({ steal: true })`.",
+          "name": "activateApp",
+          "type": "(): void"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 24
+          },
+          "default": null,
+          "doc": "Focus is applied by the window server asynchronously; wait this long before reading it back.",
+          "name": "settleMs",
+          "type": "?: number"
+        },
+        {
+          "anchor": {
+            "file": "src/main/show-window.ts",
+            "line": 26
+          },
+          "default": null,
+          "doc": "A fresh window that never paints still gets an honest answer after this.",
+          "name": "readyTimeoutMs",
+          "type": "?: number"
+        }
+      ],
+      "grade": "declared",
+      "id": "src/main/show-window.ShowDeps",
+      "kind": "interface"
+    },
+    {
+      "anchor": {
         "end_line": 12,
         "file": "src/main/updater.ts",
         "line": 7
@@ -5490,9 +5720,9 @@
     },
     {
       "anchor": {
-        "end_line": 411,
+        "end_line": 425,
         "file": "src/shared/capabilities.ts",
-        "line": 406
+        "line": 420
       },
       "bases": [],
       "doc": null,
@@ -5501,7 +5731,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 407
+            "line": 421
           },
           "default": null,
           "name": "capability",
@@ -5510,7 +5740,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 408
+            "line": 422
           },
           "default": null,
           "name": "input",
@@ -5519,7 +5749,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 410
+            "line": 424
           },
           "default": null,
           "doc": "Retry-safe key. On repeat the ORIGINAL result comes back, not a new one.",
@@ -5533,9 +5763,9 @@
     },
     {
       "anchor": {
-        "end_line": 420,
+        "end_line": 434,
         "file": "src/shared/capabilities.ts",
-        "line": 413
+        "line": 427
       },
       "bases": [],
       "doc": null,
@@ -5544,7 +5774,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 414
+            "line": 428
           },
           "default": null,
           "name": "code",
@@ -5553,7 +5783,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 416
+            "line": 430
           },
           "default": null,
           "doc": "The suite's kebab name for this refusal (fli-core), with a frozen JSON-RPC number.",
@@ -5563,7 +5793,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 417
+            "line": 431
           },
           "default": null,
           "name": "message",
@@ -5572,7 +5802,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 419
+            "line": 433
           },
           "default": null,
           "doc": "Structural detail an agent can act on \u2014 which field, which id.",
@@ -5586,9 +5816,9 @@
     },
     {
       "anchor": {
-        "end_line": 423,
+        "end_line": 437,
         "file": "src/shared/capabilities.ts",
-        "line": 422
+        "line": 436
       },
       "bases": [],
       "doc": null,
@@ -5597,7 +5827,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 423
+            "line": 437
           },
           "default": null,
           "name": "true",
@@ -5606,7 +5836,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 423
+            "line": 437
           },
           "default": null,
           "name": "false",
@@ -5620,7 +5850,7 @@
     {
       "anchor": {
         "file": "src/shared/capabilities.ts",
-        "line": 423
+        "line": 437
       },
       "bases": [],
       "doc": null,
@@ -5629,7 +5859,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 423
+            "line": 437
           },
           "default": null,
           "name": "ok",
@@ -5638,7 +5868,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 423
+            "line": 437
           },
           "default": null,
           "name": "error",
@@ -5652,7 +5882,7 @@
     {
       "anchor": {
         "file": "src/shared/capabilities.ts",
-        "line": 423
+        "line": 437
       },
       "bases": [],
       "doc": null,
@@ -5661,7 +5891,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 423
+            "line": 437
           },
           "default": null,
           "name": "ok",
@@ -5670,7 +5900,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 423
+            "line": 437
           },
           "default": null,
           "name": "data",
@@ -5679,7 +5909,7 @@
         {
           "anchor": {
             "file": "src/shared/capabilities.ts",
-            "line": 423
+            "line": 437
           },
           "default": null,
           "name": "replayed",
@@ -7672,7 +7902,7 @@
     }
   ],
   "target": {
-    "commit": "6e3f2dacf848d3864b335fbaa9ea114c1d630d40",
+    "commit": "cc5645ae5c3ae4293721887c57f4c30c1e060b16",
     "root": "..",
     "stack": "typescript"
   },
@@ -7717,7 +7947,7 @@
       "census": true,
       "family": "const built by a call (helper or non-zod call)",
       "looked_at": [
-        "src/core/agent-layer.ts:89"
+        "src/core/agent-layer.ts:90"
       ],
       "reason": "declared but not read: const built by a call (helper or non-zod call). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/core/agent-layer.SNAKE_NAME` - declared but not read"
@@ -7951,7 +8181,7 @@
       "census": true,
       "family": "instance constant (`new ...`)",
       "looked_at": [
-        "src/shared/capabilities.ts:391"
+        "src/shared/capabilities.ts:405"
       ],
       "reason": "declared but not read: instance constant (`new ...`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/shared/capabilities.CAPABILITY_BY_NAME` - declared but not read"
@@ -7960,7 +8190,7 @@
       "census": true,
       "family": "derived type (`keyof typeof`, indexed access, `typeof`)",
       "looked_at": [
-        "src/shared/capabilities.ts:389"
+        "src/shared/capabilities.ts:403"
       ],
       "reason": "declared but not read: derived type (`keyof typeof`, indexed access, `typeof`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/shared/capabilities.CapabilityName` - declared but not read"
@@ -8100,14 +8330,14 @@
     },
     {
       "looked_at": [
-        "defineCapabilities(Object.fromEntries(CAPABILITIES.map((meta) => [DOTTED_NAME[meta.name]!, contractFor(meta)]))) (src/core/agent-layer.ts:177)"
+        "defineCapabilities(Object.fromEntries(CAPABILITIES.map((meta) => [DOTTED_NAME[meta.name]!, contractFor(meta)]))) (src/core/agent-layer.ts:178)"
       ],
       "reason": "built by calling `defineCapabilities(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror",
       "subject": "schemas built by `defineCapabilities(...)` (1 use)"
     },
     {
       "looked_at": [
-        "defineFailureCodes({ 'invalid-input': JSONRPC_CODES.invalidParams, 'unknown-capability': JSONRPC_CODES.methodNotFound, internal: JSONRPC_CO\u2026 (src/core/agent-layer.ts:107)"
+        "defineFailureCodes({ 'invalid-input': JSONRPC_CODES.invalidParams, 'unknown-capability': JSONRPC_CODES.methodNotFound, internal: JSONRPC_CO\u2026 (src/core/agent-layer.ts:108)"
       ],
       "reason": "built by calling `defineFailureCodes(...)` imported from `@flivideo/core`; package helpers are not expanded - see that package's own mirror",
       "subject": "schemas built by `defineFailureCodes(...)` (1 use)"

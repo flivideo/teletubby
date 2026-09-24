@@ -82,6 +82,7 @@ export const DOTTED_NAME: Readonly<Record<string, string>> = {
   stage_select: 'stage.select',
   stage_get: 'stage.get',
   system_status: 'system.status',
+  system_show: 'system.show',
   system_quit: 'system.quit',
   system_restart: 'system.restart',
 };

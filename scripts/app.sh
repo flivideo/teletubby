@@ -112,6 +112,20 @@ cmd_status() {
   fi
 }
 
+# Bring the RUNNING app in front — never start one. FliStudio calls this after a
+# start or a switch, as it does FliCut's and FliCast's `show`. The app raises
+# ITSELF (system_show: create if none, restore, show, moveTop, focus) and
+# replies with visible/focused read from the window — no System Events, no
+# Accessibility grant, and no `open -a Electron.app`, which can start a
+# second, bare Electron. Exit 0 only if the window says it is visible.
+cmd_show() {
+  if ! healthy; then echo "Teletubby is not running — start it with: scripts/app.sh start"; return 1; fi
+  local reply
+  reply=$(node bin/teletubby.mjs call system_show --as cli 2>&1) || { echo "system_show failed: $reply"; return 1; }
+  echo "$reply"
+  echo "$reply" | command grep -q '"visible": *true'
+}
+
 # A SNAPSHOT that returns. Never use `overmind echo` for this: it follows the
 # stream forever, and there is no `timeout` on macOS to bound it. The Procfile
 # tees into $LOG precisely so a bounded read is possible.
@@ -145,7 +159,8 @@ case "$CMD" in
   stop)    cmd_stop ;;
   restart) cmd_stop; cmd_start ;;
   status)  cmd_status ;;
+  show)    cmd_show ;;
   logs)    [ -f "$LOG" ] && tail -f "$LOG" || echo "No log at $LOG — has it been started?" ;;
   tail)    cmd_logs_tail ;;
-  *) echo "usage: scripts/app.sh {start|stop|restart|status|logs|tail} [--brand <key> --project <folder>]"; exit 2 ;;
+  *) echo "usage: scripts/app.sh {start|stop|restart|status|show|logs|tail} [--brand <key> --project <folder>]"; exit 2 ;;
 esac
