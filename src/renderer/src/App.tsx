@@ -39,6 +39,7 @@ import SetupPanel from './components/SetupPanel';
 import CueOverlay from './components/CueOverlay';
 import Divider from './components/Divider';
 import CadencePanel from './components/CadencePanel';
+import appIcon from './brand/app-icon.png';
 
 /**
  * How long the arrangement has to hold still before it is written down.
@@ -326,7 +327,9 @@ function EmptyShell(): JSX.Element {
   }, []);
   return (
     <div className="flex h-screen flex-col bg-canvas text-ink">
-      <div className="tt-drag h-7 shrink-0 border-b border-edge bg-panel" />
+      <div className="tt-drag flex h-7 shrink-0 items-center border-b border-edge bg-panel">
+        <AppMark />
+      </div>
       <div className="flex min-h-0 flex-1">
         <div className="flex flex-1 items-center justify-center px-10 text-center">
           <p className="font-body text-script text-ink">
@@ -449,7 +452,9 @@ function EmptyStage({
 function Waiting({ message, failed }: { message: string; failed?: boolean }): JSX.Element {
   return (
     <div className="flex h-screen flex-col bg-canvas text-ink">
-      <div className="tt-drag h-7 shrink-0 border-b border-edge bg-panel" />
+      <div className="tt-drag flex h-7 shrink-0 items-center border-b border-edge bg-panel">
+        <AppMark />
+      </div>
       <div className="flex flex-1 items-center justify-center px-10 text-center">
         <p className={['font-body text-script', failed ? 'text-ink' : 'text-muted'].join(' ')}>
           {message}
@@ -846,7 +851,9 @@ function Stage(): JSX.Element {
           the rail sits outside `.tt-mirror` so it stays readable on glass.
           Ruled 2026-08-30. Do NOT grow `h-7` for a bigger title.
       */}
-      <div className="tt-drag flex h-7 shrink-0 items-center border-b border-edge bg-panel">
+      <div className="tt-drag flex h-7 shrink-0 items-center gap-2 border-b border-edge bg-panel">
+        <AppMark />
+        <span aria-hidden="true" className="text-muted">·</span>
         <CopyTitle
           text={script?.title ?? set.title}
           className="font-display text-[18px] uppercase leading-none tracking-wide text-muted"
@@ -1084,5 +1091,15 @@ function StepButton({
     >
       {children}
     </button>
+  );
+}
+
+/** The app's own mark at the left of the 28px rail: 16px icon + "Teletubby". Fits inside h-7 — the rail does not grow. */
+function AppMark(): JSX.Element {
+  return (
+    <span className="flex shrink-0 items-center gap-1.5 font-body text-[12px] font-semibold leading-none text-ink" data-testid="app-mark">
+      <img src={appIcon} alt="" className="h-4 w-4" />
+      Teletubby
+    </span>
   );
 }

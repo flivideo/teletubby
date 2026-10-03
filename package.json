@@ -12,7 +12,7 @@
   "author": "David Cruwys",
   "license": "MIT",
   "scripts": {
-    "dev": "electron-vite dev",
+    "dev": "ELECTRON_EXEC_PATH=\"$(node scripts/brand-launcher.mjs)\" electron-vite dev",
     "start": "electron-vite preview",
     "app": "bash scripts/app.sh start",
     "app:stop": "bash scripts/app.sh stop",
