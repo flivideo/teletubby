@@ -12,7 +12,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
  */
 
 const TEMPLATE = '/Users/davidcruwys/dev/ad/apps/appytron/template/src/main/create-console.ts';
-const SKILL = '/Users/davidcruwys/dev/ad/appydave-plugins/flivideo/skills/segment-writer';
+const SKILL =
+  process.env['SEGMENT_WRITER_SKILL_DIR'] ??
+  '/Users/davidcruwys/dev/ad/appydave-plugins/flivideo/skills/segment-writer';
 const VOICE = '/Users/davidcruwys/dev/video-projects/v-appydave/voice-profile.md';
 
 // ── 1. the pre-step ────────────────────────────────────────────────────────────────────────────────────────────────
@@ -105,9 +107,17 @@ const example = () => readFileSync(join(SKILL, 'references', 'example-load.md'),
 function draftRows(): Array<{ id: string; text: string; uses: string[] }> {
   return example()
     .split('\n')
-    .map((l) => /^\|\s*(p\d+)\s*\|\s*(.+?)\s*\|\s*(r_[\w, ]+?)\s*\|\s*$/.exec(l))
+    .map((l) => /^\|\s*(p\d+)\s*\|\s*(.+?)\s*\|\s*(r_kn\d+.*?)\s*\|\s*$/.exec(l))
     .filter((m): m is RegExpExecArray => m !== null)
-    .map((m) => ({ id: m[1], text: m[2], uses: m[3].split(',').map((s) => s.trim()) }));
+    .map((m) => ({ id: m[1], text: m[2], uses: m[3].match(/r_kn\d+/g) ?? [] }));
+}
+
+/** The `source` of the last real write_transcript in the example's call block (an ellipsis source is skipped). */
+function sourceOfLastTranscriptCall(): string {
+  const sources = [...example().matchAll(/"source":"([^"]*)"/g)]
+    .map((m) => m[1])
+    .filter((s) => s !== '…');
+  return sources[sources.length - 1] ?? '';
 }
 
 describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contract', () => {
@@ -167,38 +177,99 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
 
   it('Scenario: given the example transcript source, when its ids are looked up, then each is a fixture id', () => {
     const known = new Set(fixture().resources.map((r: { id: string }) => r.id));
-    const source = /"source":"[^"]*\(([^)]*)\)"/.exec(example());
-    expect(source).not.toBeNull();
-    for (const id of source![1].split(',').map((s) => s.trim()))
-      expect(known.has(id), id).toBe(true);
+    const source = sourceOfLastTranscriptCall();
+    const ids = source.match(/r_kn\d+/g) ?? [];
+    expect(ids.length).toBeGreaterThan(0);
+    for (const id of ids) expect(known.has(id), id).toBe(true);
   });
 
-  // Round-1 finding, fixed in round 2: the call block now lists each dry run AND the real write that followed it,
-  // in the order they ran (re-run 2026-10-08 under APPYTRON_HOME=/tmp/teletubby-isolated.YQooV4).
-  it(
-    'Scenario: given the example call block, when its calls are read, then each of create_script, write_transcript and write_trigger_set also appears without dryRun',
+  // Open finding (Tester CT-0108 r2): SKILL.md section 2 says "Keep a trace list (paragraph -> resource ids) and pass it as
+  // the transcript `source`". The example's source is a flat id list, so the paragraph -> ids mapping never reaches the
+  // loaded transcript (it lives only in the table). Either the example carries the mapping in `source`, or SKILL.md says a
+  // plain id list and keeps the mapping in the report; the two must agree.
+  it.fails(
+    'Scenario: given SKILL.md asks for a paragraph-to-ids trace in source, when the example source is read, then it maps each paragraph id to its resources',
     () => {
-      const lines = example().split('\n');
-      for (const verb of ['create_script', 'write_transcript', 'write_trigger_set']) {
-        const calls = lines.filter((l) => l.includes(`call ${verb} `));
-        expect(
-          calls.some((l) => !l.includes('"dryRun":true')),
-          verb,
-        ).toBe(true);
+      const source = sourceOfLastTranscriptCall();
+      for (const row of draftRows()) {
+        const at = source.indexOf(row.id);
+        expect(at, `source mentions ${row.id}`).toBeGreaterThanOrEqual(0);
+        const tail = source.slice(at, at + 80);
+        for (const id of row.uses) expect(tail, `${row.id} -> ${id}`).toContain(id);
       }
     },
   );
 
-  // Round-1 finding, fixed in round 2: p1 no longer claims a wish or a duration; it states only the dossier's gap
-  // (nothing turns research into a segment). The loaded transcript was re-written to match.
-  it(
-    'Scenario: given the example draft, when its sentences are checked against the knowledge, then it makes no claim about how long David has wanted this',
+  // Open finding (Tester CT-0108 r2): the example says "The calls, in the order they ran", but the app log of that
+  // run shows the step-2b transcript rewrite ran AFTER get_script, while the listing puts it before write_trigger_set.
+  it.fails(
+    'Scenario: given the example call block and the app log of the run it describes, when both are read, then the listed order matches the order the verbs ran',
     () => {
-      const draft = draftRows()
-        .map((r) => r.text)
-        .join(' ')
-        .toLowerCase();
-      expect(draft).not.toContain('for a while');
+      const logFile = '/tmp/teletubby-isolated.YQooV4/app.log';
+      if (!existsSync(logFile))
+        throw new Error(
+          'app log of the example run is gone: nothing to compare (counts as a failed check)',
+        );
+      const verbs = [
+        'create_set',
+        'create_script',
+        'write_transcript',
+        'write_trigger_set',
+        'get_script',
+      ];
+      const listed = example()
+        .split('\n')
+        .map(
+          (l) =>
+            new RegExp(`call (${verbs.join('|')}) `).exec(l) && {
+              verb: new RegExp(`call (${verbs.join('|')}) `).exec(l)![1],
+              dry: l.includes('"dryRun":true'),
+            },
+        )
+        .filter(Boolean)
+        .map((c) => `${c!.verb}:${c!.dry}`);
+      const ran = readFileSync(logFile, 'utf8')
+        .split('\n')
+        .map((l) => {
+          try {
+            return JSON.parse(l);
+          } catch {
+            return null;
+          }
+        })
+        .filter(
+          (j) =>
+            j &&
+            j.msg === 'capability' &&
+            j.principal === 'agent' &&
+            j.ok === true &&
+            verbs.includes(j.capability),
+        )
+        .map((j) => `${j.capability}:${j.dryRun === true}`);
+      expect(listed).toEqual(ran);
     },
   );
+
+  // Round-1 finding, fixed in round 2: the call block now lists each dry run AND the real write that followed it,
+  // in the order they ran (re-run 2026-10-08 under APPYTRON_HOME=/tmp/teletubby-isolated.YQooV4).
+  it('Scenario: given the example call block, when its calls are read, then each of create_script, write_transcript and write_trigger_set also appears without dryRun', () => {
+    const lines = example().split('\n');
+    for (const verb of ['create_script', 'write_transcript', 'write_trigger_set']) {
+      const calls = lines.filter((l) => l.includes(`call ${verb} `));
+      expect(
+        calls.some((l) => !l.includes('"dryRun":true')),
+        verb,
+      ).toBe(true);
+    }
+  });
+
+  // Round-1 finding, fixed in round 2: p1 no longer claims a wish or a duration; it states only the dossier's gap
+  // (nothing turns research into a segment). The loaded transcript was re-written to match.
+  it('Scenario: given the example draft, when its sentences are checked against the knowledge, then it makes no claim about how long David has wanted this', () => {
+    const draft = draftRows()
+      .map((r) => r.text)
+      .join(' ')
+      .toLowerCase();
+    expect(draft).not.toContain('for a while');
+  });
 });
