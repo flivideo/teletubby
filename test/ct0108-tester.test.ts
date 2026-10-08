@@ -139,6 +139,12 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
     expect(s).toContain(VOICE);
   });
 
+  it('Scenario: given SKILL.md section 2, when read, then it still asks for a paragraph-to-resource-ids trace passed as the transcript source (the rule the example is checked against)', () => {
+    const flat = skill().replace(/\s+/g, ' ');
+    expect(flat).toContain('trace list (paragraph \u2192 resource ids)');
+    expect(flat).toContain('pass it as the transcript `source`');
+  });
+
   it('Scenario: given the fixture, when parsed, then it has 3+ knowledge items of the allowed kinds, unique ids, each with meta.why', () => {
     const d = fixture();
     expect(d.schema).toBe(1);
@@ -186,49 +192,65 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
   // Round-2 finding, fixed in round 3: the example's source now carries the paragraph -> ids trace
   // ("p1: r_kn0001; p2: r_kn0001, r_kn0004; p3: r_kn0003"), as SKILL.md section 2 asks, from the first write of the
   // re-run under APPYTRON_HOME=/tmp/teletubby-isolated.Xaosvf.
-  it(
-    'Scenario: given SKILL.md asks for a paragraph-to-ids trace in source, when the example source is read, then it maps each paragraph id to its resources',
-    () => {
-      const source = sourceOfLastTranscriptCall();
-      for (const row of draftRows()) {
-        const at = source.indexOf(row.id);
-        expect(at, `source mentions ${row.id}`).toBeGreaterThanOrEqual(0);
-        const tail = source.slice(at, at + 80);
-        for (const id of row.uses) expect(tail, `${row.id} -> ${id}`).toContain(id);
-      }
-    },
-  );
+  it('Scenario: given SKILL.md asks for a paragraph-to-ids trace in source, when the example source is read, then it maps each paragraph id to its resources', () => {
+    const source = sourceOfLastTranscriptCall();
+    for (const row of draftRows()) {
+      const at = source.indexOf(row.id);
+      expect(at, `source mentions ${row.id}`).toBeGreaterThanOrEqual(0);
+      const tail = source.slice(at, at + 80);
+      for (const id of row.uses) expect(tail, `${row.id} -> ${id}`).toContain(id);
+    }
+  });
 
-  // Round-2 finding, fixed in round 3: one fresh load ran in the final order, and the example was written from that
-  // run's app log (the startup context_select refusal included). The log path below is that run's (round 3 changed
-  // only this input; the assertion is the Tester's).
-  it(
-    'Scenario: given the example call block and the app log of the run it describes, when both are read, then the listed order matches the order the verbs ran',
+  // Round-2 finding, fixed in round 3. Judged by the Tester in round 3: pinning a test to one /tmp run folder is fragile
+  // (gone after a reboot or tmp clean), so the order is asserted two ways. (a) HERMETIC: the example's own log table and
+  // its call block must list the same calls in the same order, and that order must be the authoring order with each
+  // write's dry run immediately before its real call. (b) AGAINST THE LOG, when the run folder still exists: the folder
+  // is read from the example's own header, so a re-run needs no edit here; the check skips when the log is gone.
+  const VERBS = [
+    'create_set',
+    'create_script',
+    'write_transcript',
+    'write_trigger_set',
+    'get_script',
+  ];
+  const callRe = new RegExp(`call (${VERBS.join('|')}) `);
+  const listedCalls = () =>
+    example()
+      .split('\n')
+      .map((l) => {
+        const m = callRe.exec(l);
+        return m ? `${m[1]}:${l.includes('"dryRun":true')}` : null;
+      })
+      .filter((c): c is string => c !== null);
+  const tableCalls = () =>
+    example()
+      .split('\n')
+      .map((l) => /^\|\s*([1-9]\d*)\s*\|\s*`(\w+)`\s*\|\s*(true)?\s*\|/.exec(l))
+      .filter((m): m is RegExpExecArray => m !== null)
+      .map((m) => `${m[2]}:${m[3] === 'true'}`);
+
+  it('Scenario: given the example, when its log table and its call block are read, then they list the same calls in the same order, in authoring order with each dry run just before its real call', () => {
+    expect(listedCalls()).toEqual(tableCalls());
+    expect(listedCalls()).toEqual([
+      'create_set:false',
+      'create_script:true',
+      'create_script:false',
+      'write_transcript:true',
+      'write_transcript:false',
+      'write_trigger_set:true',
+      'write_trigger_set:false',
+      'get_script:false',
+    ]);
+  });
+
+  const runHome = /APPYTRON_HOME=(\/tmp\/teletubby-isolated\.\w+)/.exec(
+    haveSkill ? example() : '',
+  )?.[1];
+  it.skipIf(!runHome || !existsSync(`${runHome}/app.log`))(
+    'Scenario: given the app log of the run the example describes, when it is read, then the order the verbs ran is the order listed (a failed startup context_select aside)',
     () => {
-      const logFile = '/tmp/teletubby-isolated.Xaosvf/app.log';
-      if (!existsSync(logFile))
-        throw new Error(
-          'app log of the example run is gone: nothing to compare (counts as a failed check)',
-        );
-      const verbs = [
-        'create_set',
-        'create_script',
-        'write_transcript',
-        'write_trigger_set',
-        'get_script',
-      ];
-      const listed = example()
-        .split('\n')
-        .map(
-          (l) =>
-            new RegExp(`call (${verbs.join('|')}) `).exec(l) && {
-              verb: new RegExp(`call (${verbs.join('|')}) `).exec(l)![1],
-              dry: l.includes('"dryRun":true'),
-            },
-        )
-        .filter(Boolean)
-        .map((c) => `${c!.verb}:${c!.dry}`);
-      const ran = readFileSync(logFile, 'utf8')
+      const ran = readFileSync(`${runHome}/app.log`, 'utf8')
         .split('\n')
         .map((l) => {
           try {
@@ -243,10 +265,10 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
             j.msg === 'capability' &&
             j.principal === 'agent' &&
             j.ok === true &&
-            verbs.includes(j.capability),
+            VERBS.includes(j.capability),
         )
         .map((j) => `${j.capability}:${j.dryRun === true}`);
-      expect(listed).toEqual(ran);
+      expect(listedCalls()).toEqual(ran);
     },
   );
 
