@@ -183,11 +183,10 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
     for (const id of ids) expect(known.has(id), id).toBe(true);
   });
 
-  // Open finding (Tester CT-0108 r2): SKILL.md section 2 says "Keep a trace list (paragraph -> resource ids) and pass it as
-  // the transcript `source`". The example's source is a flat id list, so the paragraph -> ids mapping never reaches the
-  // loaded transcript (it lives only in the table). Either the example carries the mapping in `source`, or SKILL.md says a
-  // plain id list and keeps the mapping in the report; the two must agree.
-  it.fails(
+  // Round-2 finding, fixed in round 3: the example's source now carries the paragraph -> ids trace
+  // ("p1: r_kn0001; p2: r_kn0001, r_kn0004; p3: r_kn0003"), as SKILL.md section 2 asks, from the first write of the
+  // re-run under APPYTRON_HOME=/tmp/teletubby-isolated.Xaosvf.
+  it(
     'Scenario: given SKILL.md asks for a paragraph-to-ids trace in source, when the example source is read, then it maps each paragraph id to its resources',
     () => {
       const source = sourceOfLastTranscriptCall();
@@ -200,12 +199,13 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
     },
   );
 
-  // Open finding (Tester CT-0108 r2): the example says "The calls, in the order they ran", but the app log of that
-  // run shows the step-2b transcript rewrite ran AFTER get_script, while the listing puts it before write_trigger_set.
-  it.fails(
+  // Round-2 finding, fixed in round 3: one fresh load ran in the final order, and the example was written from that
+  // run's app log (the startup context_select refusal included). The log path below is that run's (round 3 changed
+  // only this input; the assertion is the Tester's).
+  it(
     'Scenario: given the example call block and the app log of the run it describes, when both are read, then the listed order matches the order the verbs ran',
     () => {
-      const logFile = '/tmp/teletubby-isolated.YQooV4/app.log';
+      const logFile = '/tmp/teletubby-isolated.Xaosvf/app.log';
       if (!existsSync(logFile))
         throw new Error(
           'app log of the example run is gone: nothing to compare (counts as a failed check)',
@@ -251,7 +251,7 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
   );
 
   // Round-1 finding, fixed in round 2: the call block now lists each dry run AND the real write that followed it,
-  // in the order they ran (re-run 2026-10-08 under APPYTRON_HOME=/tmp/teletubby-isolated.YQooV4).
+  // in the order they ran (last re-run 2026-10-08 under APPYTRON_HOME=/tmp/teletubby-isolated.Xaosvf).
   it('Scenario: given the example call block, when its calls are read, then each of create_script, write_transcript and write_trigger_set also appears without dryRun', () => {
     const lines = example().split('\n');
     for (const verb of ['create_script', 'write_transcript', 'write_trigger_set']) {
