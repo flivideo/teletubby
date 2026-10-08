@@ -173,6 +173,23 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
       expect(known.has(id), id).toBe(true);
   });
 
+  // Open finding (Tester CT-0108 r1): SKILL.md calls example-load.md "the exact sequence that was run", but the call
+  // block lists only the dryRun:true forms. The real writes (what actually put the script in the store) are missing, and
+  // the file itself warns a dry write_transcript after a dry create_script refuses not_found.
+  it.fails(
+    'Scenario: given the example call block, when its calls are read, then each of create_script, write_transcript and write_trigger_set also appears without dryRun',
+    () => {
+      const lines = example().split('\n');
+      for (const verb of ['create_script', 'write_transcript', 'write_trigger_set']) {
+        const calls = lines.filter((l) => l.includes(`call ${verb} `));
+        expect(
+          calls.some((l) => !l.includes('"dryRun":true')),
+          verb,
+        ).toBe(true);
+      }
+    },
+  );
+
   // Open finding (Tester CT-0108 r1): the example draft's p1 says David has "wanted [this] for a while". No fixture item
   // records a wish or a time; the dossier only says nothing turns research into a segment. SKILL.md rule: "Every claim in
   // the draft traces to a knowledge item". Remove the claim from the draft (and from the loaded transcript) to fix.
