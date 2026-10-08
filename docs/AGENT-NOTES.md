@@ -14,6 +14,9 @@ launching, the capability core, the open contract, the styling rules and the got
 ## Tooling
 
 - Launch with `npm run app` (overmind, detached). Never `npm run dev` from an agent.
+- Isolated runs: `APPYTRON_HOME=<tmp> npm run app`. `create-console.ts` (the template's seam, CT-0043) moves
+  `userData` (so `teletubby.json` and `control.json`) and `pictures` under `<tmp>`. Projects are still read from the
+  real `~`, and script verbs write the open project's `fli.tubby.json`, so use `dryRun: true` there.
 - Drive the app with `bin/teletubby.mjs call <verb> --input '<json>' --as agent:<name>`. Read
   verb shapes from `teletubby capabilities` (generated), not from any doc.
 - **Two names per verb, both live** (ADR-005): snake on `/api/invoke` and the CLI (`write_script`),
