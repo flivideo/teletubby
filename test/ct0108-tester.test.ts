@@ -173,10 +173,9 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
       expect(known.has(id), id).toBe(true);
   });
 
-  // Open finding (Tester CT-0108 r1): SKILL.md calls example-load.md "the exact sequence that was run", but the call
-  // block lists only the dryRun:true forms. The real writes (what actually put the script in the store) are missing, and
-  // the file itself warns a dry write_transcript after a dry create_script refuses not_found.
-  it.fails(
+  // Round-1 finding, fixed in round 2: the call block now lists each dry run AND the real write that followed it,
+  // in the order they ran (re-run 2026-10-08 under APPYTRON_HOME=/tmp/teletubby-isolated.YQooV4).
+  it(
     'Scenario: given the example call block, when its calls are read, then each of create_script, write_transcript and write_trigger_set also appears without dryRun',
     () => {
       const lines = example().split('\n');
@@ -190,10 +189,9 @@ describe.skipIf(!haveSkill)('Feature: the segment-writer skill keeps its contrac
     },
   );
 
-  // Open finding (Tester CT-0108 r1): the example draft's p1 says David has "wanted [this] for a while". No fixture item
-  // records a wish or a time; the dossier only says nothing turns research into a segment. SKILL.md rule: "Every claim in
-  // the draft traces to a knowledge item". Remove the claim from the draft (and from the loaded transcript) to fix.
-  it.fails(
+  // Round-1 finding, fixed in round 2: p1 no longer claims a wish or a duration; it states only the dossier's gap
+  // (nothing turns research into a segment). The loaded transcript was re-written to match.
+  it(
     'Scenario: given the example draft, when its sentences are checked against the knowledge, then it makes no claim about how long David has wanted this',
     () => {
       const draft = draftRows()
