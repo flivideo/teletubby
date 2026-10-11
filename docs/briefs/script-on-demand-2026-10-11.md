@@ -31,7 +31,8 @@ FliTools pass 1 (`groq-whisper` or `mlx-whisper`, `fli-core/src/brand-settings.t
   (`script.create` → `write_transcript` → `write_trigger_set`, dry run first).
 - Teletubby itself: no change expected.
 
-## Open (David's calls, on the spec page)
+## Decided (David, 2026-10-11)
 
-Where Incoming transcripts are kept; transcribe every Incoming take on arrival or only on request; rescue replaces the
-stuck segment or sits beside it as a new version.
+- Incoming takes are transcribed (pass 1) as each one arrives.
+- Quick transcripts live in a FliHub cache folder, not `~/ecamm`; dropped when the take lands and gets its full transcript.
+- A rescue sits beside the stuck segment as a new version (v2), never overwriting it.
