@@ -1,4 +1,4 @@
-# Script on demand — fill-in and rescue (D08 candidate, Teletubby slot)
+# Script on demand — fill-in and rescue (D09 candidate, Teletubby slot)
 
 **Status: draft brief (2026-10-11), not authorised to build.** Agreed with David in a Q&A on 2026-10-11.
 **Spec page:** https://claude.ai/artifact/DhRNnM6BwwS2HgAmfwYpWG, source `/Users/davidcruwys/dev/ad/flivideo/teletubby/docs/briefs/script-on-demand-spec.html`.
