@@ -75,7 +75,7 @@ const triggerInput = z.object({
 });
 
 /** Every verb that takes input. A verb absent here takes {} — published as []. */
-export const INPUT: Record<string, z.ZodObject<z.ZodRawShape>> = {
+export const INPUT = {
   set_active_context: z.object({
         setId: slug.nullish(),
         scriptId: slug.nullish(),
@@ -328,7 +328,10 @@ export const INPUT: Record<string, z.ZodObject<z.ZodRawShape>> = {
   system_restart: z.object({
         force: z.boolean().optional().describe('restart even while busy — a person only, never an agent'),
       }),
-};
+} satisfies Record<string, z.ZodObject>;
+
+/** The same map, looked up by a verb name only known at run time. */
+export const INPUT_BY_NAME: Readonly<Record<string, z.ZodObject>> = INPUT;
 
 export interface InputField {
   name: string;
@@ -345,36 +348,52 @@ export interface InputField {
   note?: string;
 }
 
-const typeOf = (schema: z.ZodTypeAny, depth = 0): string => {
-  const def = (schema as z.ZodTypeAny & { _def: Record<string, unknown> })._def as {
-    typeName: string;
-    innerType?: z.ZodTypeAny;
-    schema?: z.ZodTypeAny;
-    type?: z.ZodTypeAny;
-    values?: string[];
-    shape?: () => Record<string, z.ZodTypeAny>;
-  };
-  switch (def.typeName) {
-    case 'ZodOptional':
-    case 'ZodNullable':
-    case 'ZodDefault':
-      return typeOf(def.innerType!, depth);
-    case 'ZodEffects':
-      return typeOf(def.schema!, depth);
-    case 'ZodString':
+/**
+ * The zod 4 def fields the walkers below read. `.transform()` is a `pipe` whose
+ * `in` is the declared schema; `.preprocess()` is a `pipe` whose `in` is the
+ * transform, so the declared schema is its `out`.
+ */
+interface Def {
+  type: string;
+  innerType?: z.ZodType;
+  in?: z.ZodType;
+  out?: z.ZodType;
+  element?: z.ZodType;
+  entries?: Record<string, string | number>;
+  shape?: Record<string, z.ZodType>;
+  defaultValue?: unknown;
+}
+
+const defOf = (schema: z.ZodType): Def => schema.def as unknown as Def;
+
+/** The schema a wrapper (optional, nullable, default, pipe) wraps, if it is one. */
+const innerOf = (def: Def): z.ZodType | undefined => {
+  if (def.type === 'pipe') return defOf(def.in!).type === 'transform' ? def.out : def.in;
+  return def.innerType;
+};
+
+const typeOf = (schema: z.ZodType, depth = 0): string => {
+  const def = defOf(schema);
+  switch (def.type) {
+    case 'optional':
+    case 'nullable':
+    case 'default':
+    case 'pipe':
+      return typeOf(innerOf(def)!, depth);
+    case 'string':
       return 'string';
-    case 'ZodNumber':
+    case 'number':
       return 'number';
-    case 'ZodBoolean':
+    case 'boolean':
       return 'boolean';
-    case 'ZodEnum':
-      return `enum(${(def.values ?? []).join('|')})`;
-    case 'ZodArray':
-      return `array<${typeOf(def.type!, depth + 1)}>`;
-    case 'ZodObject': {
+    case 'enum':
+      return `enum(${Object.values(def.entries ?? {}).join('|')})`;
+    case 'array':
+      return `array<${typeOf(def.element!, depth + 1)}>`;
+    case 'object': {
       // One level of keys, then just "object" — a summary, not a JSON Schema.
       if (depth >= 2) return 'object';
-      const shape = def.shape!();
+      const shape = def.shape!;
       const keys = Object.keys(shape).map((k) => (shape[k].isOptional() ? `${k}?` : k));
       return `object{${keys.join(', ')}}`;
     }
@@ -384,44 +403,27 @@ const typeOf = (schema: z.ZodTypeAny, depth = 0): string => {
 };
 
 /** The outermost .describe() wins; without one, walk in for an inner note. */
-const noteOf = (schema: z.ZodTypeAny): string | undefined => {
-  let current: z.ZodTypeAny | undefined = schema;
+const noteOf = (schema: z.ZodType): string | undefined => {
+  let current: z.ZodType | undefined = schema;
   while (current) {
     if (current.description) return current.description;
-    const def: { innerType?: z.ZodTypeAny; schema?: z.ZodTypeAny } = (
-      current as z.ZodTypeAny & { _def: { innerType?: z.ZodTypeAny; schema?: z.ZodTypeAny } }
-    )._def;
-    current = def.innerType ?? def.schema;
+    current = innerOf(defOf(current));
   }
   return undefined;
 };
 
 /** Walk in for a ZodDefault at any wrapping depth; its value is the published default. */
-const defaultOf = (schema: z.ZodTypeAny): unknown => {
-  let current: z.ZodTypeAny | undefined = schema;
+const defaultOf = (schema: z.ZodType): unknown => {
+  let current: z.ZodType | undefined = schema;
   while (current) {
-    const def: {
-      typeName?: string;
-      innerType?: z.ZodTypeAny;
-      schema?: z.ZodTypeAny;
-      defaultValue?: () => unknown;
-    } = (
-      current as z.ZodTypeAny & {
-        _def: {
-          typeName?: string;
-          innerType?: z.ZodTypeAny;
-          schema?: z.ZodTypeAny;
-          defaultValue?: () => unknown;
-        };
-      }
-    )._def;
-    if (def.typeName === 'ZodDefault' && def.defaultValue) return def.defaultValue();
-    current = def.innerType ?? def.schema;
+    const def = defOf(current);
+    if (def.type === 'default') return def.defaultValue;
+    current = innerOf(def);
   }
   return undefined;
 };
 
-export const describeInput = (schema: z.ZodObject<z.ZodRawShape>): InputField[] =>
+export const describeInput = (schema: z.ZodObject): InputField[] =>
   Object.entries(schema.shape).map(([name, field]) => {
     const note = noteOf(field);
     const fallback = defaultOf(field);

@@ -10,9 +10,10 @@ import {
   DOTTED_NAME,
   FAILURE_CODES,
   TELETUBBY_CAPABILITIES,
+  inputJsonSchema,
   teletubbyOpenRpc,
 } from '../src/core/agent-layer';
-import { UNCONVERTED } from '../src/core/zod3-json-schema';
+import { INPUT_BY_NAME } from '../src/core/input-shapes';
 import { startControlServer, type ControlServerHandle } from '../src/main/control-server';
 
 /**
@@ -39,9 +40,21 @@ describe('the contract projection', () => {
     expect(Object.keys(TELETUBBY_CAPABILITIES)).toHaveLength(CAPABILITIES.length);
   });
 
-  it('converts every INPUT field — nothing falls through to "accept anything"', () => {
-    teletubbyOpenRpc();
-    expect(UNCONVERTED).toEqual([]);
+  it('projects every INPUT field — nothing falls through to "accept anything"', () => {
+    const empty: string[] = [];
+    const visit = (node: unknown, path: string): void => {
+      if (!node || typeof node !== 'object') return;
+      const properties = (node as { properties?: Record<string, unknown> }).properties ?? {};
+      for (const [key, child] of Object.entries(properties)) {
+        if (Object.keys(child as object).length === 0) empty.push(`${path}.${key}`);
+        visit(child, `${path}.${key}`);
+      }
+      const { items, anyOf } = node as { items?: unknown; anyOf?: unknown[] };
+      visit(items, `${path}[]`);
+      for (const option of anyOf ?? []) visit(option, path);
+    };
+    for (const [name, schema] of Object.entries(INPUT_BY_NAME)) visit(inputJsonSchema(schema), name);
+    expect(empty).toEqual([]);
   });
 
   it('makes EXACTLY the UI-only verbs human-only (★), plus force on quit/restart', () => {

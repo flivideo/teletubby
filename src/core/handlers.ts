@@ -16,7 +16,7 @@
  */
 
 import { z } from '@appydave/core';
-import { INPUT, describeInput } from './input-shapes.js';
+import { INPUT, INPUT_BY_NAME, describeInput } from './input-shapes.js';
 import {
   findScript,
   findTranscript,
@@ -553,7 +553,7 @@ export function createHandlers(): Record<string, Handler> {
       // truth. A verb that takes nothing publishes [], never a missing key,
       // so absence is impossible (2026-09-02: an agent could discover
       // rename_set existed and not that it takes a title).
-      input: INPUT[capability.name] ? describeInput(INPUT[capability.name]) : [],
+      input: INPUT_BY_NAME[capability.name] ? describeInput(INPUT_BY_NAME[capability.name]) : [],
     })),
     principal: context.principal,
   });
@@ -1097,7 +1097,7 @@ export function createHandlers(): Record<string, Handler> {
   const QUIT_DELAY_MS = 250;
 
   const leave = (verb: 'quit' | 'restart') => async (input: unknown, context: HandlerContext) => {
-    const parsed = parse(INPUT[`system_${verb}`]!, input) as { force?: boolean };
+    const parsed = parse(INPUT_BY_NAME[`system_${verb}`]!, input) as { force?: boolean };
     const host = hostOf(context);
     const busy = busyOf(context);
     // `force` from an agent never reaches here: fli-core's fence refused it.

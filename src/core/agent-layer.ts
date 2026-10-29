@@ -13,9 +13,12 @@
  *                dotted name is the JSON-RPC method, the spec and the page.
  *                The map below is AUTHORED — a derived name would silently
  *                change when a verb is renamed.
- *   · inputs   — `INPUT` (zod 3) is still THE schema. It is converted to JSON
- *                Schema and rebuilt in fli-core's zod 4 (`fromJSONSchema`), so
- *                the spec and the console describe the object that refuses.
+ *   · inputs   — `INPUT` is THE schema. Since @appydave/core 0.2.0 it is
+ *                zod 4, so zod's own `toJSONSchema` projects it — on the INPUT
+ *                side, where a `.default()`ed field is optional — and fli-core's
+ *                zod 4 rebuilds it (`fromJSONSchema`). The spec and the console
+ *                describe the object that refuses. (This replaced a hand-written
+ *                zod 3 converter, `zod3-json-schema.ts`.)
  *   · the ★    — a verb the catalog allows only the `ui` principal is
  *                `humanOnly: true` here. `authorize` runs in `core.invoke`,
  *                beneath every door, alongside the older principal gate.
@@ -39,8 +42,7 @@ import {
 } from '@flivideo/core';
 import { z as z4 } from './fli-zod.js';
 import { CAPABILITIES, type CapabilityError, type CapabilityMeta, type ErrorCode } from '@shared/capabilities';
-import { INPUT } from './input-shapes.js';
-import { toJsonSchema } from './zod3-json-schema.js';
+import { INPUT_BY_NAME } from './input-shapes.js';
 
 /* ------------------------------------------------------------------ *
  * Names — snake (published) ↔ dotted (fli-core)
@@ -148,6 +150,15 @@ export function failureModeOf(error: CapabilityError): string {
  * Contracts
  * ------------------------------------------------------------------ */
 
+/**
+ * An INPUT schema as JSON Schema, as a CALLER sees it. fli-core projects a
+ * contract's schema on the output side, where a `.default()`ed field is
+ * required; carrying INPUT as is would publish `trigger-set.write` `authoredBy`
+ * as required, hiding that omitting it stamps the work as agent-authored.
+ */
+export const inputJsonSchema = (schema: z4.ZodType): Record<string, unknown> =>
+  z4.toJSONSchema(schema, { io: 'input', unrepresentable: 'any' }) as Record<string, unknown>;
+
 const kebab = (code: string): string => MODE_OF_CODE[code as ErrorCode] ?? code.replace(/_/g, '-');
 
 const contractFor = (meta: CapabilityMeta): CapabilityContract => {
@@ -156,12 +167,12 @@ const contractFor = (meta: CapabilityMeta): CapabilityContract => {
   ];
   if (lifecycle) return lifecycle;
   const humanOnly = !meta.principals.includes('agent');
-  const schema = INPUT[meta.name];
+  const schema = INPUT_BY_NAME[meta.name];
   return defineCapability({
     kind: meta.kind,
     description: meta.summary,
     input: schema
-      ? (z4.fromJSONSchema(toJsonSchema(schema) as never) as z4.ZodType)
+      ? (z4.fromJSONSchema(inputJsonSchema(schema) as never) as z4.ZodType)
       : z4.object({}),
     output: z4.unknown(),
     sideEffects: meta.sideEffects,
