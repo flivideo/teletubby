@@ -33,7 +33,7 @@
     "api:check": "vitest run test/agent-layer.test.ts -t \"api/openrpc.json is current\""
   },
   "dependencies": {
-    "@appydave/core": "file:vendor/appydave-core-0.2.0-1cd0e79.tgz",
+    "@appydave/core": "^0.2.0",
     "@flivideo/core": "github:flivideo/fli-core#v0.26.0",
     "electron-updater": "^6.8.9",
     "zod": "^4.6.7",

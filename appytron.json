@@ -1,6 +1,6 @@
 {
   "app": "teletubby",
-  "core": "file:vendor/appydave-core-0.2.0-1cd0e79.tgz",
+  "core": "^0.2.0",
   "createAppytron": "0.1.0",
   "scaffolded": "2026-08-19T01:03:21.495Z"
 }
