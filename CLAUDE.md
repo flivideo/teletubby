@@ -383,8 +383,11 @@ teletubby call context_select --input '{"brand":"appydave","project":"d01-flivid
 teletubby call write_script --input '{"name":"Intro","text":"First paragraph.\n\nSecond.","video":"flivideo-tour"}'
 ```
 
-⚠️ **Opening a project only ever opens ITS OWN sets** — the remembered set included. The panel
-lists every set one click away; nothing from another project loads by itself (ADR-003, ADR-004).
+⚠️ **Opening a project only ever opens ITS OWN sets** — the remembered set included — and the
+panel's PROJECT row lists only that project's sets: the "all sets" chip is gone (2026-10-30).
+Nothing from another project loads by itself (ADR-003, ADR-004). **A cold start with no context
+opens the empty shell**, never the remembered set; with no project open the panel lists every set,
+because there is nothing to scope to. Landing the right set is FliStudio's door, via `stage_select`.
 
 ⚠️ Teletubby still never writes the words or the triggers. The chat that writes them is L19, later.
 Full ruling: [docs/kdd/decisions/adr-004-…](docs/kdd/decisions/adr-004-scripts-on-demand-one-project-file-many-named-scripts.md).

@@ -38,9 +38,7 @@ function ProjectAdmin(): JSX.Element {
   const stageHold = useProm((s) => s.stageHold);
   const unreadableFile = useProm((s) => s.unreadableFile);
   const openProject = useProm((s) => s.openProject);
-  const filter = useProm((s) => s.setFilter);
-  const setSetFilter = useProm((s) => s.setSetFilter);
-  const shown = visibleSets(sets, openProject, filter);
+  const shown = visibleSets(sets, openProject);
   const onStage = sets.find((entry) => entry.id === set?.id);
   const [mode, setMode] = useState<'idle' | 'create' | 'rename'>('idle');
   const [folder, setFolder] = useState('');
@@ -104,17 +102,8 @@ function ProjectAdmin(): JSX.Element {
 
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      {/* This project / all sets — only meaningful once a project is open. */}
-      {openProject && (
-        <div className="flex w-full items-center gap-1.5">
-          <Chip on={filter === 'project'} onClick={() => setSetFilter('project')}>
-            This project
-          </Chip>
-          <Chip on={filter === 'all'} onClick={() => setSetFilter('all')}>
-            All sets
-          </Chip>
-        </div>
-      )}
+      {/* Only the open project's sets — no "all sets" chip (2026-10-30). With
+          no project open, every set: there is nothing to scope to. */}
       {shown.note && <span className="w-full font-body text-xs text-muted">{shown.note}</span>}
 
       {shown.sets.map((entry) => (

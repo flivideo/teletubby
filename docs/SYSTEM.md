@@ -94,7 +94,9 @@ to recite. It writes no scripts; producing them is a future app, **Scribe**.
    (fli-core window state).
 2. The renderer loads rigs and the workspace first, then the context, then the set list. It opens
    the remembered set **only if it belongs to the open project**. A project with no set attached
-   opens on "No script for <project> yet" with the setup panel open.
+   opens on "No script for <project> yet", and no context at all opens "No project open", both
+   with the setup panel open. The panel lists only the open project's sets (every set when none
+   is open).
 3. The talent picks a corpus and a trigger style on the footer strip, then steps with `↑ ↓ Space`
    at the scale of the driven zone. Recording happens in Ecamm; FliHub picks up the file.
 
@@ -205,8 +207,7 @@ to recite. It writes no scripts; producing them is a future app, **Scribe**.
 - **A translucent surface renders with no background.** Tailwind silently drops an opacity
   modifier on a `var()` colour (`bg-canvas/92`). Declare a real token instead.
 - **An empty or wrong set opens on launch.** Check `context_get` and `list_sets`: a set only opens
-  if it belongs to the open project. With no context open, the remembered set opens wherever it
-  belongs.
+  if it belongs to the open project. With no context open, nothing opens: the shell, panel out.
 - **`not_found: no set specified` from the CLI.** Input was passed as a bare positional instead
   of `--input`. The CLI now refuses the positional, but older transcripts show the confusing
   version.

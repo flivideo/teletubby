@@ -18,6 +18,8 @@ files:
 
 # ADR-004 — Scripts on demand: one project file, many named scripts, an optional video tag
 
+> **Amended by [ADR-007](adr-007-the-panel-is-scoped-to-the-open-project-and-no-context-opens-empty.md)** (2026-10-30): the panel no longer lists every set while a project is open, and a cold start with no context opens empty.
+
 ## Context
 
 David, B585: *"Teletubby should be tied to a video project, but not tied to one script."* The

@@ -11,6 +11,8 @@ files:
 
 # ADR-003 — An empty project opens empty, not on the remembered set
 
+> **Amended by [ADR-007](adr-007-the-panel-is-scoped-to-the-open-project-and-no-context-opens-empty.md)** (2026-10-30): the panel no longer lists every set while a project is open, and a cold start with no context opens empty.
+
 ## Context
 
 W6 fix F5 made a project with no attached set "never a dead end": the setup panel falls back to

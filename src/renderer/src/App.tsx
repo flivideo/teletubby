@@ -23,7 +23,6 @@ import {
   pickOpeningSet,
   type UnreadableFile,
   useProm,
-  visibleSets,
   zoneOrder,
   type RecordingZone,
 } from './store';
@@ -148,8 +147,8 @@ export default function App(): JSX.Element {
       await fetchContext();
       const sets = await fetchSets();
       if (!sets || cancelled) return;
-      // Only a store with NO sets is a failure. A project with none attached
-      // falls back to every set (visibleSets) — never this screen (W6 fix F5).
+      // Only a store with NO sets is a failure. A project with none attached,
+      // or no project at all, opens the shell — never this screen (W6 fix F5).
       if (sets.length === 0) {
         setFailure('No script sets in the store.');
         return;
@@ -161,10 +160,10 @@ export default function App(): JSX.Element {
         setShell(true);
         return;
       }
-      const shown = visibleSets(sets, state.openProject, state.setFilter).sets;
-      // Only a READABLE set opens (W6 S2). None readable → the shell, with
-      // the unreadable file named and the panel open to pick from.
-      const target = pickOpeningSet(sets, shown, state.pendingPosition?.setId, state.openProject);
+      // Only a READABLE set of the open project opens (W6 S2). None readable,
+      // or no context at all → the shell, with the reason named and the panel
+      // open to pick from.
+      const target = pickOpeningSet(sets, state.pendingPosition?.setId, state.openProject);
       if (!target) {
         setShell(true);
         return;
@@ -243,17 +242,12 @@ export default function App(): JSX.Element {
         }
         const state2 = useProm.getState();
         // Same rule as launch: an empty stage is filled only from the open
-        // project's own sets, never by the fallback list.
+        // project's own sets, and with no context not at all.
         if (emptyProjectOf(sets, state2.openProject)) {
           setShell(true);
           return;
         }
-        const target = pickOpeningSet(
-          sets,
-          visibleSets(sets, state2.openProject, state2.setFilter).sets,
-          null,
-          state2.openProject,
-        );
+        const target = pickOpeningSet(sets, null, state2.openProject);
         // An agent's stage request (stage_select) for this same event outranks
         // the fallback pick — otherwise whichever fetch landed last would win.
         if (target && !useProm.getState().requestedSetId) await fetchSet(target, load);
@@ -305,11 +299,14 @@ export default function App(): JSX.Element {
 }
 
 /**
- * Nothing to open — two reasons, one shell:
+ * Nothing to open — three reasons, one shell:
  *
- *   · the open project has NO set attached (David, 2026-09-22): say so, and
- *     leave every other set one click away in the panel. Auto-loading the
- *     remembered set here put D03's script on stage under D01's name.
+ *   · no project open — a cold start with no --brand/--project (2026-10-30).
+ *     The remembered set is some project's; opening it put that project's
+ *     words on stage under none. The panel lists every set to pick from.
+ *   · the open project has NO set attached (David, 2026-09-22): say so.
+ *     Auto-loading the remembered set here put D03's script on stage under
+ *     D01's name.
  *   · nothing readable (W6 second pass S2) — the open project's
  *     fli.tubby.json is unreadable and every set left belongs to it.
  *
@@ -319,6 +316,7 @@ export default function App(): JSX.Element {
 function EmptyShell(): JSX.Element {
   const unreadable = useProm((s) => s.unreadableFile);
   const emptyProject = useProm((s) => emptyProjectOf(s.sets, s.openProject));
+  const openProject = useProm((s) => s.openProject);
   const setupOpen = useProm((s) => s.setupOpen);
   const toggleSetup = useProm((s) => s.toggleSetup);
   useEffect(() => {
@@ -337,7 +335,9 @@ function EmptyShell(): JSX.Element {
               ? `No set can be opened: ${unreadable.file} cannot be read (${unreadable.message}).`
               : emptyProject
                 ? `No script for ${emptyProject} yet.`
-                : 'No set can be opened.'}
+                : openProject
+                  ? 'No set can be opened.'
+                  : 'No project open — pick a set from the panel.'}
           </p>
         </div>
         <SetupPanel />

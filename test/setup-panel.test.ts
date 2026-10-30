@@ -250,7 +250,7 @@ describe('the set on stage when the list changes underneath it (W6 fix F6)', () 
   });
 });
 
-describe('the PROJECT row filter (W6 fix F5)', () => {
+describe('the PROJECT row lists only the open project’s sets (2026-10-30)', () => {
   const row = (id: string, project: string | null): SetSummary => ({
     id,
     title: id,
@@ -260,32 +260,48 @@ describe('the PROJECT row filter (W6 fix F5)', () => {
   });
   const all = [row('a', 'd02-cutty'), row('b', 'a01-kyber'), row('c', null)];
 
-  it('with no project open, shows every set', () => {
-    expect(visibleSets(all, null, 'project')).toEqual({ sets: all, note: null });
+  it('with no project open, shows every set — there is nothing to scope to', () => {
+    expect(visibleSets(all, null)).toEqual({ sets: all, note: null });
   });
 
-  it('with a project open, shows only its sets — and "all sets" is one chip away', () => {
-    expect(visibleSets(all, 'd02-cutty', 'project').sets.map((e) => e.id)).toEqual(['a']);
-    expect(visibleSets(all, 'd02-cutty', 'all').sets).toEqual(all);
+  it('with a project open, shows only its sets — never another project’s', () => {
+    expect(visibleSets(all, 'd02-cutty').sets.map((e) => e.id)).toEqual(['a']);
   });
 
-  it('a project with NO attached set falls back to every set with a note, never an empty list', () => {
-    const shown = visibleSets(all, 'z99-empty-project', 'project');
-    expect(shown.sets).toEqual(all);
+  it('a project with NO attached set lists nothing and says so — no fallback to every set', () => {
+    const shown = visibleSets(all, 'z99-empty-project');
+    expect(shown.sets).toEqual([]);
     expect(shown.note).toContain('z99-empty-project');
   });
 
-  it('defaults to this project when a context arrives, and keeps the talent’s choice on a refresh', () => {
-    useProm.setState({ openProject: null, setFilter: 'all' });
+  it('the store has no "all sets" filter left to flip', () => {
     s().setOpenProject('d02-cutty');
-    expect(s().setFilter).toBe('project');
-
-    s().setSetFilter('all');
-    s().setOpenProject('d02-cutty'); // a change event re-reads the same context
-    expect(s().setFilter).toBe('all');
-
+    expect(s()).not.toHaveProperty('setFilter');
+    expect(s()).not.toHaveProperty('setSetFilter');
     s().setOpenProject(null);
-    expect(s().setFilter).toBe('all');
+  });
+});
+
+describe('a cold start with no context opens the empty shell (2026-10-30)', () => {
+  const row = (id: string, project: string | null): SetSummary => ({
+    id,
+    title: id,
+    description: '',
+    project,
+    scriptCount: 1,
+  });
+  const store = [row('kybernesis-phase-1', 'a01-kybernesis-12-videos'), row('free', null)];
+
+  it('never opens the remembered set when no project is open', () => {
+    expect(pickOpeningSet(store, 'kybernesis-phase-1', null)).toBeNull();
+  });
+
+  it('never opens a fallback set either', () => {
+    expect(pickOpeningSet(store, null, null)).toBeNull();
+  });
+
+  it('is not an "empty project" — the shell names no project', () => {
+    expect(emptyProjectOf(store, null)).toBeNull();
   });
 });
 
@@ -350,14 +366,9 @@ describe('a project with no set attached opens EMPTY, not on the remembered set 
     expect(emptyProjectOf(store, 'd03-cutty-presenter-tracking')).toBeNull();
   });
 
-  it('with no context open there is no empty project — the remembered set still opens', () => {
-    expect(emptyProjectOf(store, null)).toBeNull();
-    expect(pickOpeningSet(store, store, 'cutty-presenter-tracking')).toBe('cutty-presenter-tracking');
-  });
-
-  it('never a dead end: the panel still lists every set, one click away', () => {
-    const shown = visibleSets(store, 'd01-flivideo-tour', 'project');
-    expect(shown.sets).toEqual(store);
+  it('never a dead end: the panel names the empty project instead of rendering nothing', () => {
+    const shown = visibleSets(store, 'd01-flivideo-tour');
+    expect(shown.sets).toEqual([]);
     expect(shown.note).toContain('d01-flivideo-tour');
   });
 });
@@ -378,20 +389,18 @@ describe('with a project open, only ITS sets may open — the remembered one inc
 
   it('never reopens another project’s remembered set: D02 open, D03 remembered → a D02 set', () => {
     expect(
-      pickOpeningSet(store, store, 'cutty-presenter-tracking', 'd02-cutty-audio-cleanup'),
+      pickOpeningSet(store, 'cutty-presenter-tracking', 'd02-cutty-audio-cleanup'),
     ).toBe('d02-scripts');
   });
 
   it('keeps the remembered set when it belongs to the open project', () => {
-    expect(pickOpeningSet(store, store, 'cutty-audio-cleanup', 'd02-cutty-audio-cleanup')).toBe(
+    expect(pickOpeningSet(store, 'cutty-audio-cleanup', 'd02-cutty-audio-cleanup')).toBe(
       'cutty-audio-cleanup',
     );
   });
 
-  it('with no context, the remembered set still wins wherever it belongs', () => {
-    expect(pickOpeningSet(store, store, 'cutty-presenter-tracking', null)).toBe(
-      'cutty-presenter-tracking',
-    );
+  it('with no context, nothing opens — not even the remembered set (2026-10-30)', () => {
+    expect(pickOpeningSet(store, 'cutty-presenter-tracking', null)).toBeNull();
   });
 });
 
@@ -406,23 +415,24 @@ describe('opening on a readable set when the project file is unreadable (W6 seco
     readOnly: unreadable,
   });
   const sets = [row('p1', 'd02-cutty', true), row('p2', 'd02-cutty', true), row('free', null)];
-  const shown = sets.filter((entry) => entry.project === 'd02-cutty');
 
-  it('skips a remembered set the core will refuse, and every unreadable row in the shown list', () => {
-    expect(pickOpeningSet(sets, shown, 'p1')).toBe('free');
+  it('skips a remembered set the core will refuse, for a readable one of the same project', () => {
+    const mixed = [row('p1', 'd02-cutty', true), row('p3', 'd02-cutty'), row('free', null)];
+    expect(pickOpeningSet(mixed, 'p1', 'd02-cutty')).toBe('p3');
   });
 
   it('still opens the remembered set when it is readable', () => {
-    expect(pickOpeningSet(sets, shown, 'free')).toBe('free');
-  });
-
-  it('prefers the first readable row the panel shows', () => {
     const mixed = [row('p1', 'd02-cutty', true), row('p3', 'd02-cutty'), row('free', null)];
-    expect(pickOpeningSet(mixed, mixed.slice(0, 2), null)).toBe('p3');
+    expect(pickOpeningSet(mixed, 'p3', 'd02-cutty')).toBe('p3');
   });
 
-  it('returns null — the shell, not a failure screen — when nothing is readable', () => {
-    expect(pickOpeningSet(shown, shown, 'p1')).toBeNull();
+  it('prefers the first readable row of the open project', () => {
+    const mixed = [row('p1', 'd02-cutty', true), row('p3', 'd02-cutty'), row('free', null)];
+    expect(pickOpeningSet(mixed, null, 'd02-cutty')).toBe('p3');
+  });
+
+  it('returns null — the shell, not a failure screen — when nothing of the project is readable', () => {
+    expect(pickOpeningSet(sets, 'p1', 'd02-cutty')).toBeNull();
   });
 
   it('the store carries the unreadable file so the panel can name it', () => {
@@ -463,6 +473,6 @@ describe('the window after a project folder rename (code is identity)', () => {
 
   it('still sees the set as the open project’s — never "No script yet"', () => {
     expect(emptyProjectOf(store, 'd04-autopilot-test')).toBeNull();
-    expect(pickOpeningSet(store, store, null, 'd04-autopilot-test')).toBe('d04-d04-autopilot-test-scripts');
+    expect(pickOpeningSet(store, null, 'd04-autopilot-test')).toBe('d04-d04-autopilot-test-scripts');
   });
 });

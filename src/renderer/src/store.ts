@@ -226,10 +226,8 @@ interface PrompterState {
   setSets: (sets: SetSummary[]) => void;
   /** The session's open project (W6 `context_get`), or null. Never persisted, like the context itself. */
   openProject: string | null;
-  /** Records the open project; a CHANGE of project resets the filter to it. */
+  /** Records the open project. */
   setOpenProject: (project: string | null) => void;
-  setFilter: SetFilter;
-  setSetFilter: (filter: SetFilter) => void;
   /** Non-null while a change event is holding the on-stage data (W6 S1/S2). */
   stageHold: StageHold | null;
   setStageHold: (hold: StageHold | null) => void;
@@ -290,32 +288,30 @@ export interface UnreadableFile {
 
 /**
  * Which set the window opens on (W6 second pass S2): the remembered one, else
- * the first in the panel's shown list, else the first anywhere — but only a
- * READABLE row, ever. A set the core will refuse (`unreadable`) as the opening
- * target blanked the whole window while other sets were fine. `null` means no
- * set can be read at all: the caller shows the shell, never a failure screen.
+ * the open project's first — but only a READABLE row, ever. A set the core will
+ * refuse (`unreadable`) as the opening target blanked the whole window while
+ * other sets were fine. `null` means nothing may open: the caller shows the
+ * shell, never a failure screen.
  */
 export function pickOpeningSet(
   sets: SetSummary[],
-  shown: SetSummary[],
   remembered: string | null | undefined,
-  openProject: string | null = null,
+  openProject: string | null,
 ): string | null {
+  // No context, no set. The remembered set belongs to whatever project was
+  // last on stage, so a cold start without --brand/--project put that
+  // project's words in front of the talent under no project at all (FliStudio
+  // B674 finding, 2026-10-30). The shell opens instead, panel out.
+  if (!openProject) return null;
   const readable = (entry: SetSummary | undefined): entry is SetSummary =>
     Boolean(entry && !entry.unreadable);
   // With a project open, ONLY its own sets may open — the remembered one
   // included. Otherwise D02 reopened on D03's script because D03 was the last
-  // thing on stage (B585; the gap ADR-003 left open). The panel still lists
-  // every set, so another project's script is one click away, never automatic.
-  if (openProject) {
-    const own = sets.filter((entry) => sameProject(entry.project, openProject));
-    const rememberedOwn = own.find((entry) => entry.id === remembered);
-    if (readable(rememberedOwn)) return rememberedOwn.id;
-    return own.find(readable)?.id ?? null;
-  }
-  const rememberedRow = sets.find((entry) => entry.id === remembered);
-  if (readable(rememberedRow)) return rememberedRow.id;
-  return shown.find(readable)?.id ?? sets.find(readable)?.id ?? null;
+  // thing on stage (B585; the gap ADR-003 left open).
+  const own = sets.filter((entry) => sameProject(entry.project, openProject));
+  const rememberedOwn = own.find((entry) => entry.id === remembered);
+  if (readable(rememberedOwn)) return rememberedOwn.id;
+  return own.find(readable)?.id ?? null;
 }
 
 /**
@@ -325,8 +321,8 @@ export function pickOpeningSet(
  * On launch that project opens on an honest empty stage, never on the
  * remembered set. Auto-loading it put another project's words in front of the
  * talent under this project's name: D01 opened on D03's Cutty script with a
- * D01 footer (David, 2026-09-22). The panel still lists every set one click
- * away (`visibleSets`), so this is a state of the shell, never a dead end.
+ * D01 footer (David, 2026-09-22). The panel is open on arrival, so this is a
+ * state of the shell, never a dead end.
  */
 export function emptyProjectOf(
   sets: SetSummary[],
@@ -335,8 +331,6 @@ export function emptyProjectOf(
   if (!openProject) return null;
   return sets.some((entry) => sameProject(entry.project, openProject)) ? null : openProject;
 }
-
-export type SetFilter = 'project' | 'all';
 
 /**
  * Why the set on stage is being HELD rather than refreshed — shown by the
@@ -368,22 +362,25 @@ export function holdsStage(
 }
 
 /**
- * Which sets the setup panel's PROJECT row shows (W6 fix F5).
+ * Which sets the setup panel's PROJECT row shows.
  *
- * With a project open the default is that project's sets, and "all sets" is
- * one chip away — picking a set is the talent's, so the panel must be able to
- * reach every one. A project with NO attached set is never a dead end: the
- * list falls back to every set and says why, rather than rendering nothing.
+ * With a project open, ONLY that project's sets. There used to be an "all
+ * sets" chip (W6 fix F5); it was how another project's words got on stage
+ * under this project's name, and FliStudio now lands the right set itself
+ * through stage_select (2026-10-30). Choosing between this project's sets and
+ * scripts stays the talent's. A project with none attached says so rather than
+ * rendering nothing.
+ *
+ * With NO project open there is nothing to scope to, so every set is listed —
+ * the panel is the only way onto the stage from the cold-start shell.
  */
 export function visibleSets(
   sets: SetSummary[],
   openProject: string | null,
-  filter: SetFilter,
 ): { sets: SetSummary[]; note: string | null } {
-  if (!openProject || filter === 'all') return { sets, note: null };
+  if (!openProject) return { sets, note: null };
   const attached = sets.filter((entry) => sameProject(entry.project, openProject));
-  if (attached.length === 0 && sets.length > 0)
-    return { sets, note: `No set attached to ${openProject} — showing all sets.` };
+  if (attached.length === 0) return { sets: attached, note: `No set attached to ${openProject} yet.` };
   return { sets: attached, note: null };
 }
 
@@ -442,7 +439,6 @@ export const useProm = create<PrompterState>((set, get) => ({
   freshTranscripts: {},
   sets: [],
   openProject: null,
-  setFilter: 'all',
   stageHold: null,
   unreadableFile: null,
   requestedSetId: null,
@@ -878,9 +874,8 @@ export const useProm = create<PrompterState>((set, get) => ({
   setSets: (sets) => set({ sets }),
   setOpenProject: (project) => {
     if (project === get().openProject) return;
-    set({ openProject: project, setFilter: project ? 'project' : 'all' });
+    set({ openProject: project });
   },
-  setSetFilter: (filter) => set({ setFilter: filter }),
   setStageHold: (hold) => set({ stageHold: hold }),
   setUnreadableFile: (file) => set({ unreadableFile: file }),
   requestSet: (setId) => set({ requestedSetId: setId }),

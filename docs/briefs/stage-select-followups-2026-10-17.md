@@ -6,7 +6,16 @@
 - Read before changing FliStudio's Teletubby door or `active-context.ts`
 - Both items are small; neither blocked D09 recording
 
-**Raised by**: yt-scripting-dev session on the M4, 2026-10-17. Status: OPEN.
+**Raised by**: yt-scripting-dev session on the M4, 2026-10-17. Status: **CLOSED** (2026-10-30).
+
+**Resolution**:
+- Item 1 — **done** in FliStudio branch `tubby-lands` (FliStudio Job A of
+  `/Users/davidcruwys/dev/ad/flivideo/docs/briefs/teletubby-lands-2026-10-30.md`): one door sequence,
+  `context_select` → `script.write` → `stage_select` → `list_rigs` read-back, shared by the Teletubby
+  door and Story Pilot's send. Teletubby's side (branch `tubby-panel`): the panel lists only the open
+  project's sets, and a cold start with no context opens the empty shell.
+- Item 2 — **(a) kept**: agents read `list_rigs` → `workspace.position`; `get_active_context` stays the
+  talent's own touches.
 
 ## Context
 
