@@ -209,6 +209,18 @@ export const INPUT = {
           })
           .optional()
           .describe('optional column-2 words, each bound to a 1-based paragraph number by the caller'),
+        chapters: z
+          .array(
+            z.object({
+              name: z.string().trim().min(1).describe('the column-1 heading for this chapter'),
+              paragraph: z.number().int().positive().describe('1-based paragraph the chapter starts at'),
+            }),
+          )
+          .optional()
+          .describe(
+            'optional column-1 headings: the first starts at paragraph 1, starts strictly increase, each runs to the next; ' +
+              'absent → one topic named after the script. Paragraph numbers stay global',
+          ),
         ...commandEnvelope,
       }),
 

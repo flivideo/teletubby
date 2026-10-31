@@ -374,7 +374,9 @@ marked *do not run until F1–F4 are gated*.
 A project holds **many small named scripts** — an intro, a title, a CTA — each optionally tagged
 with the D15 video it is for (`video: <videos/ folder name>`, a tag, never an identity). They
 arrive through **`write_script`** (plain text in; the caller's words verbatim, paragraphs split on
-blank lines; triggers only if the caller authored them) and land in the OPEN project's
+blank lines; triggers only if the caller authored them; optional `chapters: [{ name, paragraph }]`
+become column-1 headings, each from its 1-based start paragraph to the next, paragraph numbers
+staying global) and land in the OPEN project's
 `fli.tubby.json`, in the one set `<project>-scripts` (`onDemand: true`), newest first; a re-used
 id is replaced in place. The setup panel lists them **by name** with the video tag.
 

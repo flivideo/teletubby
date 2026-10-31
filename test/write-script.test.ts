@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { FileRepository, createCore, type Core } from '@core/index';
 import { KYBERNESIS_PHASE_1 } from '@shared/script-set';
 import { DEFAULT_LAYOUT } from '@shared/rig';
-import { onDemandSetId, paragraphsOfText, slugOf } from '../src/core/text-script';
+import { onDemandSetId, paragraphsOfText, scriptFromText, slugOf } from '../src/core/text-script';
 
 /**
  * SCRIPTS ON DEMAND (B585, ADR-004) — `write_script`.
@@ -90,6 +90,16 @@ describe('text → script, the pure rules', () => {
       'One line.\nStill one.',
       'Two.',
     ]);
+  });
+
+  it('the builder refuses chapter shapes on its own, without the schema in front', () => {
+    const text = 'One.\n\nTwo.';
+    expect(scriptFromText({ name: 'X', text, chapters: [{ name: ' ', paragraph: 1 }] }, 1)).toEqual({
+      problem: 'chapter 1 has an empty name',
+    });
+    expect(scriptFromText({ name: 'X', text, chapters: [{ name: 'A', paragraph: 0 }] }, 1)).toMatchObject({
+      problem: expect.stringContaining('numbered from 1'),
+    });
   });
 
   it('slugs a display name into an id', () => {
@@ -201,6 +211,117 @@ describe('write_script', () => {
     expect(kyber.scripts).toHaveLength(KYBERNESIS_PHASE_1.scripts.length);
     const file = JSON.parse(readFileSync(projectFile(), 'utf8'));
     expect(file.sets.map((s: any) => s.id)).toEqual([`${PROJECT}-scripts`]);
+  });
+});
+
+const FOUR = 'One.\n\nTwo.\n\nThree.\n\nFour.';
+const headings = (script: any): string[] => script.transcripts[0].topics.map((t: any) => t.heading);
+const idsByTopic = (script: any): string[][] =>
+  script.transcripts[0].topics.map((t: any) => t.minors.flatMap((m: any) => m.paragraphs.map((p: any) => p.id)));
+
+describe('write_script chapters — column-1 headings over global paragraph numbers', () => {
+  const chapters = [
+    { name: 'Hook', paragraph: 1 },
+    { name: ' Body ', paragraph: 2 },
+    { name: 'Close', paragraph: 4 },
+  ];
+
+  it('makes one major topic per chapter, each running to the next, ids unchanged', async () => {
+    await open();
+    const data = await ok('write_script', {
+      name: 'Intro',
+      text: FOUR,
+      chapters,
+      triggers: {
+        style: 'loose-keywords',
+        items: [
+          { text: 'one', paragraph: 1 },
+          { text: 'four', paragraph: 4 },
+        ],
+      },
+    });
+    expect(data.drivable).toBe(true);
+    const { script } = await ok('get_script', { setId: `${PROJECT}-scripts`, scriptId: 'intro' });
+    expect(script.transcripts[0].topics).toEqual([
+      { id: 'm1', heading: 'Hook', minors: [{ id: 'm1-n1', heading: 'Hook', paragraphs: [{ id: 'p1', text: 'One.' }] }] },
+      {
+        id: 'm2',
+        heading: 'Body',
+        minors: [
+          {
+            id: 'm2-n1',
+            heading: 'Body',
+            paragraphs: [
+              { id: 'p2', text: 'Two.' },
+              { id: 'p3', text: 'Three.' },
+            ],
+          },
+        ],
+      },
+      { id: 'm3', heading: 'Close', minors: [{ id: 'm3-n1', heading: 'Close', paragraphs: [{ id: 'p4', text: 'Four.' }] }] },
+    ]);
+    expect(script.transcripts[0].triggerSets[0].triggers.map((t: any) => t.paragraphId)).toEqual(['p1', 'p4']);
+  });
+
+  it('absent or empty chapters → one topic named after the script, same paragraph ids', async () => {
+    await open();
+    await ok('write_script', { name: 'Plain', text: FOUR, chapters: [] });
+    const { script } = await ok('get_script', { setId: `${PROJECT}-scripts`, scriptId: 'plain' });
+    expect(headings(script)).toEqual(['Plain']);
+    expect(script.transcripts[0].topics[0].id).toBe('m1');
+    expect(idsByTopic(script)).toEqual([['p1', 'p2', 'p3', 'p4']]);
+  });
+
+  it('a dry run reports the chaptered shape and writes nothing', async () => {
+    await open();
+    const data = await ok('write_script', { name: 'Intro', text: FOUR, chapters, dryRun: true });
+    expect(data.applied).toBe(false);
+    expect(headings(data.preview.script)).toEqual(['Hook', 'Body', 'Close']);
+    expect(idsByTopic(data.preview.script)).toEqual([['p1'], ['p2', 'p3'], ['p4']]);
+    expect(existsSync(projectFile())).toBe(false);
+  });
+
+  it.each([
+    ['the first chapter must start at paragraph 1', [{ name: 'A', paragraph: 2 }], 'must start at paragraph 1'],
+    [
+      'starts strictly increase',
+      [
+        { name: 'A', paragraph: 1 },
+        { name: 'B', paragraph: 3 },
+        { name: 'C', paragraph: 3 },
+      ],
+      'strictly increase',
+    ],
+    [
+      'a start past the text',
+      [
+        { name: 'A', paragraph: 1 },
+        { name: 'B', paragraph: 5 },
+      ],
+      'the text has 4',
+    ],
+  ])('refuses %s, naming the problem, and writes nothing', async (_label, bad, message) => {
+    await open();
+    const result = await call('write_script', { name: 'Intro', text: FOUR, chapters: bad });
+    expect(result.ok).toBe(false);
+    expect(result.error.code).toBe('invalid_input');
+    expect(result.error.message).toContain(message);
+    expect(existsSync(projectFile())).toBe(false);
+  });
+
+  // Shape problems are the schema's refusal, like every other field: the
+  // issue's path names the chapter and the field.
+  it.each([
+    ['an empty name', [{ name: '   ', paragraph: 1 }], 'chapters.0.name'],
+    ['paragraph 0', [{ name: 'A', paragraph: 0 }], 'chapters.0.paragraph'],
+    ['a fractional paragraph', [{ name: 'A', paragraph: 1.5 }], 'chapters.0.paragraph'],
+  ])('refuses %s at the schema, naming the field', async (_label, bad, path) => {
+    await open();
+    const result = await call('write_script', { name: 'Intro', text: FOUR, chapters: bad });
+    expect(result.ok).toBe(false);
+    expect(result.error.code).toBe('invalid_input');
+    expect(result.error.details.issues.map((issue: any) => issue.path)).toContain(path);
+    expect(existsSync(projectFile())).toBe(false);
   });
 });
 

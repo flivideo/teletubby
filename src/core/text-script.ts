@@ -16,7 +16,14 @@
  * Pure: no I/O, so the shape rules are testable without a project on disk.
  */
 
-import type { Paragraph, Script, ScriptSet, TriggerSet, TriggerStyle } from '@shared/domain';
+import type {
+  MajorTopic,
+  Paragraph,
+  Script,
+  ScriptSet,
+  TriggerSet,
+  TriggerStyle,
+} from '@shared/domain';
 
 export interface TextScriptInput {
   /** Script id; defaults to the slug of `name`. */
@@ -30,6 +37,12 @@ export interface TextScriptInput {
     style: TriggerStyle;
     items: { text: string; paragraph: number }[];
   };
+  /**
+   * Optional column-1 headings: each chapter starts at a 1-based paragraph and
+   * runs to the paragraph before the next one. Absent or empty → one topic
+   * named after the script. Paragraph ids stay global (p1..pN) either way.
+   */
+  chapters?: { name: string; paragraph: number }[];
 }
 
 /** The one on-demand set per project. Its id is derived, so there is only ever one. */
@@ -66,6 +79,9 @@ export function scriptFromText(
   const texts = paragraphsOfText(input.text);
   if (texts.length === 0) return { problem: 'text has no paragraphs' };
   const paragraphs: Paragraph[] = texts.map((text, i) => ({ id: `p${i + 1}`, text }));
+
+  const topics = topicsOf(input.chapters, input.name.trim(), paragraphs);
+  if ('problem' in topics) return topics;
 
   const triggerSets: TriggerSet[] = [];
   if (input.triggers) {
@@ -105,17 +121,65 @@ export function scriptFromText(
           corpus: 'as-written',
           talentId: null,
           source: input.source?.trim() || 'write_script',
-          topics: [
-            {
-              id: 'm1',
-              heading: name,
-              minors: [{ id: 'm1-n1', heading: name, paragraphs }],
-            },
-          ],
+          topics: topics.topics,
           triggerSets,
         },
       ],
     },
+  };
+}
+
+/**
+ * The caller's chapters as major topics — one minor each, holding that
+ * chapter's paragraphs. The chapters only GROUP paragraphs; the ids were
+ * minted before grouping, so trigger numbers mean the same thing with or
+ * without chapters.
+ */
+function topicsOf(
+  chapters: TextScriptInput['chapters'],
+  name: string,
+  paragraphs: Paragraph[],
+): { topics: MajorTopic[] } | { problem: string } {
+  if (!chapters || chapters.length === 0)
+    return {
+      topics: [{ id: 'm1', heading: name, minors: [{ id: 'm1-n1', heading: name, paragraphs }] }],
+    };
+
+  for (const [i, chapter] of chapters.entries()) {
+    const label = `chapter ${i + 1}`;
+    if (!chapter.name.trim()) return { problem: `${label} has an empty name` };
+    if (!Number.isInteger(chapter.paragraph) || chapter.paragraph < 1)
+      return {
+        problem: `${label} "${chapter.name.trim()}" starts at paragraph ${chapter.paragraph}; paragraphs are numbered from 1`,
+      };
+    if (i === 0 && chapter.paragraph !== 1)
+      return { problem: `the first chapter must start at paragraph 1, not ${chapter.paragraph}` };
+    if (i > 0 && chapter.paragraph <= chapters[i - 1]!.paragraph)
+      return {
+        problem: `${label} "${chapter.name.trim()}" starts at paragraph ${chapter.paragraph}, not after chapter ${i} (paragraph ${chapters[i - 1]!.paragraph}); starts must strictly increase`,
+      };
+    if (chapter.paragraph > paragraphs.length)
+      return {
+        problem: `${label} "${chapter.name.trim()}" starts at paragraph ${chapter.paragraph}, but the text has ${paragraphs.length}`,
+      };
+  }
+
+  return {
+    topics: chapters.map((chapter, i) => {
+      const heading = chapter.name.trim();
+      const end = chapters[i + 1]?.paragraph ?? paragraphs.length + 1;
+      return {
+        id: `m${i + 1}`,
+        heading,
+        minors: [
+          {
+            id: `m${i + 1}-n1`,
+            heading,
+            paragraphs: paragraphs.slice(chapter.paragraph - 1, end - 1),
+          },
+        ],
+      };
+    }),
   };
 }
 

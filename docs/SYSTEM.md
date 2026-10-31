@@ -111,7 +111,7 @@ to recite. It writes no scripts; producing them is a future app, **Scribe**.
 ### A script handed in on demand (B585)
 1. Something that writes scripts (Scribe in future, or an AI conversation today) produces an
    intro, a title or a CTA as plain text.
-2. It calls `context_select` for the project if needed, then `write_script { name, text, video? }`.
+2. It calls `context_select` for the project if needed, then `write_script { name, text, video?, triggers?, chapters? }`.
 3. The script lands at the top of `<project>-scripts` in that project's `fli.tubby.json`. If the
    stage was empty, the window opens that set; otherwise the new script appears in the setup
    panel, listed by name.

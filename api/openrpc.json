@@ -4402,6 +4402,36 @@
           }
         },
         {
+          "name": "chapters",
+          "required": false,
+          "summary": "optional column-1 headings: the first starts at paragraph 1, starts strictly increase, each runs to the next; absent → one topic named after the script. Paragraph numbers stay global",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "the column-1 heading for this chapter"
+                },
+                "paragraph": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "1-based paragraph the chapter starts at"
+                }
+              },
+              "required": [
+                "name",
+                "paragraph"
+              ],
+              "additionalProperties": {}
+            },
+            "description": "optional column-1 headings: the first starts at paragraph 1, starts strictly increase, each runs to the next; absent → one topic named after the script. Paragraph numbers stay global"
+          }
+        },
+        {
           "name": "dryRun",
           "required": false,
           "schema": {
