@@ -36,6 +36,11 @@ paragraph 2. It skips spoken chars to find any later matching letter, so stray l
 assumes verbatim reading; this is the ad-lib risk the harvest doc predicted, now shown. Pinned in the test. For Teletubby
 this matters most for trigger driving (improvised by design).
 
+## KNOWN LIMIT
+The matcher is **verbatim-only** until a **word-level agreement guard** exists (a step commits only when the word-level
+strategy agrees with the char-level one). That guard is a **REQUIRED part of slice 2**, not an optional hardening. Without
+it, ad-libs and trigger-zone improvisation produce false steps (see the finding above).
+
 ## What it would take to get a real verdict
 1. Record **≥3 takes actually read from a Teletubby script** (script 01 of the Kybernesis set, or a `write_script` CTA),
    then transcribe through FliTools. Any real script would do. Or

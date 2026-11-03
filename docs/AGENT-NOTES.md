@@ -50,6 +50,10 @@ launching, the capability core, the open contract, the styling rules and the got
 - **The derived set id `<project>-scripts` is reserved.** A store set with that id makes
   `write_script` refuse `conflict`.
 
+- **Known, out of scope, not fixed:** `src/main/create-console.ts` has drifted from the appytron template
+  (`~/dev/ad/apps/appytron/template/src/main/create-console.ts`), so `test/ct0108-tester.test.ts` (byte-identical check)
+  fails on this machine. Noted 2026-11-03 during voice-follow slice 1; not touched there.
+
 ## Decisions worth knowing
 
 - **An agent may put a set or script on stage only while the talent is idle** (ADR-006):
