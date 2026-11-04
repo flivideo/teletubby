@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
-<key>CFBundleIdentifier</key><string>com.appydave.teletubby.apple-stt</string>
-<key>NSSpeechRecognitionUsageDescription</key><string>Teletubby voice-follow bake-off</string>
-<key>NSMicrophoneUsageDescription</key><string>Teletubby voice-follow bake-off</string>
+<key>CFBundleIdentifier</key><string>com.appydave.teletubby.speech</string>
+<key>CFBundleName</key><string>TeletubbySpeech</string>
+<key>CFBundleDisplayName</key><string>Teletubby Speech</string>
+<key>CFBundleExecutable</key><string>apple-stt</string>
+<key>CFBundlePackageType</key><string>APPL</string>
+<key>CFBundleVersion</key><string>1</string>
+<key>CFBundleShortVersionString</key><string>1.0</string>
+<key>LSUIElement</key><true/>
+<key>NSSpeechRecognitionUsageDescription</key><string>Teletubby follows your voice through the script on this Mac (on-device).</string>
+<key>NSMicrophoneUsageDescription</key><string>Teletubby follows your voice through the script.</string>
 </dict></plist>
