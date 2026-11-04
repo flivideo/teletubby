@@ -1,7 +1,9 @@
 // Groq recogniser: every TICK_MS of audio, send the last WINDOW_MS to whisper-large-v3-turbo.
 // Key comes from the environment (load ~/.secrets first); never logged.
+// Same cadence as the app (src/main/voice/groq-live.ts TICK_MS / WINDOW_MS): a 5 s tick (12 req/min,
+// inside the 7,200 audio-s/hour cap at the 10 s billing minimum) and a 10 s window (= that minimum).
 import { readWav, wavSlice } from './wav.mjs'
-const TICK_MS = 2000, WINDOW_MS = 12000
+const TICK_MS = 5000, WINDOW_MS = 10000
 export const groq = {
   name: 'groq whisper-large-v3-turbo',
   async run(wavPath) {
