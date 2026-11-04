@@ -186,7 +186,8 @@ const desktop = createConsole({
     });
 
     // Voice-follow: mic PCM in from the renderer, recogniser text back out. OFF until the renderer
-    // asks. Groq is the working primary; Apple on-device is the fallback behind the same interface.
+    // asks. Apple on-device (TeletubbySpeech.app, streaming partials, free) is the primary; Groq is
+    // the fallback behind the same interface — throttled to its plan, so it cannot be a live primary.
     // Every step of the path logs one line here (`"voice":"<event>"`), renderer half included.
     const voiceLog: VoiceLog = (event, detail) => logger.info({ voice: event, ...detail }, 'voice');
     const helper = join(app.getAppPath(), 'native', 'apple-stt', 'build', 'TeletubbySpeech.app');
@@ -194,14 +195,14 @@ const desktop = createConsole({
       log: voiceLog,
       engines: [
         () => {
-          const key = loadGroqKey();
-          voiceLog('groq.key', { found: key !== null });
-          return key ? new GroqLive({ key, log: voiceLog }) : null;
-        },
-        () => {
           const ok = AppleLive.available(helper);
           voiceLog('apple.helper', { found: ok, path: helper });
           return ok ? new AppleLive(helper, voiceLog) : null;
+        },
+        () => {
+          const key = loadGroqKey();
+          voiceLog('groq.key', { found: key !== null });
+          return key ? new GroqLive({ key, log: voiceLog }) : null;
         },
       ],
       emit: (event) => {
@@ -255,6 +256,7 @@ const desktop = createConsole({
         },
         stop: () => voice.stop(),
         reset: () => voice.reset(),
+        hints: (words) => voice.hints(words),
       },
       mic:
         process.platform === 'darwin'
