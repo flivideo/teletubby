@@ -11,3 +11,12 @@ export type VoiceEvent =
     }
 
 export type VoiceControl = { action: 'start' } | { action: 'stop' } | { action: 'reset' }
+
+/**
+ * One voice-path log line: an event name plus small, key-free detail. Main writes it to
+ * `.logs/app.log`; the renderer sends its half through `logVoice` so the whole path is in ONE file.
+ */
+export type VoiceLog = (event: string, detail?: Record<string, unknown>) => void
+
+/** A logger that drops everything — the default when a caller supplies none (tests, the bench). */
+export const silentVoiceLog: VoiceLog = () => {}

@@ -1,4 +1,5 @@
 import type { LiveRecognizer, RecognizerEvent } from '../../core/recognizer.js'
+import { silentVoiceLog, type VoiceLog } from '../../shared/voice.js'
 
 const TICK_MS = 2000
 const WINDOW_MS = 12000
@@ -27,6 +28,8 @@ export interface GroqLiveOptions {
   tickMs?: number
   /** Consecutive failures before the recogniser reports itself failed. */
   maxFailures?: number
+  /** One line per request: status, ms, audio sent, text length. NEVER the key. */
+  log?: VoiceLog
 }
 
 /** Rolling-window Groq recogniser: every tick, the last 12 s of audio since the last reset. */
@@ -82,6 +85,9 @@ export class GroqLive implements LiveRecognizer {
   private async tick(): Promise<void> {
     if (this.busy || this.bytes - this.sentBytes < 500 * BYTES_PER_MS) return
     this.busy = true
+    const log = this.opts.log ?? silentVoiceLog
+    const t0 = Date.now()
+    const audioMs = Math.round(this.bytes / BYTES_PER_MS)
     const gen = this.generation
     const body = wavOf(Buffer.concat(this.chunks))
     const windowStartMs = this.windowStartMs
@@ -98,13 +104,32 @@ export class GroqLive implements LiveRecognizer {
         headers: { Authorization: `Bearer ${this.opts.key}` },
         body: fd,
       })
-      if (r.status === 429) return // back off: next tick retries, not a failure
-      if (!r.ok) throw new Error(`groq http ${r.status}`)
+      if (r.status === 429) {
+        log('groq.request', { status: 429, ms: Date.now() - t0, audioMs, note: 'rate limited — next tick retries' })
+        return // back off: next tick retries, not a failure
+      }
+      if (!r.ok) {
+        let body = ''
+        try {
+          body = (await r.text()).slice(0, 200)
+        } catch {
+          /* no body */
+        }
+        throw Object.assign(new Error(`groq http ${r.status}`), { body })
+      }
       const text = (((await r.json()) as { text?: string }).text ?? '').trim()
+      log('groq.request', { status: r.status, ms: Date.now() - t0, audioMs, chars: text.length, tail: text.slice(-60), stale: gen !== this.generation })
       this.failures = 0
       if (gen === this.generation) this.onEvent({ atMs: this.clockMs, windowStartMs, text })
     } catch (error) {
       this.failures++
+      log('groq.error', {
+        ms: Date.now() - t0,
+        audioMs,
+        failures: this.failures,
+        error: error instanceof Error ? error.message : String(error),
+        body: (error as { body?: string }).body,
+      })
       if (this.failures >= (this.opts.maxFailures ?? 3))
         this.onFail(error instanceof Error ? error.message : String(error))
     } finally {

@@ -21,12 +21,22 @@ export function VoiceChip(): JSX.Element {
     <div className="flex shrink-0 items-center gap-1.5">
       <Chip
         on={on}
-        onClick={() => useVoice.getState().toggle()}
+        onClick={() => useVoice.getState().toggle('chip')}
         title={note ?? 'Voice follow — the prompter steps forward as you read (V). ↓/↑ always win.'}
       >
         Voice {on ? 'on' : 'off'}
       </Chip>
-      {on && word && (
+      {state === 'error' && note ? (
+        // An error is ALWAYS readable on the chip, even after it flipped back to off — a silent
+        // failure here is what made "nothing happens" undiagnosable (2026-11-04).
+        <span
+          className="max-w-[28rem] truncate font-mono text-[0.65rem] text-red-500"
+          title={note}
+          data-testid="voice-state"
+        >
+          voice error: {note}
+        </span>
+      ) : on && word && (
         <span
           className="font-mono text-[0.65rem] text-muted"
           title={note ?? undefined}

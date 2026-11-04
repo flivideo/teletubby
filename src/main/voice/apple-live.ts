@@ -1,6 +1,7 @@
 import { spawn, type ChildProcess } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import type { LiveRecognizer, RecognizerEvent } from '../../core/recognizer.js'
+import { silentVoiceLog, type VoiceLog } from '../../shared/voice.js'
 
 /** Apple on-device streaming recogniser: the native helper in `--stdin` mode. Reset = respawn. */
 export class AppleLive implements LiveRecognizer {
@@ -12,7 +13,10 @@ export class AppleLive implements LiveRecognizer {
   private onFail: (r: string) => void = () => {}
   private stopped = false
 
-  constructor(private readonly helperPath: string) {}
+  constructor(
+    private readonly helperPath: string,
+    private readonly log: VoiceLog = silentVoiceLog,
+  ) {}
 
   static available(helperPath: string): boolean {
     return process.platform === 'darwin' && existsSync(helperPath)
@@ -28,6 +32,8 @@ export class AppleLive implements LiveRecognizer {
     const child = spawn(this.helperPath, ['--stdin'], { stdio: ['pipe', 'pipe', 'ignore'] })
     this.child = child
     this.origin = this.clockMs
+    this.log('apple.spawn', { pid: child.pid ?? null })
+    child.on('exit', (code, signal) => this.log('apple.exit', { code, signal }))
     let buf = ''
     child.stdout!.on('data', (d: Buffer) => {
       buf += d.toString()
@@ -50,6 +56,7 @@ export class AppleLive implements LiveRecognizer {
   }
 
   private fail(reason: string): void {
+    this.log('apple.error', { reason })
     if (!this.stopped) this.onFail(`apple: ${reason}`)
   }
 

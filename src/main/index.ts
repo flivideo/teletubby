@@ -14,11 +14,12 @@ import { IPC, type AppInfo, type ControlStatus, type InvokePayload } from '@shar
 import type { InvokeResult } from '@shared/capabilities';
 import { KYBERNESIS_PHASE_1, TALENTS } from '@shared/script-set';
 import type { PressInput } from '@shared/press';
-import type { VoiceControl } from '@shared/voice';
+import type { VoiceControl, VoiceLog } from '@shared/voice';
 import { VoiceSession } from './voice/voice-session.js';
 import { GroqLive } from './voice/groq-live.js';
 import { AppleLive } from './voice/apple-live.js';
 import { loadGroqKey } from './voice/secrets.js';
+import { createVoiceControl, type VoiceControlResult } from './voice/voice-control.js';
 import { PressLog } from '../core/press-log.js';
 import { projectDirOf } from '../core/open-context.js';
 import { FileRepository, createCore, seed, type Core, type LifecycleHooks } from '../core/index.js';
@@ -186,37 +187,87 @@ const desktop = createConsole({
 
     // Voice-follow: mic PCM in from the renderer, recogniser text back out. OFF until the renderer
     // asks. Groq is the working primary; Apple on-device is the fallback behind the same interface.
+    // Every step of the path logs one line here (`"voice":"<event>"`), renderer half included.
+    const voiceLog: VoiceLog = (event, detail) => logger.info({ voice: event, ...detail }, 'voice');
     const helper = join(app.getAppPath(), 'native', 'apple-stt', 'apple-stt');
     const voice = new VoiceSession({
+      log: voiceLog,
       engines: [
         () => {
           const key = loadGroqKey();
-          return key ? new GroqLive({ key }) : null;
+          voiceLog('groq.key', { found: key !== null });
+          return key ? new GroqLive({ key, log: voiceLog }) : null;
         },
-        () => (AppleLive.available(helper) ? new AppleLive(helper) : null),
+        () => {
+          const ok = AppleLive.available(helper);
+          voiceLog('apple.helper', { found: ok, path: helper });
+          return ok ? new AppleLive(helper, voiceLog) : null;
+        },
       ],
       emit: (event) => {
+        if (event.type === 'status') voiceLog('status.emit', { ...event });
         for (const win of windowsRef?.all() ?? [])
           if (!win.isDestroyed()) win.webContents.send(IPC.voiceEvent, event);
       },
     });
+    // PCM arrives ~4×/s; log the FIRST chunk and then one summary line every 10 s, not every chunk.
+    let pcmBytes = 0;
+    let pcmChunks = 0;
+    let pcmLoggedAt = 0;
+    let pcmPeak = 0; // loudest sample since the last pcm.flow line, 0..1 — 0.000 means a silent mic
     ipcMain.on(IPC.voicePcm, (_event, pcm: unknown) => {
-      if (pcm instanceof ArrayBuffer) voice.push(new Uint8Array(pcm));
-      else if (ArrayBuffer.isView(pcm)) voice.push(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength));
+      let bytes: Uint8Array | null = null;
+      if (pcm instanceof ArrayBuffer) bytes = new Uint8Array(pcm);
+      else if (ArrayBuffer.isView(pcm)) bytes = new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength);
+      if (!bytes) {
+        voiceLog('pcm.rejected', { type: Object.prototype.toString.call(pcm) });
+        return;
+      }
+      pcmBytes += bytes.byteLength;
+      pcmChunks++;
+      const samples = new Int16Array(bytes.buffer, bytes.byteOffset, bytes.byteLength >> 1);
+      for (let i = 0; i < samples.length; i += 8) pcmPeak = Math.max(pcmPeak, Math.abs(samples[i]!) / 0x7fff);
+      const now = Date.now();
+      if (pcmChunks === 1 || now - pcmLoggedAt >= 10_000) {
+        pcmLoggedAt = now;
+        voiceLog('pcm.flow', {
+          chunks: pcmChunks,
+          bytes: pcmBytes,
+          audioMs: Math.round(pcmBytes / 32),
+          peak: Number(pcmPeak.toFixed(3)),
+        });
+        pcmPeak = 0;
+      }
+      voice.push(bytes);
     });
-    ipc.register<VoiceControl, { ok: boolean; error?: string }>({
-      channel: IPC.voiceControl,
-      handle: async (command) => {
-        if (command.action === 'start') {
-          if (process.platform === 'darwin') {
-            const granted = await systemPreferences.askForMediaAccess('microphone');
-            if (!granted) return { ok: false, error: 'microphone permission denied' };
-          }
+    ipcMain.on(IPC.voiceLog, (_event, entry: unknown) => {
+      const e = entry as { event?: unknown; detail?: unknown } | null;
+      if (!e || typeof e.event !== 'string') return;
+      const detail = e.detail && typeof e.detail === 'object' ? (e.detail as Record<string, unknown>) : {};
+      voiceLog(`ui.${e.event}`, detail);
+    });
+    const voiceControl = createVoiceControl({
+      session: {
+        start: () => {
+          pcmBytes = 0;
+          pcmChunks = 0;
           voice.start();
-        } else if (command.action === 'reset') voice.reset();
-        else voice.stop();
-        return { ok: true };
+        },
+        stop: () => voice.stop(),
+        reset: () => voice.reset(),
       },
+      mic:
+        process.platform === 'darwin'
+          ? {
+              status: () => systemPreferences.getMediaAccessStatus('microphone'),
+              ask: () => systemPreferences.askForMediaAccess('microphone'),
+            }
+          : null,
+      log: voiceLog,
+    });
+    ipc.register<VoiceControl, VoiceControlResult>({
+      channel: IPC.voiceControl,
+      handle: voiceControl,
     });
     app.on('will-quit', () => voice.stop());
 

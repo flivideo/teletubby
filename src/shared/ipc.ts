@@ -38,6 +38,8 @@ export const IPC = {
   voicePcm: 'voice:pcm',
   voiceControl: 'voice:control',
   voiceEvent: 'voice:event',
+  /** Renderer → main, fire-and-forget. One voice-path log line (toggle, mic, aligner) → `.logs/app.log`. */
+  voiceLog: 'voice:log',
 } as const;
 
 export interface AppInfo {
@@ -84,6 +86,8 @@ export interface AppytronApi {
   /** Mono 16 kHz s16le PCM from the mic. Fire-and-forget. */
   sendVoicePcm(pcm: ArrayBuffer): void;
   onVoiceEvent(listener: (event: VoiceEvent) => void): () => void;
+  /** One voice-path log line into main's `.logs/app.log`. Never rejects, never blocks. */
+  logVoice(event: string, detail?: Record<string, unknown>): void;
   /** Subscribe to store changes. Returns an unsubscribe function. */
   onControlChanged(listener: (event: ControlChanged) => void): () => void;
 }

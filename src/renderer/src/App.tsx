@@ -717,7 +717,7 @@ function Stage(): JSX.Element {
           break;
         case 'v':
         case 'V':
-          useVoice.getState().toggle();
+          useVoice.getState().toggle('key');
           break;
         case 'd':
         case 'D':

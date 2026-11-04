@@ -31,6 +31,13 @@ const api: AppytronApi = {
       /* audio loss must never reach the talent */
     }
   },
+  logVoice: (event, detail) => {
+    try {
+      ipcRenderer.send(IPC.voiceLog, { event, detail });
+    } catch {
+      /* logging must never reach the talent */
+    }
+  },
   onVoiceEvent: (listener) => {
     const wrapped = (_event: unknown, payload: VoiceEvent): void => listener(payload);
     ipcRenderer.on(IPC.voiceEvent, wrapped);

@@ -17,7 +17,8 @@ interface VoiceStore {
   state: VoiceState;
   engine: VoiceEngine | null;
   note: string | null;
-  toggle: () => void;
+  /** `source` is only for the log: which hand flipped it (the V key or the chip). */
+  toggle: (source?: 'key' | 'chip') => void;
 }
 
 /** "Following" = the aligner confirmed progress recently; otherwise listening and waiting. */
@@ -28,16 +29,46 @@ export const useVoice = create<VoiceStore>((set, get) => ({
   state: 'off',
   engine: null,
   note: null,
-  toggle: () => set({ on: !get().on }),
+  toggle: (source) => {
+    const on = !get().on;
+    vlog('toggle', { source: source ?? 'unknown', on });
+    set({ on });
+  },
 }));
+
+/** One voice-path line into main's `.logs/app.log`. Never throws — logging must not reach the talent. */
+function vlog(event: string, detail?: Record<string, unknown>): void {
+  try {
+    window.appytron?.logVoice?.(event, detail);
+  } catch {
+    /* ignore */
+  }
+}
+
+const describeError = (e: unknown): string =>
+  e instanceof Error ? (e.name && e.name !== 'Error' ? `${e.name}: ${e.message}` : e.message) : String(e);
 
 let mic: { stop: () => void } | null = null;
 
 async function startMic(send: (pcm: ArrayBuffer) => void): Promise<{ stop: () => void }> {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false },
-  });
+  let stream: MediaStream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false },
+    });
+  } catch (e) {
+    vlog('mic.getUserMedia.failed', { error: describeError(e) });
+    throw new Error(`microphone: ${describeError(e)}`);
+  }
+  const track = stream.getAudioTracks()[0];
+  vlog('mic.getUserMedia.ok', { device: track?.label ?? null, sampleRate: track?.getSettings().sampleRate ?? null });
   const ctx = new AudioContext({ sampleRate: 16000 });
+  // An AudioContext can come up 'suspended' (no user gesture); then onaudioprocess never fires.
+  if (ctx.state !== 'running') {
+    vlog('mic.audioContext', { state: ctx.state, action: 'resume' });
+    await ctx.resume().catch((e: unknown) => vlog('mic.audioContext.resumeFailed', { error: describeError(e) }));
+  }
+  vlog('mic.audioContext', { state: ctx.state, sampleRate: ctx.sampleRate });
   const source = ctx.createMediaStreamSource(stream);
   const node = ctx.createScriptProcessor(4096, 1, 1);
   const mute = ctx.createGain();
@@ -68,6 +99,7 @@ export function attachVoiceFollow(): () => void {
   let driverKey = '';
   let selfMove = false;
   let lastAdvanceAt = 0;
+  let startFailed = false;
 
   const paragraphAtStep = (): string | null => {
     const s = useProm.getState();
@@ -93,7 +125,10 @@ export function attachVoiceFollow(): () => void {
     useVoice.setState((v) => ({ state, engine: engine === undefined ? v.engine : engine, note: note ?? null }));
 
   const offVoice = api.onVoiceEvent((event: VoiceEvent) => {
-    if (!useVoice.getState().on) return;
+    if (!useVoice.getState().on) {
+      if (event.type === 'status' && event.state !== 'off') vlog('event.ignored', { reason: 'voice off', state: event.state });
+      return;
+    }
     if (event.type === 'status') {
       if (event.state === 'listening') setStatus('waiting', event.engine);
       else if (event.state === 'fallback')
@@ -102,16 +137,30 @@ export function attachVoiceFollow(): () => void {
       return;
     }
     const d = ensureDriver();
-    if (!d) return;
+    if (!d) {
+      vlog('aligner.noScript', { chars: event.text.length });
+      setStatus('error', event.engine, 'no transcript open — voice has nothing to follow');
+      return;
+    }
     const r = d.hear(event.text);
+    let moved = false;
     if (r.advanced && r.paragraphId) {
       selfMove = true;
       try {
-        if (useProm.getState().voiceAdvance(r.paragraphId)) lastAdvanceAt = Date.now();
+        moved = useProm.getState().voiceAdvance(r.paragraphId);
+        if (moved) lastAdvanceAt = Date.now();
       } finally {
         selfMove = false;
       }
     }
+    vlog('aligner.step', {
+      engine: event.engine,
+      chars: event.text.length,
+      reason: r.reason,
+      paragraphId: r.paragraphId,
+      advanced: r.advanced,
+      moved,
+    });
     setStatus(Date.now() - lastAdvanceAt < FOLLOW_WINDOW_MS ? 'following' : 'waiting', event.engine);
   });
 
@@ -125,6 +174,7 @@ export function attachVoiceFollow(): () => void {
     if (!moved || selfMove || !useVoice.getState().on) return;
     driver = null; // rebuilt lazily from the new position
     ensureDriver();
+    vlog('reanchor', { step: s.step, scriptId: s.scriptId });
     void api.voiceControl({ action: 'reset' });
   });
 
@@ -135,12 +185,18 @@ export function attachVoiceFollow(): () => void {
       void (async () => {
         try {
           const started = await api.voiceControl({ action: 'start' });
+          vlog('control.start.reply', { ...started });
           if (!started.ok) throw new Error(started.error ?? 'could not start');
           mic = await startMic((pcm) => api.sendVoicePcm(pcm));
-          ensureDriver();
+          vlog('mic.started');
+          if (!ensureDriver()) vlog('aligner.noScript', { at: 'start' });
         } catch (e) {
+          const message = describeError(e);
+          vlog('start.failed', { error: message });
+          // Error BEFORE flipping off, and the chip shows error text even when off (VoiceChip).
+          setStatus('error', null, message);
+          startFailed = true;
           useVoice.setState({ on: false });
-          setStatus('error', null, e instanceof Error ? e.message : String(e));
         }
       })();
     } else {
@@ -148,7 +204,9 @@ export function attachVoiceFollow(): () => void {
       mic = null;
       driver = null;
       void api.voiceControl({ action: 'stop' });
-      setStatus('off', null);
+      // Keep a start error visible after the flip to off; a deliberate off clears it.
+      if (startFailed) startFailed = false;
+      else setStatus('off', null);
     }
   });
 
