@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { ScriptSet, TriggerStyle } from '@shared/domain';
 import { TRIGGER_STYLE_LETTER } from '@shared/domain';
@@ -476,6 +476,24 @@ function Stage(): JSX.Element {
   const major = useProm(currentMajor);
   const triggers = useProm(activeTriggers);
   const paragraphId = useProm(currentParagraphId);
+  // Voice-follow word highlight: only when voice is on, and tinted only when the aligner's cursor
+  // is in the paragraph actually on screen (driving Major, a step can span paragraphs).
+  const voiceOn = useVoice((v) => v.on);
+  const voiceCursor = useVoice((v) => v.cursor);
+  const voiceAnchorSeq = useVoice((v) => v.anchorSeq);
+  const paragraphVoice = useMemo(
+    () =>
+      voiceOn
+        ? {
+            word:
+              voiceCursor && paragraph && voiceCursor.paragraphId === paragraph.id
+                ? voiceCursor.wordInParagraph
+                : null,
+            anchorSeq: voiceAnchorSeq,
+          }
+        : null,
+    [voiceOn, voiceCursor, voiceAnchorSeq, paragraph],
+  );
   // zoneOrder builds a new array every call; compare by value or the
   // component re-renders forever. See the note on activeTriggers.
   const order = useProm(useShallow(zoneOrder));
@@ -792,7 +810,15 @@ function Stage(): JSX.Element {
             <TriggerZone key={zone} triggers={triggers} step={step} rank={rank} focus={focus} />
           );
         case 'paragraph':
-          return <ParagraphZone key={zone} paragraph={paragraph} next={upcoming} rank={rank} />;
+          return (
+            <ParagraphZone
+              key={zone}
+              paragraph={paragraph}
+              next={upcoming}
+              rank={rank}
+              voice={paragraphVoice}
+            />
+          );
       }
     };
     stage = (
