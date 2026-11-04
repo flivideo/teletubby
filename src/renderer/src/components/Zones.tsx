@@ -272,7 +272,7 @@ export interface ParagraphVoice {
 /** Said words recede; the one current word gets a quiet underline in the driven colour. States snap. */
 const WORD_CLASS = {
   said: 'opacity-40',
-  current: 'underline decoration-driven decoration-2 underline-offset-4',
+  current: 'underline decoration-ink decoration-2 underline-offset-4',
   unsaid: '',
 } as const;
 
