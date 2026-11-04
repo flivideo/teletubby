@@ -28,13 +28,9 @@ describe('voice-follow replay', () => {
     expect(summary.located).toBe(2)
   })
 
-  // KNOWN CHARACTERISTIC of the Textream algorithm (see docs/voice-follow-slice1-results): the
-  // char-level scan advances on stray letter matches, so unrelated speech still moves it (here
-  // ~45 chars, into paragraph 2). Pinned so a change to the matcher is a deliberate decision.
-  it('false-steps on unrelated speech, but not all the way through the script', () => {
-    const { rows, summary } = replay(paras, speak('completely different words about something else entirely', 0))
-    expect(summary.steps).toBe(2)
-    expect(rows[2]!.stepAt).toBeNull()
-    expect(summary.early).toBe(2)
+  it('does not step on unrelated speech', () => {
+    const { summary } = replay(paras, speak('completely different words about something else entirely', 0))
+    expect(summary.steps).toBe(0)
+    expect(summary.early).toBe(0)
   })
 })

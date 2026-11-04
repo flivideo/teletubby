@@ -1,346 +1,386 @@
 /**
- * Voice-follow aligner — a TypeScript port of Textream's `PromptMatcher`
- * (+ `SpeechTextAlignment`). Pure functions, no I/O, no Electron.
+ * Voice-follow aligner: from the script and the talent's live (cumulative) recognised speech,
+ * work out how far through the script they have read, so the prompter can scroll itself.
  *
- * Third-party notice
- * ------------------
- * Derived from Textream — https://github.com/f/textream
- *   Source:    TextreamiOS/Speech/PromptMatcher.swift, SpeechTextAlignment.swift
- *              (and splitPromptTextIntoWords in TextreamiOS/Models/PromptTextProcessor.swift)
- *   Commit:    2c02f3e (v1.7.1)
- *   Licence:   MIT
- *   Copyright (c) 2026 Fatih Kadir Akin
+ * Pure. No I/O, no timers. Word agreement is the only mechanism: a stretch of several script
+ * words appearing in order in the speech is evidence; a coincidental word is not. Speech that
+ * is unrelated to the script (an ad-lib in a trigger zone) therefore never moves the cursor.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify, merge,
- * publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
- * to whom the Software is furnished to do so, subject to the following conditions: The above
- * copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
- * (Full text: Textream's LICENSE.)
- *
- * Semantics kept: forward-only; commit when both strategies progressed, an annotation was
- * skipped, the step is <= 15 chars, or 2 of the last 3 candidates agree within 10 chars;
- * `jump` re-anchors and clears history. Offsets are in code points, not UTF-16 units.
+ * Offsets are code points (Array.from indexes), not UTF-16 units.
  */
 
-const isLetter = (c: string): boolean => /\p{L}/u.test(c)
-const isNumber = (c: string): boolean => /\p{N}/u.test(c)
-const isAlnum = (c: string): boolean => isLetter(c) || isNumber(c)
-const isSpace = (c: string): boolean => /\s/u.test(c)
-const alnumOnly = (s: string): string => Array.from(s).filter(isAlnum).join('')
+export interface FollowOptions {
+  /** Script words looked at ahead of the cursor. */
+  window: number;
+  /** Script words that may be skipped between two consecutive matches (talent dropped a word). */
+  maxScriptSkip: number;
+  /** Heard words that may be skipped between two consecutive matches (stray insert / noise). */
+  maxHeardSkip: number;
+  /** Guard: matched pairs required ... */
+  runNeeded: number;
+  /** ... within the last this-many heard words of the chain. */
+  runOf: number;
+  /** A chain this long commits without waiting for a second agreeing partial. */
+  longRun: number;
+  /** Far jump (beyond the window): consecutive, unskipped matched pairs required. */
+  farRun: number;
+  /** Script words before the cursor still used as matching context (never as progress). */
+  lookback: number;
+  /** Only the last this-many heard words are considered (cost cap). */
+  heardCap: number;
+}
 
-/** Half-open [start, end) ranges of `[bracket cues]`, in code points. */
-export function annotationRanges(text: string): Array<[number, number]> {
-  const out: Array<[number, number]> = []
-  let open: number | null = null
-  Array.from(text).forEach((c, i) => {
-    if (c === '[' && open === null) open = i
-    else if (c === ']' && open !== null) {
-      out.push([open, i + 1])
-      open = null
+export const DEFAULT_OPTIONS: FollowOptions = {
+  window: 12,
+  maxScriptSkip: 2,
+  maxHeardSkip: 3,
+  runNeeded: 3,
+  runOf: 4,
+  longRun: 5,
+  farRun: 5,
+  lookback: 4,
+  heardCap: 80,
+};
+
+export type FollowReason =
+  | 'advanced'
+  | 'held-no-agreement'
+  | 'held-unconfirmed'
+  | 'no-match'
+  | 'end';
+
+export interface FollowResult {
+  cursorChar: number;
+  cursorWord: number;
+  advanced: boolean;
+  reason: FollowReason;
+}
+
+export interface FollowState {
+  cursorChar: number;
+  cursorWord: number;
+  wordCount: number;
+  /** Paragraph (blank-line separated) of the next unread word; last paragraph at the end. */
+  cursorParagraph: number;
+}
+
+export interface Follower {
+  hear(cumulativeText: string): FollowResult;
+  anchor(offset: number): FollowState;
+  state(): FollowState;
+}
+
+export interface ScriptWord {
+  /** Lower-cased letters and digits only. */
+  word: string;
+  start: number;
+  end: number;
+  paragraph: number;
+}
+
+const isWordChar = (c: string | undefined): boolean => c !== undefined && /[\p{L}\p{N}]/u.test(c);
+const isJoiner = (c: string | undefined): boolean => c === "'" || c === '’';
+
+/** Cue spans `[...]` as [start, end) code-point ranges. An unclosed `[` is not a cue. */
+function findCues(chars: string[]): Array<[number, number]> {
+  const cues: Array<[number, number]> = [];
+  for (let i = 0; i < chars.length; i++) {
+    if (chars[i] !== '[') continue;
+    let j = i + 1;
+    while (j < chars.length && chars[j] !== ']') j++;
+    if (j >= chars.length) break;
+    cues.push([i, j + 1]);
+    i = j;
+  }
+  return cues;
+}
+
+function wordsOf(chars: string[], cues: Array<[number, number]>): ScriptWord[] {
+  const out: ScriptWord[] = [];
+  let cue = 0;
+  let paragraph = 0;
+  let lastEnd = 0;
+  let i = 0;
+  while (i < chars.length) {
+    while (cue < cues.length && cues[cue]![1] <= i) cue++;
+    if (cue < cues.length && i >= cues[cue]![0]) {
+      i = cues[cue]![1];
+      continue;
     }
-  })
-  return out
-}
-
-export function advancePastAnnotations(
-  text: string,
-  ranges: Array<[number, number]>,
-  from: number
-): number {
-  const chars = Array.from(text)
-  let current = Math.max(0, Math.min(from, chars.length))
-  let skipped = false
-  while (current < chars.length) {
-    const inside = ranges.find(([a, b]) => current >= a && current < b)
-    if (inside) {
-      current = inside[1]
-      skipped = true
-      continue
+    if (!isWordChar(chars[i])) {
+      i++;
+      continue;
     }
-    let next = current
-    while (next < chars.length && isSpace(chars[next]!)) next++
-    const starts = ranges.find(([a]) => a === next)
-    if (starts) {
-      current = starts[1]
-      skipped = true
-      continue
-    }
-    return skipped ? next : current
-  }
-  return current
-}
-
-export function bestOffset(characterResult: number, wordResult: number, tolerance = 20): number {
-  return Math.abs(characterResult - wordResult) <= tolerance
-    ? Math.trunc((characterResult + wordResult) / 2)
-    : Math.max(characterResult, wordResult)
-}
-
-export function shouldCommit(a: {
-  characterResult: number
-  wordResult: number
-  current: number
-  rawCandidate: number
-  candidate: number
-  confirmed: boolean
-}): boolean {
-  const bothProgressed = Math.min(a.characterResult, a.wordResult) > 0
-  const skippedAnnotation = a.candidate > a.rawCandidate
-  const smallStep = a.candidate - a.current <= 15
-  return bothProgressed || skippedAnnotation || a.confirmed || smallStep
-}
-
-export function editDistance(first: string, second: string): number {
-  const a = Array.from(first)
-  const b = Array.from(second)
-  if (a.length === 0) return b.length
-  if (b.length === 0) return a.length
-  const row = Array.from({ length: b.length + 1 }, (_, i) => i)
-  for (let i = 1; i <= a.length; i++) {
-    let previous = row[0]!
-    row[0] = i
-    for (let j = 1; j <= b.length; j++) {
-      const temp = row[j]!
-      row[j] = a[i - 1] === b[j - 1] ? previous : Math.min(previous, row[j]!, row[j - 1]!) + 1
-      previous = temp
-    }
-  }
-  return row[b.length]!
-}
-
-export function isFuzzyMatch(first: string, second: string): boolean {
-  if (!first || !second) return false
-  if (first === second) return true
-  const a = Array.from(first)
-  const b = Array.from(second)
-  const shorter = Math.min(a.length, b.length)
-  if (shorter >= 3 && (first.startsWith(second) || second.startsWith(first))) return true
-  let shared = 0
-  while (shared < shorter && a[shared] === b[shared]) shared++
-  if (shorter >= 3 && shared >= Math.max(3, Math.trunc((shorter * 3) / 5))) return true
-  const d = editDistance(first, second)
-  if (shorter <= 2) return false
-  if (shorter <= 4) return d <= 1
-  if (shorter <= 8) return d <= 2
-  return d <= Math.trunc(Math.max(a.length, b.length) / 3)
-}
-
-const isAnnotationWord = (w: string): boolean =>
-  (w.startsWith('[') && w.endsWith(']')) || Array.from(w).every((c) => !isAlnum(c))
-
-const normalize = (t: string): string =>
-  Array.from(t.toLowerCase())
-    .filter((c) => isAlnum(c) || isSpace(c))
-    .join('')
-
-export class PromptMatcher {
-  private chars: string[]
-  private ranges: Array<[number, number]>
-  private recent: number[] = []
-  /** Code-point offset the script has been followed to. Never decreases except via `jump`. */
-  recognizedCharacterCount: number
-  matchStartOffset: number
-
-  constructor(
-    public readonly text: string,
-    startingAt = 0
-  ) {
-    this.chars = Array.from(text)
-    this.ranges = annotationRanges(text)
-    const start = advancePastAnnotations(text, this.ranges, startingAt)
-    this.recognizedCharacterCount = start
-    this.matchStartOffset = start
-  }
-
-  get characterCount(): number {
-    return this.chars.length
-  }
-
-  restartFromCurrentProgress(): void {
-    this.matchStartOffset = this.recognizedCharacterCount
-    this.recent = []
-  }
-
-  /** Manual re-anchor (a ↑/↓ press). Clears history, like Textream's jump. */
-  jump(offset: number): number {
-    const clamped = Math.max(0, Math.min(offset, this.chars.length))
-    const target = advancePastAnnotations(this.text, this.ranges, clamped)
-    this.recognizedCharacterCount = target
-    this.matchStartOffset = target
-    this.recent = []
-    return target
-  }
-
-  /** Feed the WHOLE transcript since the last anchor (partials are cumulative). */
-  match(transcript: string): number {
-    if (!transcript || this.matchStartOffset >= this.chars.length) return this.recognizedCharacterCount
-    const characterResult = this.characterLevelMatch(transcript)
-    const wordResult = this.wordLevelMatch(transcript)
-    const best = bestOffset(characterResult, wordResult)
-    const rawCandidate = Math.min(this.matchStartOffset + best, this.chars.length)
-    const candidate = advancePastAnnotations(this.text, this.ranges, rawCandidate)
-    if (candidate <= this.recognizedCharacterCount) return this.recognizedCharacterCount
-
-    this.recent.push(candidate)
-    if (this.recent.length > 3) this.recent.shift()
-    const confirmed = this.recent.filter((p) => Math.abs(p - candidate) <= 10).length >= 2
-    if (
-      shouldCommit({
-        characterResult,
-        wordResult,
-        current: this.recognizedCharacterCount,
-        rawCandidate,
-        candidate,
-        confirmed
-      })
+    const start = i;
+    let w = '';
+    while (
+      i < chars.length &&
+      (isWordChar(chars[i]) || (isJoiner(chars[i]) && isWordChar(chars[i - 1]) && isWordChar(chars[i + 1])))
     ) {
-      this.recognizedCharacterCount = candidate
+      if (isWordChar(chars[i])) w += chars[i]!.toLowerCase();
+      i++;
     }
-    return this.recognizedCharacterCount
+    let breaks = 0;
+    for (let k = lastEnd; k < start; k++) if (chars[k] === '\n') breaks++;
+    if (out.length > 0 && breaks >= 2) paragraph++;
+    out.push({ word: w, start, end: i, paragraph });
+    lastEnd = i;
+  }
+  return out;
+}
+
+/** Normalised words of a heard string (same rules as the script view, no cues). */
+export function heardWords(text: string): string[] {
+  const chars = Array.from(text);
+  return wordsOf(chars, []).map((w) => w.word);
+}
+
+/** The script's spoken words with code-point spans and paragraph. Cue spans produce none. */
+export function scriptWords(text: string): ScriptWord[] {
+  const chars = Array.from(text);
+  return wordsOf(chars, findCues(chars));
+}
+
+function editDistance(a: string, b: string): number {
+  const x = Array.from(a);
+  const y = Array.from(b);
+  let prev = Array.from({ length: y.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= x.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= y.length; j++) {
+      cur[j] = Math.min(
+        prev[j]! + 1,
+        cur[j - 1]! + 1,
+        prev[j - 1]! + (x[i - 1] === y[j - 1] ? 0 : 1),
+      );
+    }
+    prev = cur;
+  }
+  return prev[y.length]!;
+}
+
+/**
+ * "Same word" for alignment: equal; or long enough and sharing a long prefix (misheard
+ * endings: record / recorded); or a small edit distance scaled by length. Words under 4
+ * letters must match exactly.
+ */
+export function fuzzyEqual(a: string, b: string): boolean {
+  if (a === b) return true;
+  const x = Array.from(a);
+  const y = Array.from(b);
+  const lo = Math.min(x.length, y.length);
+  const hi = Math.max(x.length, y.length);
+  if (lo < 4) return false;
+  let p = 0;
+  while (p < lo && x[p] === y[p]) p++;
+  if (p * 10 >= lo * 6) return true;
+  const limit = lo <= 4 ? 1 : lo <= 8 ? 2 : Math.floor(hi / 3);
+  return editDistance(a, b) <= limit;
+}
+
+interface Chain {
+  /** Script index one past the last matched pair. */
+  candidate: number;
+  length: number;
+  tail: number;
+  firstHeard: number;
+  firstScript: number;
+  lastHeard: number;
+}
+
+export function createFollower(
+  scriptText: string,
+  startChar = 0,
+  options: Partial<FollowOptions> = {},
+): Follower {
+  const opt: FollowOptions = { ...DEFAULT_OPTIONS, ...options };
+  const chars = Array.from(scriptText);
+  const cues = findCues(chars);
+  const words = wordsOf(chars, cues);
+  const n = words.length;
+
+  let cursorWord = 0;
+  let cursorChar = 0;
+  let prevCandidate: number | null = null;
+
+  const cueEndAt = (pos: number): number | null => {
+    for (const [s, e] of cues) if (pos >= s && pos < e) return e;
+    return null;
+  };
+  /** Move past whitespace and cue spans. */
+  const skipFiller = (from: number): number => {
+    let pos = from;
+    for (;;) {
+      while (pos < chars.length && /\s/u.test(chars[pos]!)) pos++;
+      const e = cueEndAt(pos);
+      if (e === null) return pos;
+      pos = e;
+    }
+  };
+  /** After a word: punctuation attached to it, then whitespace and cues. */
+  const afterWord = (end: number): number => {
+    let pos = end;
+    while (
+      pos < chars.length &&
+      !/\s/u.test(chars[pos]!) &&
+      !isWordChar(chars[pos]) &&
+      cueEndAt(pos) === null &&
+      chars[pos] !== '['
+    )
+      pos++;
+    return skipFiller(pos);
+  };
+
+  const place = (offset: number): void => {
+    const pos = skipFiller(Math.max(0, Math.min(chars.length, Math.floor(offset))));
+    cursorChar = pos;
+    let k = 0;
+    while (k < n && words[k]!.start < pos) k++;
+    cursorWord = k;
+    prevCandidate = null;
+  };
+  place(startChar);
+
+  const state = (): FollowState => ({
+    cursorChar,
+    cursorWord,
+    wordCount: n,
+    cursorParagraph: n === 0 ? 0 : words[Math.min(cursorWord, n - 1)]!.paragraph,
+  });
+  const result = (advanced: boolean, reason: FollowReason): FollowResult => ({
+    cursorChar,
+    cursorWord,
+    advanced,
+    reason,
+  });
+
+  /** Best chain reaching beyond the cursor that satisfies the agreement guard. */
+  function findChain(heard: string[]): { chain: Chain | null; anyMatch: boolean } {
+    const m = heard.length;
+    const hs = Math.max(0, m - opt.heardCap);
+    const j0 = Math.max(0, cursorWord - opt.lookback);
+    const j1 = Math.min(n, cursorWord + opt.window);
+    const W = j1 - j0;
+    if (W <= 0) return { chain: null, anyMatch: false };
+    const H = m - hs;
+    // len[i][j]: longest chain ending at pair (i, j); prev pointers for the tail walk.
+    const len: number[][] = [];
+    const from: Array<Array<[number, number] | null>> = [];
+    let anyMatch = false;
+    let best: Chain | null = null;
+    for (let a = 0; a < H; a++) {
+      len.push(new Array<number>(W).fill(0));
+      from.push(new Array<[number, number] | null>(W).fill(null));
+      for (let b = 0; b < W; b++) {
+        const j = j0 + b;
+        if (!fuzzyEqual(heard[hs + a]!, words[j]!.word)) continue;
+        if (j >= cursorWord) anyMatch = true;
+        let bl = 1;
+        let bp: [number, number] | null = null;
+        for (let da = 1; da <= opt.maxHeardSkip + 1 && a - da >= 0; da++) {
+          for (let db = 1; db <= opt.maxScriptSkip + 1 && b - db >= 0; db++) {
+            const l = len[a - da]![b - db]!;
+            if (l > 0 && l + 1 > bl) {
+              bl = l + 1;
+              bp = [a - da, b - db];
+            }
+          }
+        }
+        len[a]![b] = bl;
+        from[a]![b] = bp;
+        if (j + 1 <= cursorWord) continue;
+        // Walk back for the tail count and the first pair.
+        let tail = 0;
+        let ca = a;
+        let cb = b;
+        let fa = a;
+        let fb = b;
+        for (;;) {
+          if (ca >= a - (opt.runOf - 1)) tail++;
+          fa = ca;
+          fb = cb;
+          const p = from[ca]![cb]!;
+          if (!p) break;
+          [ca, cb] = p;
+        }
+        const first = j0 + fb;
+        const chain: Chain = {
+          candidate: j + 1,
+          length: bl,
+          tail,
+          firstHeard: fa,
+          firstScript: first,
+          lastHeard: a,
+        };
+        const strong = tail >= opt.runNeeded;
+        const short =
+          !strong &&
+          bl <= 2 &&
+          a === H - 1 &&
+          hs === 0 &&
+          fa <= 2 &&
+          first >= cursorWord &&
+          first <= cursorWord + 1;
+        if (!strong && !short) continue;
+        if (
+          !best ||
+          chain.candidate > best.candidate ||
+          (chain.candidate === best.candidate && chain.length > best.length)
+        )
+          best = chain;
+      }
+    }
+    return { chain: best, anyMatch };
   }
 
-  private characterLevelMatch(spoken: string): number {
-    const src = Array.from(this.chars.slice(this.matchStartOffset).join('').toLowerCase())
-    const spk = Array.from(normalize(spoken))
-    let si = 0
-    let pi = 0
-    let lastGood = 0
-    while (si < src.length && pi < spk.length) {
-      const sc = src[si]!
-      const pc = spk[pi]!
-      if (sc === '[') {
-        const close = src.indexOf(']', si)
-        if (close !== -1) {
-          si = close + 1
-          lastGood = si
-          continue
+  /** Beyond the window: only a long, unskipped, consecutive run is believed. */
+  function findFar(heard: string[]): number | null {
+    const m = heard.length;
+    const hs = Math.max(0, m - opt.heardCap);
+    let bestCand: number | null = null;
+    for (let i = hs; i < m; i++) {
+      for (let j = cursorWord + opt.window; j < n; j++) {
+        let k = 0;
+        while (i + k < m && j + k < n && fuzzyEqual(heard[i + k]!, words[j + k]!.word)) k++;
+        if (k >= opt.farRun) {
+          const cand = j + k;
+          if (bestCand === null || cand > bestCand) bestCand = cand;
         }
       }
-      if (!isAlnum(sc)) {
-        si++
-        continue
-      }
-      if (!isAlnum(pc)) {
-        pi++
-        continue
-      }
-      if (sc === pc) {
-        si++
-        pi++
-        lastGood = si
-        continue
-      }
-      let found = false
-      const maxSpoken = Math.min(5, spk.length - pi - 1)
-      for (let k = 1; k <= maxSpoken; k++) {
-        if (spk[pi + k] === sc) {
-          pi += k
-          found = true
-          break
-        }
-      }
-      if (found) continue
-      const maxSource = Math.min(5, src.length - si - 1)
-      for (let k = 1; k <= maxSource; k++) {
-        if (src[si + k] === pc) {
-          si += k
-          found = true
-          break
-        }
-      }
-      if (found) continue
-      pi++
     }
-    while (si < src.length) {
-      if (src[si] === '[' && src.indexOf(']', si) !== -1) {
-        si = src.indexOf(']', si) + 1
-        lastGood = si
-      } else if (!isAlnum(src[si]!)) {
-        si++
-        lastGood = si
-      } else break
-    }
-    return lastGood
+    return bestCand;
   }
 
-  private wordLevelMatch(spoken: string): number {
-    const rest = this.chars.slice(this.matchStartOffset).join('')
-    const srcWords = rest.split(' ').filter((w) => w.length > 0 || false)
-    // Swift split(separator:" ") omits empty subsequences by default — same as the filter above.
-    const spkWords = spoken
-      .toLowerCase()
-      .replace(/\n/g, ' ')
-      .split(/\s+/u)
-      .filter(Boolean)
-    const len = (w: string): number => Array.from(w).length
-    let si = 0
-    let pi = 0
-    let matched = 0
-    let inside = false
-    const beginsAnnotation = (i: number): boolean =>
-      srcWords[i]!.startsWith('[') && srcWords.slice(i).some((w) => w.includes(']'))
-    while (si < srcWords.length && pi < spkWords.length) {
-      const sw = srcWords[si]!
-      const begins = beginsAnnotation(si)
-      if (inside || begins || isAnnotationWord(sw)) {
-        if (begins) inside = true
-        if (sw.includes(']')) inside = false
-        matched += len(sw)
-        if (si < srcWords.length - 1) matched += 1
-        si++
-        continue
+  const commit = (candidate: number): FollowResult => {
+    cursorWord = candidate;
+    cursorChar = afterWord(words[candidate - 1]!.end);
+    prevCandidate = candidate;
+    return result(true, 'advanced');
+  };
+
+  return {
+    hear(cumulativeText: string): FollowResult {
+      if (cursorWord >= n) return result(false, 'end');
+      const heard = heardWords(cumulativeText);
+      if (heard.length === 0) return result(false, 'no-match');
+      const { chain, anyMatch } = findChain(heard);
+      if (!chain) {
+        const far = findFar(heard);
+        if (far !== null) return commit(far);
+        prevCandidate = null;
+        return result(false, anyMatch ? 'held-no-agreement' : 'no-match');
       }
-      const sourceWord = alnumOnly(sw.toLowerCase())
-      const spokenWord = alnumOnly(spkWords[pi]!)
-      if (sourceWord === spokenWord || isFuzzyMatch(sourceWord, spokenWord)) {
-        matched += len(sw)
-        si++
-        pi++
-        if (si < srcWords.length) matched += 1
-        continue
-      }
-      let foundSpoken = false
-      const maxSpoken = Math.min(5, spkWords.length - pi - 1)
-      for (let k = 1; k <= maxSpoken; k++) {
-        const next = alnumOnly(spkWords[pi + k]!)
-        if (sourceWord === next || isFuzzyMatch(sourceWord, next)) {
-          pi += k
-          foundSpoken = true
-          break
-        }
-      }
-      if (foundSpoken) continue
-      let foundSource = false
-      const maxSource = Math.min(5, srcWords.length - si - 1)
-      for (let k = 1; k <= maxSource; k++) {
-        const next = alnumOnly(srcWords[si + k]!.toLowerCase())
-        if (next === spokenWord || isFuzzyMatch(next, spokenWord)) {
-          for (let s = 0; s < k; s++) matched += len(srcWords[si + s]!) + 1
-          si += k
-          foundSource = true
-          break
-        }
-      }
-      if (foundSource) continue
-      if (sourceWord === '') {
-        matched += len(sw)
-        if (si < srcWords.length - 1) matched += 1
-        si++
-      } else pi++
-    }
-    while (si < srcWords.length) {
-      const sw = srcWords[si]!
-      const begins = beginsAnnotation(si)
-      if (!(inside || begins || isAnnotationWord(sw))) break
-      if (begins) inside = true
-      if (sw.includes(']')) inside = false
-      matched += len(sw)
-      if (si < srcWords.length - 1) matched += 1
-      si++
-    }
-    return matched
-  }
+      const confirmed =
+        chain.length >= opt.longRun ||
+        (prevCandidate !== null && Math.abs(prevCandidate - chain.candidate) <= 2);
+      if (confirmed) return commit(chain.candidate);
+      prevCandidate = chain.candidate;
+      return result(false, 'held-unconfirmed');
+    },
+    anchor(offset: number): FollowState {
+      place(offset);
+      return state();
+    },
+    state,
+  };
 }

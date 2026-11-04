@@ -1,7 +1,7 @@
 /**
  * Replay harness for the voice-follow aligner. Pure; no I/O.
  *
- * Feeds a word-timed transcript to `PromptMatcher` one word at a time (cumulative, like a
+ * Feeds a word-timed transcript to the follower one word at a time (cumulative, like a
  * streaming partial) and reports, per script paragraph, when the aligner stepped into it
  * versus when the paragraph's speech actually began.
  *
@@ -10,7 +10,7 @@
  * log (`pressTimesFromLog`) truth is instead "aligner vs David's ↓ presses": pass its result as
  * `truthOverride`; `speechStart` in the rows then holds the PRESS time.
  */
-import { PromptMatcher, isFuzzyMatch } from './voice-follow';
+import { createFollower, fuzzyEqual } from './voice-follow';
 import type { PressEvent } from './press-log';
 
 export interface TimedWord {
@@ -60,7 +60,7 @@ export function locateSpeechStarts(
     for (let i = from; i < words.length && head.length > 0; i++) {
       if (
         head.every(
-          (h, k) => words[i + k] !== undefined && isFuzzyMatch(h, clean(words[i + k]!.word)),
+          (h, k) => words[i + k] !== undefined && fuzzyEqual(h, clean(words[i + k]!.word)),
         )
       ) {
         found = i;
@@ -92,11 +92,11 @@ export function replay(
   }
   const truth = truthOverride ?? locateSpeechStarts(paragraphs, words);
   const stepAt: Array<number | null> = paragraphs.map(() => null);
-  const m = new PromptMatcher(text);
+  const follower = createFollower(text);
   let spoken = '';
   for (const w of words) {
     spoken += (spoken ? ' ' : '') + w.word;
-    const at = m.match(spoken);
+    const at = follower.hear(spoken).cursorChar;
     // Paragraph k is "entered" once progress has passed its first character.
     for (let k = 0; k < paragraphs.length; k++) {
       if (stepAt[k] === null && at > starts[k]!) stepAt[k] = w.start;
