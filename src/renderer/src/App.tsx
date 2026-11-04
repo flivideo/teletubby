@@ -34,6 +34,8 @@ import {
   TriggerZone,
 } from './components/Zones';
 import { Chip } from './components/Controls';
+import { useVoice } from './voice-live';
+import { VoiceChip } from './components/VoiceChip';
 import SetupPanel from './components/SetupPanel';
 import CueOverlay from './components/CueOverlay';
 import Divider from './components/Divider';
@@ -713,6 +715,10 @@ function Stage(): JSX.Element {
         case 'Escape':
           closeSetup();
           break;
+        case 'v':
+        case 'V':
+          useVoice.getState().toggle();
+          break;
         case 'd':
         case 'D':
           toggleFocus();
@@ -1024,6 +1030,8 @@ function Stage(): JSX.Element {
           </div>
 
           <span className="h-4 w-px shrink-0 bg-edge" />
+
+          <VoiceChip />
 
           {transcript && (
             <Chip on={cadenceOpen} onClick={() => setCadenceOpen((open) => !open)}>

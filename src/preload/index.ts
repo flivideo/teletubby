@@ -7,6 +7,7 @@ import {
   type ControlStatus,
   type InvokePayload,
 } from '../shared/ipc';
+import type { VoiceEvent } from '../shared/voice';
 import type { InvokeResult } from '../shared/capabilities';
 
 const api: AppytronApi = {
@@ -21,6 +22,19 @@ const api: AppytronApi = {
     } catch {
       /* the press log must never reach the talent */
     }
+  },
+  voiceControl: (command) => ipcRenderer.invoke(IPC.voiceControl, command),
+  sendVoicePcm: (pcm) => {
+    try {
+      ipcRenderer.send(IPC.voicePcm, pcm);
+    } catch {
+      /* audio loss must never reach the talent */
+    }
+  },
+  onVoiceEvent: (listener) => {
+    const wrapped = (_event: unknown, payload: VoiceEvent): void => listener(payload);
+    ipcRenderer.on(IPC.voiceEvent, wrapped);
+    return () => ipcRenderer.removeListener(IPC.voiceEvent, wrapped);
   },
   getControlStatus: (): Promise<ControlStatus> => ipcRenderer.invoke(IPC.controlStatus),
   onControlChanged: (listener) => {

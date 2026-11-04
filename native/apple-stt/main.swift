@@ -1,5 +1,6 @@
 // Apple on-device streaming speech helper (bake-off only).
-// usage: apple-stt <mono16k.wav>  -> prints JSON lines {"atMs":..,"text":..} per partial, wall-clock since start,
+// usage: apple-stt <mono16k.wav> | apple-stt --stdin   (stdin = raw mono 16 kHz signed 16-bit little-endian PCM, live)
+// -> prints JSON lines {"atMs":..,"text":..} per partial, wall-clock since start,
 // feeding the audio at real time. Needs Speech Recognition permission granted once by a human.
 import Foundation
 import Speech
@@ -7,7 +8,7 @@ import AVFoundation
 
 let args = CommandLine.arguments
 guard args.count >= 2 else { FileHandle.standardError.write("usage: apple-stt <wav>\n".data(using: .utf8)!); exit(2) }
-let url = URL(fileURLWithPath: args[1])
+let live = args[1] == "--stdin"
 
 func emit(_ obj: [String: Any]) {
     if let d = try? JSONSerialization.data(withJSONObject: obj), let s = String(data: d, encoding: .utf8) { print(s); fflush(stdout) }
@@ -36,6 +37,30 @@ let task = rec.recognitionTask(with: req) { result, error in
     if let e = error { emit(["error": e.localizedDescription]); finished = true; sem.signal() }
 }
 
+if live {
+    let f = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 16000, channels: 1, interleaved: false)!
+    let input = FileHandle.standardInput
+    var carry = Data()
+    while true {
+        let d = input.availableData
+        if d.isEmpty { break }
+        carry.append(d)
+        let n = carry.count / 2
+        if n == 0 { continue }
+        guard let buf = AVAudioPCMBuffer(pcmFormat: f, frameCapacity: AVAudioFrameCount(n)) else { continue }
+        buf.frameLength = AVAudioFrameCount(n)
+        carry.withUnsafeBytes { raw in
+            let src = raw.bindMemory(to: Int16.self)
+            for i in 0..<n { buf.floatChannelData![0][i] = Float(Int16(littleEndian: src[i])) / 32768.0 }
+        }
+        carry = carry.subdata(in: (n * 2)..<carry.count)
+        req.append(buf)
+    }
+    req.endAudio()
+    _ = sem.wait(timeout: .now() + 5)
+    exit(0)
+}
+let url = URL(fileURLWithPath: args[1])
 let file = try AVAudioFile(forReading: url)
 let fmt = file.processingFormat
 let chunk: AVAudioFrameCount = AVAudioFrameCount(fmt.sampleRate / 10) // 100 ms

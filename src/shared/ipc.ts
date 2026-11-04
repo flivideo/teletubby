@@ -18,6 +18,7 @@
 
 import type { InvokeResult } from './capabilities.js';
 import type { PressInput } from './press.js';
+import type { VoiceControl, VoiceEvent } from './voice.js';
 
 export const IPC = {
   appInfo: 'app:info',
@@ -33,6 +34,10 @@ export const IPC = {
   controlChanged: 'control:changed',
   /** Renderer → main, fire-and-forget. One press-log line (src/core/press-log.ts). */
   pressLog: 'press-log:append',
+  /** Voice-follow: renderer → main mic audio (send), control (invoke), main → renderer events. */
+  voicePcm: 'voice:pcm',
+  voiceControl: 'voice:control',
+  voiceEvent: 'voice:event',
 } as const;
 
 export interface AppInfo {
@@ -74,6 +79,11 @@ export interface AppytronApi {
   getControlStatus(): Promise<ControlStatus>;
   /** Append to the press log. Never rejects, never blocks. */
   logPress(input: PressInput): void;
+  /** Voice-follow (off by default). */
+  voiceControl(command: VoiceControl): Promise<{ ok: boolean; error?: string }>;
+  /** Mono 16 kHz s16le PCM from the mic. Fire-and-forget. */
+  sendVoicePcm(pcm: ArrayBuffer): void;
+  onVoiceEvent(listener: (event: VoiceEvent) => void): () => void;
   /** Subscribe to store changes. Returns an unsubscribe function. */
   onControlChanged(listener: (event: ControlChanged) => void): () => void;
 }

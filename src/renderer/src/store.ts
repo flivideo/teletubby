@@ -200,6 +200,8 @@ interface PrompterState {
   refresh: (set: ScriptSet) => void;
   stepNext: () => void;
   stepPrev: () => void;
+  /** Voice-follow: move forward to a paragraph. Returns whether the prompter moved. */
+  voiceAdvance: (paragraphId: string) => boolean;
   selectScript: (scriptId: string) => void;
   goToNextScript: () => void;
   goToPrevScript: () => void;
@@ -640,6 +642,21 @@ export const useProm = create<PrompterState>((set, get) => ({
     }
     markPress('step');
     set({ step: target });
+  },
+
+  /**
+   * Voice-follow moved the talent forward to this paragraph. Forward only, and logged as `voice`
+   * so the press log stays David's own presses. Returns whether the prompter moved.
+   */
+  voiceAdvance: (paragraphId) => {
+    const state = get();
+    const transcript = currentTranscript(state);
+    if (!transcript) return false;
+    const target = stepAtParagraph(transcript, activeTriggers(state), paragraphId);
+    if (target <= state.step) return false;
+    markPress('voice');
+    set({ step: target });
+    return true;
   },
 
   stepPrev: () => {

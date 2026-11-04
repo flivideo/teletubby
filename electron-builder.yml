@@ -11,6 +11,9 @@ files:
   - '!{vitest.config.ts,tailwind.config.js,postcss.config.js}'
   - '!{.prettierrc,.prettierignore,.editorconfig,.gitignore}'
 mac:
+  extendInfo:
+    NSMicrophoneUsageDescription: Teletubby listens while Voice follow is on, to move the prompter as you read.
+    NSSpeechRecognitionUsageDescription: Teletubby uses speech recognition to follow where you are in the script.
   target:
     - target: dmg
       arch: [arm64]

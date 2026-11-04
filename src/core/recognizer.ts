@@ -19,3 +19,16 @@ export interface Recognizer {
   /** Real-time simulation over a mono 16 kHz WAV: events in arrival order. */
   run(wavPath: string): Promise<RecognizerEvent[]>
 }
+
+/**
+ * Live (streaming) shape used by the app. Audio is mono 16 kHz signed 16-bit PCM pushed as it is
+ * captured; `onEvent` fires with the recogniser's current text. `reset()` forgets all audio so far
+ * (a manual re-anchor: only speech after it is relevant). Implementations never throw from `push`.
+ */
+export interface LiveRecognizer {
+  readonly name: string
+  start(onEvent: (e: RecognizerEvent) => void, onFail: (reason: string) => void): void
+  push(pcm: Uint8Array): void
+  reset(): void
+  stop(): void
+}

@@ -1,4 +1,4 @@
-import { app, ipcMain, screen, type BrowserWindow } from 'electron';
+import { app, ipcMain, screen, systemPreferences, type BrowserWindow } from 'electron';
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -14,6 +14,11 @@ import { IPC, type AppInfo, type ControlStatus, type InvokePayload } from '@shar
 import type { InvokeResult } from '@shared/capabilities';
 import { KYBERNESIS_PHASE_1, TALENTS } from '@shared/script-set';
 import type { PressInput } from '@shared/press';
+import type { VoiceControl } from '@shared/voice';
+import { VoiceSession } from './voice/voice-session.js';
+import { GroqLive } from './voice/groq-live.js';
+import { AppleLive } from './voice/apple-live.js';
+import { loadGroqKey } from './voice/secrets.js';
 import { PressLog } from '../core/press-log.js';
 import { projectDirOf } from '../core/open-context.js';
 import { FileRepository, createCore, seed, type Core, type LifecycleHooks } from '../core/index.js';
@@ -23,6 +28,7 @@ import { showPrompter } from './show-window.js';
 import type { WindowManager } from './window-manager.js';
 
 let core: Core | null = null;
+let windowsRef: WindowManager | null = null;
 let control: ControlServerHandle | null = null;
 let pressLogDir: () => string | null = () => null;
 const pressLog = new PressLog({
@@ -178,6 +184,42 @@ const desktop = createConsole({
       pressLog.record(input as PressInput);
     });
 
+    // Voice-follow: mic PCM in from the renderer, recogniser text back out. OFF until the renderer
+    // asks. Groq is the working primary; Apple on-device is the fallback behind the same interface.
+    const helper = join(app.getAppPath(), 'native', 'apple-stt', 'apple-stt');
+    const voice = new VoiceSession({
+      engines: [
+        () => {
+          const key = loadGroqKey();
+          return key ? new GroqLive({ key }) : null;
+        },
+        () => (AppleLive.available(helper) ? new AppleLive(helper) : null),
+      ],
+      emit: (event) => {
+        for (const win of windowsRef?.all() ?? [])
+          if (!win.isDestroyed()) win.webContents.send(IPC.voiceEvent, event);
+      },
+    });
+    ipcMain.on(IPC.voicePcm, (_event, pcm: unknown) => {
+      if (pcm instanceof ArrayBuffer) voice.push(new Uint8Array(pcm));
+      else if (ArrayBuffer.isView(pcm)) voice.push(new Uint8Array(pcm.buffer, pcm.byteOffset, pcm.byteLength));
+    });
+    ipc.register<VoiceControl, { ok: boolean; error?: string }>({
+      channel: IPC.voiceControl,
+      handle: async (command) => {
+        if (command.action === 'start') {
+          if (process.platform === 'darwin') {
+            const granted = await systemPreferences.askForMediaAccess('microphone');
+            if (!granted) return { ok: false, error: 'microphone permission denied' };
+          }
+          voice.start();
+        } else if (command.action === 'reset') voice.reset();
+        else voice.stop();
+        return { ok: true };
+      },
+    });
+    app.on('will-quit', () => voice.stop());
+
     logger.info('capability surface registered on the IPC bridge');
   },
 
@@ -188,6 +230,7 @@ const desktop = createConsole({
     // 7111 again — which fails, so `control` went null while the OLD server
     // kept answering agents from the OLD core: the window and the agent on
     // two different cores (found 2026-09-22).
+    windowsRef = windows;
     if (core) {
       openPrompter(windows);
       logger.info('prompter window reopened');

@@ -10,8 +10,8 @@ import { paragraphsOf, type Transcript } from '@shared/domain';
 import type { PressInput, PressKind } from '@shared/press';
 import { activeTriggers, currentTranscript, useProm } from './store';
 
-let pending: 'step' | 'back' | null = null;
-export const markPress = (kind: 'step' | 'back'): void => {
+let pending: 'step' | 'back' | 'voice' | null = null;
+export const markPress = (kind: 'step' | 'back' | 'voice'): void => {
   pending = kind;
 };
 

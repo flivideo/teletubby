@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 
 const NAME = 'Teletubby';
 const BUNDLE_ID = 'com.appydave.teletubby.dev';
-const FORMAT = 1;
+const FORMAT = 2; // 2: microphone + speech usage strings (voice-follow)
 
 function main() {
   if (process.platform !== 'darwin') return '';
@@ -41,7 +41,7 @@ function main() {
   mkdirSync(dir, { recursive: true });
   execFileSync('ditto', [bare, launcher]);
   const plist = join(launcher, 'Contents', 'Info.plist');
-  for (const [key, value] of [['CFBundleName', NAME], ['CFBundleDisplayName', NAME], ['CFBundleIdentifier', BUNDLE_ID]]) {
+  for (const [key, value] of [['CFBundleName', NAME], ['CFBundleDisplayName', NAME], ['CFBundleIdentifier', BUNDLE_ID], ['NSMicrophoneUsageDescription', 'Teletubby listens while Voice follow is on, to move the prompter as you read.'], ['NSSpeechRecognitionUsageDescription', 'Teletubby uses speech recognition to follow where you are in the script.']]) {
     execFileSync('plutil', ['-replace', key, '-string', value, plist]);
   }
   copyFileSync(icon, join(launcher, 'Contents', 'Resources', 'electron.icns'));

@@ -31,7 +31,7 @@ export interface PressLogOptions {
   clock?: () => number;
 }
 
-const KINDS = new Set<string>(['step', 'back', 'jump', 'start', 'stop']);
+const KINDS = new Set<string>(['step', 'back', 'jump', 'start', 'stop', 'voice']);
 
 /** Filesystem-safe ISO stamp: `2026-11-04T10-20-31.123Z`. */
 const stamp = (d: Date): string => d.toISOString().replace(/:/g, '-');

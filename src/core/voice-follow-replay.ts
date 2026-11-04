@@ -154,7 +154,7 @@ export function pressTimesFromLog(
   const order = opts.paragraphIds ? [...opts.paragraphIds] : [];
   const out: Array<number | null> = Array.from({ length: paragraphCount }, () => null);
   for (const e of events) {
-    if (e.kind === 'back' || e.kind === 'stop' || !e.paragraphId) continue;
+    if (e.kind === 'back' || e.kind === 'stop' || e.kind === 'voice' || !e.paragraphId) continue;
     let idx = order.indexOf(e.paragraphId);
     if (idx < 0 && !opts.paragraphIds) {
       order.push(e.paragraphId);
