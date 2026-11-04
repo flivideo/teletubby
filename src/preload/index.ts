@@ -15,6 +15,13 @@ const api: AppytronApi = {
   // principal. Adding a feature never widens this surface.
   invoke: <T>(payload: InvokePayload): Promise<InvokeResult<T>> =>
     ipcRenderer.invoke(IPC.controlInvoke, payload),
+  logPress: (input) => {
+    try {
+      ipcRenderer.send(IPC.pressLog, input);
+    } catch {
+      /* the press log must never reach the talent */
+    }
+  },
   getControlStatus: (): Promise<ControlStatus> => ipcRenderer.invoke(IPC.controlStatus),
   onControlChanged: (listener) => {
     // The listener never sees the raw IpcRendererEvent — handing the renderer

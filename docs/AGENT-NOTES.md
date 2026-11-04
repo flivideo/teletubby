@@ -35,6 +35,16 @@ launching, the capability core, the open contract, the styling rules and the got
   `src/core/input-shapes.ts` is listed under "Declared but not read". Get verb inputs from
   `teletubby capabilities`, which is generated from `INPUT`.
 
+- **Press log (always on).** Every position change while presenting (`step` ↓, `back` ↑, `jump` = any other move,
+  plus `start` / `stop` per script) is appended as one JSON line by `src/core/press-log.ts`. Renderer hook:
+  `src/renderer/src/press-log.ts` → IPC `press-log:append` → main stamps `t` (ISO ms) + `mono`. Files:
+  `<project>/teletubby/press-logs/<scriptId>-<ISO>.jsonl` (the open context's project dir, beside `fli.tubby.json`),
+  or `<userData>/press-logs/` with no context. One file per `start`…`stop`; append-only; a write failure is logged
+  to the console, never shown. `scripts/voice-follow-replay.mjs <transcript> <script> --press-log <file> [--take-start <ISO>]`
+  compares the aligner with those presses (offset = aligner − press; negative = aligner early). Without `--take-start`
+  the log's first `start` is taken as the recording's t=0 — only right if you hit record then. Fixture:
+  `test/fixtures/press-log/`.
+
 ## Pitfalls
 
 - **Main-process changes need a real restart.** HMR only reaches the renderer. The window-state

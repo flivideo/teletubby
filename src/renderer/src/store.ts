@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { markPress } from './press-log';
 import {
   TRIGGER_STYLES,
   findScript,
@@ -637,12 +638,16 @@ export const useProm = create<PrompterState>((set, get) => ({
       if (activeTriggers(state).length > 0) set({ nudge: state.nudge + 1 });
       return;
     }
+    markPress('step');
     set({ step: target });
   },
 
   stepPrev: () => {
     const target = adjacentUnitStep(get(), -1);
-    if (target !== null) set({ step: target });
+    if (target !== null) {
+      markPress('back');
+      set({ step: target });
+    }
   },
 
   /**

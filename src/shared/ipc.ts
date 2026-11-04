@@ -17,6 +17,7 @@
  */
 
 import type { InvokeResult } from './capabilities.js';
+import type { PressInput } from './press.js';
 
 export const IPC = {
   appInfo: 'app:info',
@@ -30,6 +31,8 @@ export const IPC = {
    * everything else is request/response.
    */
   controlChanged: 'control:changed',
+  /** Renderer → main, fire-and-forget. One press-log line (src/core/press-log.ts). */
+  pressLog: 'press-log:append',
 } as const;
 
 export interface AppInfo {
@@ -69,6 +72,8 @@ export interface AppytronApi {
   getAppInfo(): Promise<AppInfo>;
   invoke<T = unknown>(payload: InvokePayload): Promise<InvokeResult<T>>;
   getControlStatus(): Promise<ControlStatus>;
+  /** Append to the press log. Never rejects, never blocks. */
+  logPress(input: PressInput): void;
   /** Subscribe to store changes. Returns an unsubscribe function. */
   onControlChanged(listener: (event: ControlChanged) => void): () => void;
 }

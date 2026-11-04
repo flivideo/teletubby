@@ -1,4 +1,4 @@
-import { app, screen, type BrowserWindow } from 'electron';
+import { app, ipcMain, screen, type BrowserWindow } from 'electron';
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -13,6 +13,9 @@ import {
 import { IPC, type AppInfo, type ControlStatus, type InvokePayload } from '@shared/ipc';
 import type { InvokeResult } from '@shared/capabilities';
 import { KYBERNESIS_PHASE_1, TALENTS } from '@shared/script-set';
+import type { PressInput } from '@shared/press';
+import { PressLog } from '../core/press-log.js';
+import { projectDirOf } from '../core/open-context.js';
 import { FileRepository, createCore, seed, type Core, type LifecycleHooks } from '../core/index.js';
 import { startControlServer, type ControlServerHandle } from './control-server.js';
 import { createConsole } from './create-console.js';
@@ -21,6 +24,11 @@ import type { WindowManager } from './window-manager.js';
 
 let core: Core | null = null;
 let control: ControlServerHandle | null = null;
+let pressLogDir: () => string | null = () => null;
+const pressLog = new PressLog({
+  dir: () => pressLogDir(),
+  onError: (error) => console.error('[press-log] write failed', error),
+});
 
 /**
  * The prompter reopens where David left it — same monitor, position and size —
@@ -164,6 +172,12 @@ const desktop = createConsole({
       }),
     });
 
+    // Press log: fire-and-forget from the renderer. Lands in the open project's
+    // `teletubby/press-logs/`, else `userData/press-logs/`. Failures are logged, never shown.
+    ipcMain.on(IPC.pressLog, (_event, input: unknown) => {
+      pressLog.record(input as PressInput);
+    });
+
     logger.info('capability surface registered on the IPC bridge');
   },
 
@@ -181,6 +195,10 @@ const desktop = createConsole({
     }
 
     const userData = app.getPath('userData');
+    pressLogDir = () => {
+      const ctx = core?.openContext.get().context;
+      return ctx ? join(projectDirOf(ctx), 'teletubby', 'press-logs') : join(userData, 'press-logs');
+    };
 
     // The generated set is the SEED, not the live copy. Seeding never
     // overwrites — an agent's trigger set written yesterday survives today's

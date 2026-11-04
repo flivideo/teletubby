@@ -1,0 +1,6 @@
+{"t": "2026-11-04T03:20:00.000Z", "mono": 0, "kind": "start", "scriptId": "fixture/01", "scriptVersion": "deadbeef", "paragraphId": "p1"}
+{"t": "2026-11-04T03:20:04.300Z", "mono": 4300, "kind": "step", "scriptId": "fixture/01", "scriptVersion": "deadbeef", "paragraphId": "p2"}
+{"t": "2026-11-04T03:20:05.000Z", "mono": 5000, "kind": "back", "scriptId": "fixture/01", "scriptVersion": "deadbeef", "paragraphId": "p1"}
+{"t": "2026-11-04T03:20:06.000Z", "mono": 6000, "kind": "step", "scriptId": "fixture/01", "scriptVersion": "deadbeef", "paragraphId": "p2"}
+{"t": "2026-11-04T03:20:08.100Z", "mono": 8100, "kind": "step", "scriptId": "fixture/01", "scriptVersion": "deadbeef", "paragraphId": "p3"}
+{"t": "2026-11-04T03:20:12.000Z", "mono": 12000, "kind": "stop", "scriptId": "fixture/01", "scriptVersion": "deadbeef"}
