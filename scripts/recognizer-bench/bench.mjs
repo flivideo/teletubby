@@ -1,26 +1,25 @@
 #!/usr/bin/env node
 // Usage: npx vite-node scripts/recognizer-bench/bench.mjs <groq|apple> <take.wav> <flitools-transcript.json> [more pairs...]
-// Set -a; . ~/.secrets for Groq. Apple needs native/apple-stt/build.sh and a one-time Speech permission click.
+// Set -a; . ~/.secrets for Groq. Apple needs native/apple-stt/build.sh (builds TeletubbySpeech.app) and a one-time Speech permission click.
 // Per take: latency (spoken word -> available), word recovery vs the FliTools transcript, and steps through the aligner
 // (script = the reference transcript's segments, so this isolates the RECOGNISER's effect on the aligner).
 import { readFileSync } from 'node:fs'
-import { spawn } from 'node:child_process'
+import { bundleAvailable, launchAppleHelper } from '../../src/main/voice/apple-bundle.ts'
 import { createFollower, fuzzyEqual, heardWords } from '../../src/core/voice-follow.ts'
 import { groq } from './groq.mjs'
 
 const apple = {
   name: 'apple on-device',
+  // runs TeletubbySpeech.app via LaunchServices (its own responsible process => it can ask for Speech permission)
   run: (wav) => new Promise((resolve, reject) => {
-    const p = spawn(new URL('../../native/apple-stt/apple-stt', import.meta.url).pathname, [wav])
-    let out = ''
-    p.stdout.on('data', (d) => (out += d))
-    p.on('close', () => {
-      const lines = out.split('\n').filter(Boolean).map((l) => JSON.parse(l))
-      const err = lines.find((l) => l.error)
-      if (err) return reject(new Error(`apple: ${JSON.stringify(err)}`))
-      resolve(lines.filter((l) => l.text !== undefined).map((l) => ({ atMs: l.atMs, windowStartMs: 0, text: l.text })))
-    })
-    p.on('error', reject)
+    const bundle = new URL('../../native/apple-stt/build/TeletubbySpeech.app', import.meta.url).pathname
+    if (!bundleAvailable(bundle)) return reject(new Error('apple: bundle missing, run native/apple-stt/build.sh'))
+    const events = []
+    let err = null
+    launchAppleHelper(bundle, { wav }, (l) => {
+      if (l.kind === 'partial') events.push({ atMs: l.atMs, windowStartMs: 0, text: l.text })
+      else if (l.kind === 'error') err = l.message
+    }, (e) => (err || e ? reject(new Error(`apple: ${err ?? e.message}`)) : resolve(events)))
   }),
 }
 const [engineName, ...rest] = process.argv.slice(2)

@@ -186,7 +186,7 @@ const desktop = createConsole({
 
     // Voice-follow: mic PCM in from the renderer, recogniser text back out. OFF until the renderer
     // asks. Groq is the working primary; Apple on-device is the fallback behind the same interface.
-    const helper = join(app.getAppPath(), 'native', 'apple-stt', 'apple-stt');
+    const helper = join(app.getAppPath(), 'native', 'apple-stt', 'build', 'TeletubbySpeech.app');
     const voice = new VoiceSession({
       engines: [
         () => {
