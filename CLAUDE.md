@@ -397,6 +397,16 @@ because there is nothing to scope to. Landing the right set is FliStudio's door,
 ⚠️ Teletubby still never writes the words or the triggers. The chat that writes them is L19, later.
 Full ruling: [docs/kdd/decisions/adr-004-…](docs/kdd/decisions/adr-004-scripts-on-demand-one-project-file-many-named-scripts.md).
 
+### Voice-follow — word highlight, Apple primary (parity round, 2026-11-04)
+
+With Voice on (`V`, off by default) the paragraph zone shows **where in the paragraph** the talent is: said words fade,
+the one next word gets a quiet underline, `[cues]` are italic and dim. States snap (no colour animation); only the
+in-beat scroll eases, once per line, forward only unless a press re-anchored. The word state is pure
+(`src/core/voice-highlight.ts`), driven by the driver's `{ paragraphId, wordInParagraph }`, and it tints only when that
+paragraph is the one on screen. Voice off renders exactly as before. **Apple (TeletubbySpeech.app) is the primary
+engine, Groq the throttled fallback**; a press re-anchors by trimming the helper's text, never by relaunching it.
+Checklist and reasons: [docs/voice-follow-parity-2026-11-04.md](docs/voice-follow-parity-2026-11-04.md).
+
 ## The capability core — read this before adding any feature
 
 **One API, N clients, none privileged.** Every verb lives in `src/shared/capabilities.ts` and
