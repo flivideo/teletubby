@@ -19,6 +19,8 @@ import { VoiceSession } from './voice/voice-session.js';
 import { GroqLive } from './voice/groq-live.js';
 import { AppleLive } from './voice/apple-live.js';
 import { loadGroqKey } from './voice/secrets.js';
+import { realSelftestDeps } from './voice/selftest-deps.js';
+import { runVoiceSelftest } from '../core/voice-selftest.js';
 import { createVoiceControl, type VoiceControlResult } from './voice/voice-control.js';
 import { PressLog } from '../core/press-log.js';
 import { projectDirOf } from '../core/open-context.js';
@@ -94,6 +96,12 @@ function lifecycleHooks(windows: WindowManager): LifecycleHooks {
           app.focus({ steal: true });
         },
       }),
+    voiceSelftest: () =>
+      runVoiceSelftest(
+        realSelftestDeps(app.getAppPath(), 'app', () =>
+          process.platform === 'darwin' ? systemPreferences.getMediaAccessStatus('microphone') : 'granted',
+        ),
+      ),
     quit: () => app.quit(),
     restart: (open) => {
       const root = app.getAppPath();

@@ -137,3 +137,24 @@ export class GroqLive implements LiveRecognizer {
     }
   }
 }
+
+/** One-shot Groq transcription of a WAV (the self-test's round trip). Never logs the key. */
+export async function groqTranscribe(
+  key: string,
+  wav: Uint8Array,
+  fetchImpl: typeof fetch = fetch,
+): Promise<{ status: number; text: string; body?: string }> {
+  const fd = new FormData()
+  fd.set('model', 'whisper-large-v3-turbo')
+  fd.set('language', 'en')
+  fd.set('response_format', 'json')
+  fd.set('file', new Blob([wav as BlobPart], { type: 'audio/wav' }), 'sample.wav')
+  const r = await fetchImpl('https://api.groq.com/openai/v1/audio/transcriptions', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${key}` },
+    body: fd,
+    signal: AbortSignal.timeout(15_000),
+  })
+  if (!r.ok) return { status: r.status, text: '', body: (await r.text().catch(() => '')).slice(0, 200) }
+  return { status: r.status, text: (((await r.json()) as { text?: string }).text ?? '').trim() }
+}

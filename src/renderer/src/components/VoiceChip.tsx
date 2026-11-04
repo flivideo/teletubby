@@ -30,7 +30,7 @@ export function VoiceChip(): JSX.Element {
         // An error is ALWAYS readable on the chip, even after it flipped back to off — a silent
         // failure here is what made "nothing happens" undiagnosable (2026-11-04).
         <span
-          className="max-w-[28rem] truncate font-mono text-[0.65rem] text-red-500"
+          className="max-w-[28rem] truncate font-mono text-[0.65rem] font-semibold text-ink"
           title={note}
           data-testid="voice-state"
         >

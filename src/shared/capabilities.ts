@@ -357,6 +357,14 @@ export const CAPABILITIES: readonly CapabilityMeta[] = [
    * restart), bound here. The reply goes out BEFORE the process does. Quit
    * and restart refuse `app_busy` while the talent is on the prompter;
    * `force` is human-only (fli-core's fence, applied in core.invoke). */
+  /* Voice-follow diagnosis. Changes no data (one Groq call on a bundled 2 s sample, the Apple
+   * helper on the same sample, the aligner in memory), so it is a query; the mic status is read
+   * in the app's own process, which is why this lives behind the door and not only in a script. */
+  query(
+    'voice_selftest',
+    'Check the voice-follow chain: Groq key, microphone permission, a Groq round trip on a bundled 2 s sample, the Apple fallback helper, and the aligner on a 2-paragraph script. PASS/FAIL per check, a plain-English fix on every FAIL.',
+    { failureModes: ['unavailable'] },
+  ),
   query(
     'system_status',
     'Is the app up, which run is it, what project is open, and is the talent mid-session (busy).',

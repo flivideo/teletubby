@@ -1086,6 +1086,13 @@ export function createHandlers(): Record<string, Handler> {
     };
   };
 
+  handlers.voice_selftest = async (input, context) => {
+    parse(INPUT.voice_selftest, input);
+    const host = hostOf(context);
+    if (!host.voiceSelftest) fail('unavailable', 'this host cannot run the voice self-test');
+    return host.voiceSelftest();
+  };
+
   handlers.system_show = async (input, context) => {
     parse(INPUT.system_show, input);
     const host = hostOf(context);

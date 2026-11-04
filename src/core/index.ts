@@ -19,6 +19,7 @@
  * environment with a MemoryRepository.
  */
 
+import type { SelftestReport } from './voice-selftest.js';
 import { authorize, principalKind } from '@flivideo/core';
 import type { CapabilityMeta, InvokeResult, Principal } from '@shared/capabilities';
 import { ActiveContextHolder } from './active-context.js';
@@ -81,6 +82,8 @@ export interface LifecycleHooks {
    * `unavailable`.
    */
   show?(): Promise<WindowShown>;
+  /** Run the voice self-test in the host process (real mic status). Absent → `unavailable`. */
+  voiceSelftest?(): Promise<SelftestReport>;
   /** Called after the reply is sent. */
   quit(): void;
   /** Called after the reply is sent, with the context to reopen on. */
