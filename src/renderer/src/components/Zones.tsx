@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { highlightTokens, type HighlightToken } from '../../../core/voice-highlight';
 import type { MajorTopic, MinorTopic, Paragraph, Transcript } from '@shared/domain';
 import { paragraphsOf } from '@shared/domain';
 import { ZONE_LABEL, type Rank, type RecordingZone } from '../store';
@@ -256,15 +257,155 @@ export function TriggerZone({
  * Paragraph — the transcript for the beat you are on, and only that
  * ------------------------------------------------------------------ */
 
+/**
+ * Voice-follow's view of the paragraph on screen. `null` = voice off: the zone renders exactly
+ * as it always has. `word` is the aligner's next-unsaid word in THIS paragraph, or null when the
+ * cursor is somewhere else (e.g. driving Major, a step can span paragraphs and the one shown is
+ * not the one being read) — then nothing is tinted, only the cues are dimmed.
+ */
+export interface ParagraphVoice {
+  word: number | null;
+  /** Bumps on a manual re-anchor: the in-beat scroll may then go back. */
+  anchorSeq: number;
+}
+
+/** Said words recede; the one current word gets a quiet underline in the driven colour. States snap. */
+const WORD_CLASS = {
+  said: 'opacity-40',
+  current: 'underline decoration-ink decoration-2 underline-offset-4',
+  unsaid: '',
+} as const;
+
+function VoiceWords({
+  tokens,
+  currentRef,
+}: {
+  tokens: HighlightToken[];
+  currentRef: React.MutableRefObject<HTMLSpanElement | null>;
+}): JSX.Element {
+  return (
+    <>
+      {tokens.map((t, i) => {
+        if (t.kind === 'gap') return <span key={i}>{t.text}</span>;
+        // A direction, not a word to say: italic, dim, always — and never current.
+        if (t.kind === 'cue')
+          return (
+            <span key={i} className="italic text-muted opacity-60" data-cue="">
+              {t.text}
+            </span>
+          );
+        return (
+          <span key={i} className={t.state === 'said' ? WORD_CLASS.said : undefined} data-word={t.state}>
+            {t.lead}
+            <span
+              ref={t.state === 'current' ? currentRef : undefined}
+              className={t.state === 'current' ? WORD_CLASS.current : undefined}
+            >
+              {t.core}
+            </span>
+            {t.trail}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
+/** ~0.5 s ease for the in-beat scroll — the only thing on this zone that animates. */
+const SCROLL_MS = 500;
+const ease = (t: number): number => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+
+/**
+ * Keep the current word's LINE in view when the paragraph is taller than the lane: once per new
+ * line (never per word), forward only unless a manual press re-anchored, eased, and only the
+ * lane's scrollTop — never the lane weights. Seats the line at the reading line (rule 7).
+ */
+function useWordLine(
+  voice: ParagraphVoice | null,
+  paragraphId: string | undefined,
+  beatRef: React.RefObject<HTMLDivElement>,
+  currentRef: React.MutableRefObject<HTMLSpanElement | null>,
+): void {
+  const on = voice !== null;
+  const word = voice?.word ?? null;
+  const anchorSeq = voice?.anchorSeq ?? 0;
+  const lastLine = useRef<number | null>(null);
+  const seq = useRef<number | null>(null);
+  const shownId = useRef<string | undefined>(undefined);
+  const anim = useRef<number | null>(null);
+
+  // A new beat on stage starts at its top (voice on only — voice off is untouched).
+  useLayoutEffect(() => {
+    if (!on || shownId.current === paragraphId) return;
+    shownId.current = paragraphId;
+    lastLine.current = null;
+    const scroller = beatRef.current?.closest('.tt-lane-scroll') as HTMLElement | null;
+    if (scroller) scroller.scrollTop = 0;
+  }, [on, paragraphId, beatRef]);
+
+  useEffect(() => {
+    if (!on) return;
+    const beat = beatRef.current;
+    const word = currentRef.current;
+    const scroller = beat?.closest('.tt-lane-scroll') as HTMLElement | null;
+    const reanchored = seq.current !== null && seq.current !== anchorSeq;
+    seq.current = anchorSeq;
+    if (reanchored) lastLine.current = null;
+    if (!beat || !scroller) return;
+    // The line to hold: the current word's, or the top of the beat after a re-anchor with no word.
+    const lineTop = word
+      ? word.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop
+      : null;
+    if (lineTop === null) return;
+    const prev = lastLine.current;
+    if (prev !== null && Math.abs(lineTop - prev) < 2) return; // same line: the page stays still
+    if (prev !== null && lineTop < prev && !reanchored) return; // forward only
+    lastLine.current = lineTop;
+    if (beat.offsetHeight <= scroller.clientHeight) return; // it fits: nothing to keep in view
+    const line = parseFloat(getComputedStyle(scroller).scrollPaddingTop) || 0;
+    const max = scroller.scrollHeight - scroller.clientHeight;
+    const target = Math.max(0, Math.min(max, lineTop - line));
+    const from = scroller.scrollTop;
+    if (target === from || (target < from && !reanchored)) return;
+    if (anim.current !== null) cancelAnimationFrame(anim.current);
+    const t0 = performance.now();
+    const step = (t: number): void => {
+      const k = Math.min(1, (t - t0) / SCROLL_MS);
+      scroller.scrollTop = from + (target - from) * ease(k);
+      anim.current = k < 1 ? requestAnimationFrame(step) : null;
+    };
+    anim.current = requestAnimationFrame(step);
+  }, [on, word, anchorSeq, paragraphId, beatRef, currentRef]);
+
+  useEffect(
+    () => () => {
+      if (anim.current !== null) cancelAnimationFrame(anim.current);
+    },
+    [],
+  );
+}
+
 export function ParagraphZone({
   paragraph,
   next,
   rank,
+  voice = null,
 }: {
   paragraph: Paragraph | undefined;
   next: Paragraph | undefined;
   rank: Rank;
+  voice?: ParagraphVoice | null;
 }): JSX.Element {
+  const beatRef = useRef<HTMLDivElement>(null);
+  const currentRef = useRef<HTMLSpanElement | null>(null);
+  const word = voice?.word ?? null;
+  const tokens = useMemo(
+    () => (voice && paragraph ? highlightTokens(paragraph.text, word) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [voice !== null, paragraph?.text, word],
+  );
+  if (!tokens) currentRef.current = null;
+  useWordLine(voice, paragraph?.id, beatRef, currentRef);
   return (
     <ZoneShell zone="paragraph" rank={rank}>
       {/*
@@ -286,11 +427,14 @@ export function ParagraphZone({
         preset it takes the line box from 45px to 38px, which on an 11-line
         paragraph is 77px off the slab.
       */}
-      <div className={['tt-beat rounded-r px-4 py-1.5', markerBar(rank, true)].join(' ')}>
+      <div ref={beatRef} className={['tt-beat rounded-r px-4 py-1.5', markerBar(rank, true)].join(' ')}>
         {/* One paragraph, not a scrolling wall. This was the configuration that
             actually worked on camera — Jan, watching David's eyes: "the eyes is
-            fixed just on the camera" (B437). */}
-        <p className="font-body text-script leading-snug text-ink">{paragraph?.text ?? '—'}</p>
+            fixed just on the camera" (B437). With voice on, the same text as
+            word spans: said recedes, the one current word is underlined. */}
+        <p className="font-body text-script leading-snug text-ink">
+          {tokens ? <VoiceWords tokens={tokens} currentRef={currentRef} /> : (paragraph?.text ?? '—')}
+        </p>
       </div>
 
       {/*

@@ -5,7 +5,7 @@
  * forget the audio so far, so a manual press always wins.
  */
 import { create } from 'zustand';
-import { createVoiceDriver, type VoiceDriver } from '../../core/voice-driver';
+import { createVoiceDriver, type VoiceCursor, type VoiceDriver } from '../../core/voice-driver';
 import { paragraphsOf } from '@shared/domain';
 import type { VoiceEngine, VoiceEvent } from '@shared/voice';
 import { activeTriggers, currentTranscript, useProm } from './store';
@@ -17,6 +17,13 @@ interface VoiceStore {
   state: VoiceState;
   engine: VoiceEngine | null;
   note: string | null;
+  /**
+   * The aligner's word cursor (paragraph + index of the next unsaid spoken word), or null when
+   * voice is off. ParagraphZone tints by it — only when it is in the paragraph on screen.
+   */
+  cursor: VoiceCursor | null;
+  /** Bumps on every re-anchor (a manual press): the in-beat scroll may then go back. */
+  anchorSeq: number;
   /** `source` is only for the log: which hand flipped it (the V key or the chip). */
   toggle: (source?: 'key' | 'chip') => void;
 }
@@ -29,6 +36,8 @@ export const useVoice = create<VoiceStore>((set, get) => ({
   state: 'off',
   engine: null,
   note: null,
+  cursor: null,
+  anchorSeq: 0,
   toggle: (source) => {
     const on = !get().on;
     vlog('toggle', { source: source ?? 'unknown', on });
@@ -44,6 +53,20 @@ function vlog(event: string, detail?: Record<string, unknown>): void {
     /* ignore */
   }
 }
+
+const sameCursor = (a: VoiceCursor | null, b: VoiceCursor | null): boolean =>
+  a === b || (!!a && !!b && a.paragraphId === b.paragraphId && a.wordInParagraph === b.wordInParagraph);
+
+/** Publish the cursor only when it moved — every partial would otherwise re-render the zone. */
+function publishCursor(cursor: VoiceCursor | null, reanchored = false): void {
+  const v = useVoice.getState();
+  if (!reanchored && sameCursor(v.cursor, cursor)) return;
+  useVoice.setState({ cursor, ...(reanchored ? { anchorSeq: v.anchorSeq + 1 } : {}) });
+}
+
+/** Recogniser vocabulary hint: the nearest ≤50 upcoming 5+-letter words. */
+const HINT_WORDS = 50;
+const HINT_MIN_LETTERS = 5;
 
 const describeError = (e: unknown): string =>
   e instanceof Error ? (e.name && e.name !== 'Error' ? `${e.name}: ${e.message}` : e.message) : String(e);
@@ -117,9 +140,20 @@ export function attachVoiceFollow(): () => void {
         paragraphAtStep(),
       );
       driverKey = key;
+      publishCursor(driver.cursor, true);
+      sendHints(driver);
     }
     return driver;
   };
+
+  // Hints follow the cursor: sent on every (re)build and every paragraph the voice moves into,
+  // so the file the Apple helper re-reads at each recognition-task start is always near.
+  let hintsAt: string | null = null;
+  function sendHints(d: VoiceDriver): void {
+    if (!useVoice.getState().on) return;
+    hintsAt = d.paragraphId;
+    void api.voiceControl({ action: 'hints', words: d.hints(HINT_WORDS, HINT_MIN_LETTERS) });
+  }
 
   const setStatus = (state: VoiceState, engine?: VoiceEngine | null, note?: string | null): void =>
     useVoice.setState((v) => ({ state, engine: engine === undefined ? v.engine : engine, note: note ?? null }));
@@ -143,6 +177,8 @@ export function attachVoiceFollow(): () => void {
       return;
     }
     const r = d.hear(event.text);
+    publishCursor(r.cursor);
+    if (r.paragraphId !== hintsAt) sendHints(d);
     let moved = false;
     if (r.advanced && r.paragraphId) {
       selfMove = true;
@@ -158,6 +194,7 @@ export function attachVoiceFollow(): () => void {
       chars: event.text.length,
       reason: r.reason,
       paragraphId: r.paragraphId,
+      word: r.cursor?.wordInParagraph ?? null,
       advanced: r.advanced,
       moved,
     });
@@ -203,6 +240,7 @@ export function attachVoiceFollow(): () => void {
       mic?.stop();
       mic = null;
       driver = null;
+      useVoice.setState({ cursor: null });
       void api.voiceControl({ action: 'stop' });
       // Keep a start error visible after the flip to off; a deliberate off clears it.
       if (startFailed) startFailed = false;

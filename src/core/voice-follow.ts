@@ -135,6 +135,11 @@ export function heardWords(text: string): string[] {
   return wordsOf(chars, []).map((w) => w.word);
 }
 
+/** Bracketed cue spans `[...]` of a text, as [start, end) code-point ranges. */
+export function cueSpans(text: string): Array<[number, number]> {
+  return findCues(Array.from(text));
+}
+
 /** The script's spoken words with code-point spans and paragraph. Cue spans produce none. */
 export function scriptWords(text: string): ScriptWord[] {
   const chars = Array.from(text);

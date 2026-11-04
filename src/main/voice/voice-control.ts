@@ -1,4 +1,4 @@
-import type { VoiceControl, VoiceLog } from '../../shared/voice.js'
+import { cleanHints, type VoiceControl, type VoiceLog } from '../../shared/voice.js'
 
 /** The OS microphone gate, injectable so the error paths are testable without Electron. */
 export interface MicGate {
@@ -7,7 +7,7 @@ export interface MicGate {
 }
 
 export interface VoiceControlDeps {
-  session: { start(): void; stop(): void; reset(): void }
+  session: { start(): void; stop(): void; reset(): void; hints?(words: string[]): void }
   /** null off macOS: there is no TCC gate to ask. */
   mic: MicGate | null
   log: VoiceLog
@@ -27,7 +27,10 @@ export const MIC_FIX =
 export function createVoiceControl(deps: VoiceControlDeps): (command: VoiceControl) => Promise<VoiceControlResult> {
   const { session, mic, log } = deps
   return async (command) => {
-    log('control.received', { action: command?.action ?? null })
+    log('control.received', {
+      action: command?.action ?? null,
+      ...(command?.action === 'hints' ? { words: Array.isArray(command.words) ? command.words.length : null } : {}),
+    })
     try {
       if (command.action === 'start') {
         if (mic) {
@@ -43,6 +46,7 @@ export function createVoiceControl(deps: VoiceControlDeps): (command: VoiceContr
         }
         session.start()
       } else if (command.action === 'reset') session.reset()
+      else if (command.action === 'hints') session.hints?.(cleanHints(command.words))
       else if (command.action === 'stop') session.stop()
       else {
         log('control.unknown', { command })

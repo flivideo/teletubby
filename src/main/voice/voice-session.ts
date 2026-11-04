@@ -17,6 +17,8 @@ export class VoiceSession {
   private active: LiveRecognizer | null = null
   private index = -1
   private running = false
+  /** Latest vocabulary hint; handed to every engine as it is chosen (a fallback starts primed). */
+  private hintWords: string[] = []
 
   private readonly log: VoiceLog
 
@@ -40,6 +42,7 @@ export class VoiceSession {
   }
 
   private next(why: string): void {
+    const from = this.active?.name ?? null
     this.active?.stop()
     this.active = null
     while (++this.index < this.opts.engines.length) {
@@ -55,7 +58,9 @@ export class VoiceSession {
         continue
       }
       this.active = r
-      this.log('recogniser.chosen', { engine: r.name, index: this.index, why })
+      // Every engine switch is one line with its reason: `from` is null on the first pick.
+      this.log('recogniser.chosen', { engine: r.name, index: this.index, why, from })
+      if (this.hintWords.length) r.hint?.(this.hintWords)
       r.start(
         (e: RecognizerEvent) => {
           if (this.active === r) this.opts.emit({ type: 'text', engine: r.name as VoiceEngine, text: e.text, atMs: e.atMs })
@@ -77,6 +82,11 @@ export class VoiceSession {
 
   push(pcm: Uint8Array): void {
     if (this.running) this.active?.push(pcm)
+  }
+
+  hints(words: string[]): void {
+    this.hintWords = words
+    this.active?.hint?.(words)
   }
 
   reset(): void {

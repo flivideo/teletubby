@@ -1,8 +1,8 @@
 #!/bin/bash
 # Usage: scripts/recognizer-bench/run.sh <groq|apple> [hub-dir]
 # Runs the bake-off over four d01-flivideo-tour takes (read-only copies are converted to temp WAVs).
-# groq: loads GROQ_API_KEY from ~/.secrets. apple: needs native/apple-stt/build.sh first and a one-time
-# "Speech Recognition" Allow click the first time (run it from iTerm2).
+# groq: loads GROQ_API_KEY from ~/.secrets. apple: needs native/apple-stt/build.sh first (builds TeletubbySpeech.app) and a one-time
+# "Speech Recognition" Allow click the first time. The app asks for itself, so any terminal works.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 ENGINE="${1:?groq|apple}"

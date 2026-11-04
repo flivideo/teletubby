@@ -1,9 +1,44 @@
 import type { LiveRecognizer, RecognizerEvent } from '../../core/recognizer.js'
 import { silentVoiceLog, type VoiceLog } from '../../shared/voice.js'
 
-const TICK_MS = 2000
-const WINDOW_MS = 12000
+/**
+ * Groq Developer plan, whisper-large-v3-turbo: 20 req/min and 7,200 audio-seconds/hour, billed at
+ * a 10 s minimum per request. The hourly cap allows 2 audio-s per wall-clock second; at the 10 s
+ * minimum that is one request per 5 s, sustainable indefinitely. A window shorter than 10 s saves
+ * nothing (it is billed as 10), so the window IS the billing minimum.
+ */
+export const TICK_MS = 5000
+export const WINDOW_MS = 10000
+export const HOURLY_AUDIO_SECONDS = 7200
+export const MIN_BILLED_SECONDS = 10
+const HOUR_MS = 3_600_000
 const BYTES_PER_MS = 32 // 16 kHz * 2 bytes
+
+/**
+ * Rolling-hour audio-seconds budget. Each request is charged max(10 s, audio sent); `allow` says
+ * whether one more would stay inside the cap. Pure apart from the clock it is handed.
+ */
+export class AudioBudget {
+  private spent: Array<{ at: number; seconds: number }> = []
+  constructor(private readonly perHour = HOURLY_AUDIO_SECONDS) {}
+
+  static cost(audioMs: number): number {
+    return Math.max(MIN_BILLED_SECONDS, audioMs / 1000)
+  }
+
+  used(now: number): number {
+    while (this.spent.length && this.spent[0]!.at <= now - HOUR_MS) this.spent.shift()
+    return this.spent.reduce((a, s) => a + s.seconds, 0)
+  }
+
+  allow(audioMs: number, now: number): boolean {
+    return this.used(now) + AudioBudget.cost(audioMs) <= this.perHour
+  }
+
+  charge(audioMs: number, now: number): void {
+    this.spent.push({ at: now, seconds: AudioBudget.cost(audioMs) })
+  }
+}
 
 export function wavOf(pcm: Uint8Array): Uint8Array {
   const h = Buffer.alloc(44)
@@ -28,11 +63,17 @@ export interface GroqLiveOptions {
   tickMs?: number
   /** Consecutive failures before the recogniser reports itself failed. */
   maxFailures?: number
+  /** Consecutive 429s before the recogniser reports itself failed (so the session falls over). */
+  max429?: number
+  /** Audio-seconds per rolling hour (default 7,200 — the Developer plan cap). */
+  hourlyAudioSeconds?: number
+  /** Clock for the budget (tests). */
+  now?: () => number
   /** One line per request: status, ms, audio sent, text length. NEVER the key. */
   log?: VoiceLog
 }
 
-/** Rolling-window Groq recogniser: every tick, the last 12 s of audio since the last reset. */
+/** Rolling-window Groq recogniser: every 5 s tick, the last 10 s of audio since the last reset. */
 export class GroqLive implements LiveRecognizer {
   readonly name = 'groq'
   private chunks: Buffer[] = []
@@ -43,11 +84,15 @@ export class GroqLive implements LiveRecognizer {
   private timer: ReturnType<typeof setInterval> | null = null
   private busy = false
   private failures = 0
+  private rateLimited = 0
+  private readonly budget: AudioBudget
   private generation = 0
   private onEvent: (e: RecognizerEvent) => void = () => {}
   private onFail: (r: string) => void = () => {}
 
-  constructor(private readonly opts: GroqLiveOptions) {}
+  constructor(private readonly opts: GroqLiveOptions) {
+    this.budget = new AudioBudget(opts.hourlyAudioSeconds ?? HOURLY_AUDIO_SECONDS)
+  }
 
   start(onEvent: (e: RecognizerEvent) => void, onFail: (r: string) => void): void {
     this.onEvent = onEvent
@@ -84,10 +129,17 @@ export class GroqLive implements LiveRecognizer {
 
   private async tick(): Promise<void> {
     if (this.busy || this.bytes - this.sentBytes < 500 * BYTES_PER_MS) return
-    this.busy = true
     const log = this.opts.log ?? silentVoiceLog
-    const t0 = Date.now()
     const audioMs = Math.round(this.bytes / BYTES_PER_MS)
+    const now = (this.opts.now ?? Date.now)()
+    if (!this.budget.allow(audioMs, now)) {
+      // Skip rather than exceed the plan: never a surprise bill, never a 429 storm.
+      log('groq.budget.skip', { audioMs, usedSeconds: Math.round(this.budget.used(now)), perHour: this.opts.hourlyAudioSeconds ?? HOURLY_AUDIO_SECONDS })
+      return
+    }
+    this.budget.charge(audioMs, now)
+    this.busy = true
+    const t0 = Date.now()
     const gen = this.generation
     const body = wavOf(Buffer.concat(this.chunks))
     const windowStartMs = this.windowStartMs
@@ -105,8 +157,13 @@ export class GroqLive implements LiveRecognizer {
         body: fd,
       })
       if (r.status === 429) {
-        log('groq.request', { status: 429, ms: Date.now() - t0, audioMs, note: 'rate limited — next tick retries' })
-        return // back off: next tick retries, not a failure
+        // One 429 is a back-off (next tick retries); a run of them is a starved engine, and the
+        // session must be told so it can fall over to the next one.
+        this.rateLimited++
+        const limit = this.opts.max429 ?? 3
+        log('groq.request', { status: 429, ms: Date.now() - t0, audioMs, consecutive429: this.rateLimited, limit })
+        if (this.rateLimited >= limit) this.onFail('groq rate-limited')
+        return
       }
       if (!r.ok) {
         let body = ''
@@ -120,6 +177,7 @@ export class GroqLive implements LiveRecognizer {
       const text = (((await r.json()) as { text?: string }).text ?? '').trim()
       log('groq.request', { status: r.status, ms: Date.now() - t0, audioMs, chars: text.length, tail: text.slice(-60), stale: gen !== this.generation })
       this.failures = 0
+      this.rateLimited = 0
       if (gen === this.generation) this.onEvent({ atMs: this.clockMs, windowStartMs, text })
     } catch (error) {
       this.failures++

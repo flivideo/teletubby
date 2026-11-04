@@ -31,4 +31,6 @@ export interface LiveRecognizer {
   push(pcm: Uint8Array): void
   reset(): void
   stop(): void
+  /** Optional vocabulary hint (nearest upcoming script words). Engines without one ignore it. */
+  hint?(words: string[]): void
 }
