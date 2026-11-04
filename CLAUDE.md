@@ -28,6 +28,9 @@ Background: [docs/concept.md](docs/concept.md) · origin brainstorm
 Agent notes (pitfalls, conventions, tooling — loaded):
 @docs/AGENT-NOTES.md
 
+Press log (every ↓/↑/jump while presenting → `<project>/teletubby/press-logs/*.jsonl`, replay with
+`scripts/voice-follow-replay.mjs … --press-log`): see AGENT-NOTES §Tooling.
+
 Human narrative (not loaded): [docs/SYSTEM.md](docs/SYSTEM.md) · data shapes:
 [docs/schema-mirror.md](docs/schema-mirror.md).
 
