@@ -10,3 +10,4 @@ dist/
 .overmind.sock
 .logs/
 native/apple-stt/build/
+native/apple-stt/apple-stt
