@@ -645,7 +645,7 @@ blocking unknown for this whole product.
 ## Capture what you learn — `docs/kdd/`, via Lisa
 
 **Every session that fixes a bug, reverses a documented decision, or finds a check that was not
-checking anything captures it in `docs/kdd/` with `appydave:lisa` — one item at a time, dedup
+checking anything captures it in `docs/kdd/` with `appydave:kadie` — one item at a time, dedup
 first, bump rather than mint.** Not `lexi`; that is the brains librarian. The KDD was seeded on
 2026-08-19 and then nothing was added for eleven days, not from forgetfulness but because nothing
 in this fleet fires it: no hook, and this file only ever *pointed* at it. This line is the backstop
