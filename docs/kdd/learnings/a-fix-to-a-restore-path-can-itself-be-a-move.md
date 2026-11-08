@@ -4,8 +4,8 @@ category: correctness
 severity: high
 date: 2026-08-31
 status: fixed
-story_reference: live-edit refresh (2026-08-31), W6 fix F6 (2026-09-16)
-recurrence_count: 2
+story_reference: live-edit refresh (2026-08-31), W6 fix F6 (2026-09-16), story variants staging (2026-11-08)
+recurrence_count: 3
 files:
   - src/renderer/src/store.ts
   - test/prompter-navigation.test.ts
@@ -54,6 +54,11 @@ right?"** Re-deriving a position, a selection, a scroll offset, or a layout from
 is lossy whenever the identity is coarser than the state (paragraph vs. trigger-within-paragraph
 here) — so an unconditional restore rounds the user's position down to the identity's grain.
 Check for the no-op first; restore only what actually moved.
+
+**Third time (2026-11-08, story variants):** `applyStageRequest` called `selectScript` for the script already on
+stage, which sets `step: 0` and raises a cue card. Fixed at both ends, with the no-op first: `stage_select` answers
+`alreadyOnStage` before its busy check, and the window compares against its own state, because the position the core
+sees is up to ~400ms behind (`remember_layout` is debounced). Promotion-eligible; not promoted, that takes a human.
 
 Corollary for reviews: when a fix edits the machinery that protects an invariant, run that
 invariant's pinned tests before believing the fix — they encode the last time it was violated.

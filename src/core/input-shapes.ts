@@ -191,7 +191,9 @@ export const INPUT = {
           .describe('the script, verbatim; paragraphs are separated by a blank line'),
         id: slug
           .optional()
-          .describe('defaults to the slug of name; an existing id is REPLACED in place'),
+          .describe(
+            'defaults to the slug of name; an existing id is REPLACED in place. With variant, only that variant is',
+          ),
         video: projectName
           .nullish()
           .describe('optional D15 video tag — the videos/<name>/ folder name, verbatim'),

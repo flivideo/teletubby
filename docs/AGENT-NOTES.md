@@ -57,6 +57,8 @@ launching, the capability core, the open contract, the styling rules and the got
   must equal the open one; it never selects a project.
 - **A script written with no triggers is stored and listed, but cannot be stepped.** That is
   correct — do not "fix" it by deriving triggers from paragraphs; rule 3 forbids positional maps.
+- **A variant reaches a script only through `write_script` with `variant`.** `write_transcript` refuses `kind: 'variant'`.
+- **`stage_select` takes `variantId`, which needs `scriptId`.** Already on stage answers `applied: false, alreadyOnStage: true`.
 - **The derived set id `<project>-scripts` is reserved.** A store set with that id makes
   `write_script` refuse `conflict`.
 

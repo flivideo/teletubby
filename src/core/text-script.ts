@@ -249,7 +249,8 @@ export function mergeVariant(existing: Script | null, built: Script): VariantMer
     kind: 'write',
     script: { ...existing, transcripts },
     previousVersion: heldVersion,
-    created: !held,
+    // Replacing the unlabelled body is this same story arriving as a variant, not a new one.
+    created: !held && kept.length === existing.transcripts.length,
   };
 }
 

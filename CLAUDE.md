@@ -397,6 +397,22 @@ because there is nothing to scope to. Landing the right set is FliStudio's door,
 ⚠️ Teletubby still never writes the words or the triggers. The chat that writes them is L19, later.
 Full ruling: [docs/kdd/decisions/adr-004-…](docs/kdd/decisions/adr-004-scripts-on-demand-one-project-file-many-named-scripts.md).
 
+### Story variants — chips on the strip, words updated in place (2026-11-08)
+
+Story Pilot publishes a **variant** (one regeneration with a given profile: id, free-text label) at a **version** (a
+word-level edit) through `write_script`'s optional `variant` block. Full spec: flivideo
+`docs/specs/story-variants-and-versions.md`.
+
+- A variant is a transcript of `kind: 'variant'`, one per chip on the strip. The transcript id is the variant id.
+- **Teletubby holds current words only.** The version number is read-only metadata; history lives in Story Pilot.
+- Same id replaces that variant; new id appends; a lower version is refused `conflict`; identical content is a no-op with
+  no event. A plain `write_script` on a script with variants is refused, because it would delete them.
+- A new version keeps the talent on the same **words** (`src/core/reanchor.ts`): paragraph ids are positions and re-minted
+  on every write. No cue, no glide, no highlight.
+- ⚠️ **Staging where the talent already is must do nothing**, checked in the core and again in the window from its own
+  state: the core's view of the position is debounced. `selectScript` is a move and resets to the top.
+- A variant switch is silent and remembers its place for the session; topic ids mean nothing across regenerations.
+
 ### Voice-follow — word highlight, Apple primary (parity round, 2026-11-04)
 
 With Voice on (`V`, off by default) the paragraph zone shows **where in the paragraph** the talent is: said words fade,

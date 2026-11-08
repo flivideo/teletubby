@@ -281,10 +281,11 @@ export default function App(): JSX.Element {
       if (full.ok) {
         // The talent chose; nothing on stage is being held any more.
         useProm.getState().setStageHold(null);
+        // `load` clears a waiting variant request, so read it first.
+        const variant = useProm.getState().requestedVariant?.variantId;
         load(full.data);
         // An agent's stage_select names the script too; a person's pick does not.
         const script = useProm.getState().requestedScriptId;
-        const variant = useProm.getState().requestedVariantId;
         if (script && full.data.scripts.some((s) => s.id === script)) {
           useProm.getState().selectScript(script);
           if (variant) useProm.getState().applyStageRequest(full.data.id, script, variant);
@@ -518,6 +519,12 @@ function Stage(): JSX.Element {
   const rigId = useProm((s) => s.rigId);
   const rigsLoaded = useProm((s) => s.rigsLoaded);
   const freshTranscripts = useProm((s) => s.freshTranscripts);
+  // The newest variant goes last, so the one with the dot is the first to scroll out of the row.
+  useEffect(() => {
+    document
+      .querySelector('[data-testid="arrival-dot"]:last-of-type')
+      ?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'instant' });
+  }, [freshTranscripts]);
 
   const selectTranscript = useProm((s) => s.selectTranscript);
   const selectStyle = useProm((s) => s.selectStyle);

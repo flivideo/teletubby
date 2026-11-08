@@ -4,6 +4,7 @@ category: domain
 severity: high
 date: 2026-08-30
 status: fixed
+recurrence_count: 2
 files:
   - src/renderer/src/store.ts
   - test/prompter-navigation.test.ts
@@ -37,6 +38,11 @@ author wrote in `scripts/authored-domain.mjs`, beside the text, where "four beco
 recorded as *which* beats folded. That grouping is the author's own claim about structure. Rule 3
 of this app says the trigger→paragraph map is authored data, never derived positionally; the
 same rule applies to version↔version.
+
+**Recurred (2026-11-08, story variants):** a new version of the same variant, with no authored grouping to lean on.
+`p1..pN` are re-minted on every write, so a paragraph inserted above left the talent one off. There the words are the
+anchor: `reanchorParagraph` (`src/core/reanchor.ts`) takes the same text, else the best word overlap, else the same
+place. Two different variants have neither, so a switch uses a per-session memory instead.
 
 ## The fix
 

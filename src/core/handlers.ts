@@ -1042,7 +1042,9 @@ export function createHandlers(): Record<string, Handler> {
           title: candidate.title,
           video: candidate.video ?? null,
         })),
-        drivable: script.transcripts[0]!.triggerSets.length > 0,
+        drivable:
+          (script.transcripts.find((transcript) => transcript.id === published?.id) ?? script.transcripts[0]!)
+            .triggerSets.length > 0,
         previous,
         projectFile: projectFilePath(projectDir),
         ...(variantResult ? { variant: variantResult } : {}),
@@ -1109,30 +1111,24 @@ export function createHandlers(): Record<string, Handler> {
     }
     // Before the busy check on purpose: asking for where the talent already is
     // is not a move, however recently they pressed a key.
-    const on = context.activity.position();
-    if (
-      on?.setId === set.id &&
-      (!parsed.scriptId || on.scriptId === parsed.scriptId) &&
-      (!variantId || on.transcriptId === variantId)
-    )
-      return {
-        applied: false,
-        alreadyOnStage: true,
-        setId: set.id,
-        scriptId: parsed.scriptId ?? null,
-        project: set.project ?? null,
-      };
-    const busy = busyOf(context);
-    if (busy.length > 0)
-      fail('app_busy', `the talent is on the prompter (${busy[0]!.what}); an agent does not move them mid-take`, {
-        busy,
-      });
     const preview = {
       setId: set.id,
       scriptId: parsed.scriptId ?? null,
       variantId,
       project: set.project ?? null,
     };
+    const on = context.activity.position();
+    if (
+      on?.setId === set.id &&
+      (!parsed.scriptId || on.scriptId === parsed.scriptId) &&
+      (!variantId || on.transcriptId === variantId)
+    )
+      return { applied: false, alreadyOnStage: true, ...preview, ...(context.dryRun ? { preview } : {}) };
+    const busy = busyOf(context);
+    if (busy.length > 0)
+      fail('app_busy', `the talent is on the prompter (${busy[0]!.what}); an agent does not move them mid-take`, {
+        busy,
+      });
     if (context.dryRun) return { applied: false, preview };
     const request = context.stage.request(set.id, parsed.scriptId ?? null, context.principalName, variantId);
     return { applied: true, ...preview, request };

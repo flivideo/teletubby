@@ -415,80 +415,80 @@
     {
       "anchor": {
         "file": "src/core/input-shapes.ts",
-        "line": 411
+        "line": 413
       },
       "authority": "`switch` on `def.type` - its type is not a literal union, no enum, no z.enum",
-      "finding": "REFACTOR: `def.type` is a closed set enforced only by control flow at src/core/input-shapes.ts:411. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "finding": "REFACTOR: `def.type` is a closed set enforced only by control flow at src/core/input-shapes.ts:413. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
       "grade": "derived",
       "id": "src/core/input-shapes.def.type (switch)",
       "members": [
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 412
+            "line": 414
           },
           "value": "optional"
         },
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 413
+            "line": 415
           },
           "value": "nullable"
         },
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 414
+            "line": 416
           },
           "value": "default"
         },
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 415
+            "line": 417
           },
           "value": "pipe"
         },
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 417
+            "line": 419
           },
           "value": "string"
         },
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 419
+            "line": 421
           },
           "value": "number"
         },
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 421
+            "line": 423
           },
           "value": "boolean"
         },
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 423
+            "line": 425
           },
           "value": "enum"
         },
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 425
+            "line": 427
           },
           "value": "array"
         },
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 427
+            "line": 429
           },
           "value": "object"
         }
@@ -1237,38 +1237,38 @@
     {
       "anchor": {
         "file": "src/renderer/src/App.tsx",
-        "line": 791
+        "line": 798
       },
       "authority": "`switch` on `zone` - its type is not a literal union, no enum, no z.enum",
-      "finding": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:791. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "finding": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:798. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
       "grade": "derived",
       "id": "src/renderer/src/App.zone (switch)",
       "members": [
         {
           "anchor": {
             "file": "src/renderer/src/App.tsx",
-            "line": 792
+            "line": 799
           },
           "value": "major"
         },
         {
           "anchor": {
             "file": "src/renderer/src/App.tsx",
-            "line": 802
+            "line": 809
           },
           "value": "minor"
         },
         {
           "anchor": {
             "file": "src/renderer/src/App.tsx",
-            "line": 812
+            "line": 819
           },
           "value": "triggers"
         },
         {
           "anchor": {
             "file": "src/renderer/src/App.tsx",
-            "line": 816
+            "line": 823
           },
           "value": "paragraph"
         }
@@ -1323,7 +1323,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 288
+        "line": 292
       },
       "authority": "literal union type of `source` - a single declaring symbol",
       "doc": "Where this row's data was read from: the open project's fli.tubby.json, or the app store.",
@@ -1333,14 +1333,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 288
+            "line": 292
           },
           "value": "project"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 288
+            "line": 292
           },
           "value": "store"
         }
@@ -1349,7 +1349,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 351
+        "line": 355
       },
       "authority": "literal union type of `reason` - a single declaring symbol",
       "grade": "declared",
@@ -1358,14 +1358,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 351
+            "line": 355
           },
           "value": "project-closed"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 351
+            "line": 355
           },
           "value": "unreadable"
         }
@@ -1374,7 +1374,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 1279
+        "line": 1291
       },
       "authority": "literal union type alias `Rank` - a single declaring symbol",
       "grade": "declared",
@@ -1383,14 +1383,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 1279
+            "line": 1291
           },
           "value": "driven"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 1279
+            "line": 1291
           },
           "value": "follower"
         }
@@ -2337,10 +2337,10 @@
     {
       "anchor": {
         "file": "src/core/input-shapes.ts",
-        "line": 411
+        "line": 413
       },
       "kind": "refactor_required",
-      "message": "REFACTOR: `def.type` is a closed set enforced only by control flow at src/core/input-shapes.ts:411. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "message": "REFACTOR: `def.type` is a closed set enforced only by control flow at src/core/input-shapes.ts:413. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
       "target": "src/core/input-shapes.def.type (switch)"
     },
     {
@@ -2373,10 +2373,10 @@
     {
       "anchor": {
         "file": "src/renderer/src/App.tsx",
-        "line": 791
+        "line": 798
       },
       "kind": "refactor_required",
-      "message": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:791. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
+      "message": "REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:798. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.",
       "target": "src/renderer/src/App.zone (switch)"
     },
     {
@@ -2389,12 +2389,12 @@
       "target": "src/renderer/src/voice-live.event.state (branching)"
     }
   ],
-  "generated": "2026-11-08T10:45:55+00:00",
+  "generated": "2026-11-08T10:58:58+00:00",
   "ignored_derived": [
     {
       "anchor": {
         "file": "src/renderer/src/App.tsx",
-        "line": 715
+        "line": 722
       },
       "subject": "src/renderer/src/App.e.key (switch)",
       "values": [
@@ -3613,9 +3613,9 @@
     },
     {
       "anchor": {
-        "end_line": 383,
+        "end_line": 385,
         "file": "src/core/input-shapes.ts",
-        "line": 370
+        "line": 372
       },
       "bases": [],
       "doc": null,
@@ -3624,7 +3624,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 371
+            "line": 373
           },
           "default": null,
           "name": "name",
@@ -3633,7 +3633,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 372
+            "line": 374
           },
           "default": null,
           "name": "type",
@@ -3642,7 +3642,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 373
+            "line": 375
           },
           "default": null,
           "name": "required",
@@ -3651,7 +3651,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 381
+            "line": 383
           },
           "default": null,
           "doc": "Present when omitting the field APPLIES A VALUE rather than leaving it",
@@ -3661,7 +3661,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 382
+            "line": 384
           },
           "default": null,
           "name": "note",
@@ -3674,9 +3674,9 @@
     },
     {
       "anchor": {
-        "end_line": 399,
+        "end_line": 401,
         "file": "src/core/input-shapes.ts",
-        "line": 390
+        "line": 392
       },
       "bases": [],
       "doc": "The zod 4 def fields the walkers below read. `.transform()` is a `pipe` whose",
@@ -3685,7 +3685,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 391
+            "line": 393
           },
           "default": null,
           "name": "type",
@@ -3694,7 +3694,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 392
+            "line": 394
           },
           "default": null,
           "name": "innerType",
@@ -3703,7 +3703,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 393
+            "line": 395
           },
           "default": null,
           "name": "in",
@@ -3712,7 +3712,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 394
+            "line": 396
           },
           "default": null,
           "name": "out",
@@ -3721,7 +3721,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 395
+            "line": 397
           },
           "default": null,
           "name": "element",
@@ -3730,7 +3730,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 396
+            "line": 398
           },
           "default": null,
           "name": "entries",
@@ -3739,7 +3739,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 397
+            "line": 399
           },
           "default": null,
           "name": "shape",
@@ -3748,7 +3748,7 @@
         {
           "anchor": {
             "file": "src/core/input-shapes.ts",
-            "line": 398
+            "line": 400
           },
           "default": null,
           "name": "defaultValue",
@@ -8208,7 +8208,7 @@
     },
     {
       "anchor": {
-        "end_line": 266,
+        "end_line": 270,
         "file": "src/renderer/src/store.ts",
         "line": 106
       },
@@ -8760,17 +8760,17 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 257
+            "line": 261
           },
           "default": null,
-          "doc": "A variant an agent asked for that has not arrived in this window yet.",
-          "name": "requestedVariantId",
-          "type": "string | null"
+          "doc": "A variant an agent asked for that has not arrived in this window yet. It",
+          "name": "requestedVariant",
+          "type": "{ scriptId: string; variantId: string; step: number } | null"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 259
+            "line": 263
           },
           "default": null,
           "doc": "The paragraph the talent left each variant on, this session only.",
@@ -8780,7 +8780,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 261
+            "line": 265
           },
           "default": null,
           "doc": "Bumped when the words on stage change under the talent, so the lane re-seats the live row.",
@@ -8790,7 +8790,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 262
+            "line": 266
           },
           "default": null,
           "name": "applyRig",
@@ -8799,7 +8799,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 263
+            "line": 267
           },
           "default": null,
           "name": "adoptRig",
@@ -8808,7 +8808,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 264
+            "line": 268
           },
           "default": null,
           "name": "forgetRig",
@@ -8817,7 +8817,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 265
+            "line": 269
           },
           "default": null,
           "name": "dismissCue",
@@ -8830,9 +8830,9 @@
     },
     {
       "anchor": {
-        "end_line": 291,
+        "end_line": 295,
         "file": "src/renderer/src/store.ts",
-        "line": 273
+        "line": 277
       },
       "bases": [],
       "doc": "What `list_sets` answers with \u2014 a project row for the setup panel.",
@@ -8841,7 +8841,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 274
+            "line": 278
           },
           "default": null,
           "name": "id",
@@ -8850,7 +8850,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 275
+            "line": 279
           },
           "default": null,
           "name": "title",
@@ -8859,7 +8859,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 276
+            "line": 280
           },
           "default": null,
           "name": "description",
@@ -8868,7 +8868,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 278
+            "line": 282
           },
           "default": null,
           "doc": "The FliHub folder name, verbatim, or null for an unattached set.",
@@ -8878,7 +8878,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 279
+            "line": 283
           },
           "default": null,
           "name": "scriptCount",
@@ -8887,7 +8887,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 281
+            "line": 285
           },
           "default": null,
           "doc": "Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy.",
@@ -8897,7 +8897,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 283
+            "line": 287
           },
           "default": null,
           "doc": "An exported store copy seen without its project open \u2014 listed, never editable.",
@@ -8907,7 +8907,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 284
+            "line": 288
           },
           "default": null,
           "name": "livesIn",
@@ -8916,7 +8916,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 286
+            "line": 290
           },
           "default": null,
           "doc": "A project's on-demand named scripts (`write_script`) \u2014 listed by name, newest first.",
@@ -8926,7 +8926,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 288
+            "line": 292
           },
           "default": null,
           "doc": "Where this row's data was read from: the open project's fli.tubby.json, or the app store.",
@@ -8936,7 +8936,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 290
+            "line": 294
           },
           "default": null,
           "doc": "The open project's fli.tubby.json cannot be read, and this set may live there \u2014 get_set refuses it.",
@@ -8950,9 +8950,9 @@
     },
     {
       "anchor": {
-        "end_line": 297,
+        "end_line": 301,
         "file": "src/renderer/src/store.ts",
-        "line": 294
+        "line": 298
       },
       "bases": [],
       "doc": "`list_sets.filter.unreadable` \u2014 the project file that could not be read, named.",
@@ -8961,7 +8961,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 295
+            "line": 299
           },
           "default": null,
           "name": "file",
@@ -8970,7 +8970,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 296
+            "line": 300
           },
           "default": null,
           "name": "message",
@@ -8983,9 +8983,9 @@
     },
     {
       "anchor": {
-        "end_line": 353,
+        "end_line": 357,
         "file": "src/renderer/src/store.ts",
-        "line": 350
+        "line": 354
       },
       "bases": [],
       "doc": "Why the set on stage is being HELD rather than refreshed \u2014 shown by the",
@@ -8994,7 +8994,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 351
+            "line": 355
           },
           "default": null,
           "name": "reason",
@@ -9003,7 +9003,7 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 352
+            "line": 356
           },
           "default": null,
           "name": "message",
@@ -11890,7 +11890,7 @@
     }
   ],
   "target": {
-    "commit": "975e874b9d5a90d50a0f4d142a5a98ba4660687d",
+    "commit": "b33e6dbd39b0955113d2804ca8f5f5fe72472c0b",
     "root": "..",
     "stack": "typescript"
   },
@@ -11951,7 +11951,7 @@
       "census": true,
       "family": "alias of another value (`X = Y`)",
       "looked_at": [
-        "src/core/input-shapes.ts:368"
+        "src/core/input-shapes.ts:370"
       ],
       "reason": "declared but not read: alias of another value (`X = Y`) (`= INPUT`). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/core/input-shapes.INPUT_BY_NAME` - declared but not read"
@@ -12221,7 +12221,7 @@
       "census": true,
       "family": "const built by a call (helper or non-zod call)",
       "looked_at": [
-        "src/renderer/src/store.ts:428"
+        "src/renderer/src/store.ts:432"
       ],
       "reason": "declared but not read: const built by a call (helper or non-zod call). The extractor saw the declaration and did not mirror it; nothing else about it appears on this page.",
       "subject": "`src/renderer/src/store.useProm` - declared but not read"

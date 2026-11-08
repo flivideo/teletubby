@@ -4300,11 +4300,11 @@
         {
           "name": "id",
           "required": false,
-          "summary": "defaults to the slug of name; an existing id is REPLACED in place",
+          "summary": "defaults to the slug of name; an existing id is REPLACED in place. With variant, only that variant is",
           "schema": {
             "type": "string",
             "minLength": 1,
-            "description": "defaults to the slug of name; an existing id is REPLACED in place"
+            "description": "defaults to the slug of name; an existing id is REPLACED in place. With variant, only that variant is"
           }
         },
         {

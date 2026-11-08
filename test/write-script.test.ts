@@ -200,7 +200,8 @@ describe('write_script with a variant — the publish contract', () => {
     await ok('write_script', { id: STORY, name: 'Story', text: INTRO });
     expect(stored().transcripts.map((t: any) => t.id)).toEqual(['text']);
     const result = await publish(LONG);
-    expect(result.data.variant).toMatchObject({ created: true });
+    // The same story arriving as a variant: an update to the talent, not a new chip to go and find.
+    expect(result.data.variant).toMatchObject({ created: false, previousVersion: null });
     expect(stored().transcripts.map((t: any) => t.id)).toEqual([LONG.id]);
   });
 
@@ -580,6 +581,39 @@ describe('d04: two named scripts, listed, one put on stage by an agent', () => {
       const result = await select('long');
       expect(result).toMatchObject({ ok: true, data: { applied: false, alreadyOnStage: true } });
       expect((await asAgent('stage_get')).data.request).toBeNull();
+    });
+
+    it('a dry run of where they already are carries the same preview as any other', async () => {
+      await seen('long');
+      const result = await asAgent('stage_select', {
+        setId: SET,
+        scriptId: 'story',
+        variantId: 'long',
+        dryRun: true,
+      });
+      expect(result.data).toMatchObject({
+        applied: false,
+        alreadyOnStage: true,
+        preview: { setId: SET, scriptId: 'story', variantId: 'long' },
+      });
+    });
+
+    it('reports drivable for the variant just published, not the first one', async () => {
+      const triggers = {
+        style: 'loose-keywords',
+        items: [
+          { text: 'a', paragraph: 1 },
+          { text: 'b', paragraph: 1 },
+        ],
+      };
+      const data = await asAgent('write_script', {
+        id: 'story',
+        name: 'Story',
+        text: 'Words.',
+        triggers,
+        variant: { id: 'third', label: 'Third', version: 1 },
+      });
+      expect(data.data.drivable).toBe(true);
     });
 
     it('naming only the script they are on counts as there', async () => {

@@ -75,7 +75,7 @@ const paragraphNow = (): string | undefined => {
 };
 
 const open = (...transcripts: Transcript[]): void => {
-  useProm.setState({ requestedVariantId: null, variantPlaces: {}, freshTranscripts: {}, cue: null });
+  useProm.setState({ requestedVariant: null, variantPlaces: {}, freshTranscripts: {}, cue: null });
   s().load(setOf(...transcripts));
 };
 const stepTo = (paragraphId: string): void => {
@@ -249,7 +249,24 @@ describe('a staging request in the window', () => {
     expect(s().transcriptId).toBe('long');
     s().refresh(setOf(variant('long', 8, WORDS), variant('short', 1, ['One.', 'Two.']), variant('late', 1, ['L.', 'M.'])));
     expect(s().transcriptId).toBe('late');
-    expect(s().requestedVariantId).toBeNull();
+    expect(s().requestedVariant).toBeNull();
+  });
+  it('the talent stepping cancels a request still waiting', () => {
+    s().applyStageRequest('set', 'story', 'late');
+    stepTo('p2');
+    s().refresh(setOf(variant('long', 8, WORDS), variant('short', 1, ['One.', 'Two.']), variant('late', 1, ['L.', 'M.'])));
+    expect(s().transcriptId).toBe('long');
+    expect(s().requestedVariant).toBeNull();
+  });
+  it('opening another set cancels a request still waiting', () => {
+    s().applyStageRequest('set', 'story', 'late');
+    s().load(setOf(variant('long', 8, WORDS)));
+    expect(s().requestedVariant).toBeNull();
+  });
+  it('a request only lands on the script it asked about', () => {
+    useProm.setState({ requestedVariant: { scriptId: 'other', variantId: 'late', step: s().step } });
+    s().refresh(setOf(variant('long', 8, WORDS), variant('short', 1, ['One.', 'Two.']), variant('late', 1, ['L.', 'M.'])));
+    expect(s().transcriptId).toBe('long');
   });
   it('the talent choosing cancels a request still waiting', () => {
     s().applyStageRequest('set', 'story', 'late');

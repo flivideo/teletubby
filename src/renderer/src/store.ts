@@ -253,8 +253,12 @@ interface PrompterState {
    * core has already refused it if the talent was mid-take.
    */
   applyStageRequest: (setId: string, scriptId: string | null, variantId?: string | null) => void;
-  /** A variant an agent asked for that has not arrived in this window yet. */
-  requestedVariantId: string | null;
+  /**
+   * A variant an agent asked for that has not arrived in this window yet. It
+   * only ever lands on the script it was asked for, with the talent still on
+   * the beat they were on when it was asked.
+   */
+  requestedVariant: { scriptId: string; variantId: string; step: number } | null;
   /** The paragraph the talent left each variant on, this session only. */
   variantPlaces: Record<string, string>;
   /** Bumped when the words on stage change under the talent, so the lane re-seats the live row. */
@@ -453,7 +457,7 @@ export const useProm = create<PrompterState>((set, get) => ({
   unreadableFile: null,
   requestedSetId: null,
   requestedScriptId: null,
-  requestedVariantId: null,
+  requestedVariant: null,
   variantPlaces: {},
   contentSeq: 0,
 
@@ -497,6 +501,7 @@ export const useProm = create<PrompterState>((set, get) => ({
     }
 
     set({
+      requestedVariant: null,
       set: scriptSet,
       scriptId: script?.id ?? null,
       transcriptId: transcript?.id ?? null,
@@ -627,10 +632,12 @@ export const useProm = create<PrompterState>((set, get) => ({
     });
 
     // A staging request can reach the window before the words it names do.
-    const waiting = get().requestedVariantId;
-    if (waiting && findTranscript(script, waiting)) {
-      set({ requestedVariantId: null });
-      if (get().transcriptId !== waiting) get().selectTranscript(waiting);
+    const waiting = get().requestedVariant;
+    if (waiting && waiting.step !== state.step) {
+      set({ requestedVariant: null }); // They moved on; the request is out of date.
+    } else if (waiting && waiting.scriptId === script.id && findTranscript(script, waiting.variantId)) {
+      set({ requestedVariant: null });
+      if (get().transcriptId !== waiting.variantId) get().selectTranscript(waiting.variantId);
     }
   },
 
@@ -704,7 +711,7 @@ export const useProm = create<PrompterState>((set, get) => ({
       transcriptId: transcript?.id ?? null,
       style: defaultStyle(transcript),
       step: 0,
-      requestedVariantId: null,
+      requestedVariant: null,
       cue: {
         label: String(script.n).padStart(2, '0'),
         title: script.title,
@@ -789,7 +796,7 @@ export const useProm = create<PrompterState>((set, get) => ({
       step: stepAtParagraph(transcript, triggers, landing),
       freshTranscripts,
       variantPlaces,
-      requestedVariantId: null,
+      requestedVariant: null,
     });
   },
 
@@ -936,7 +943,12 @@ export const useProm = create<PrompterState>((set, get) => ({
   applyStageRequest: (setId, scriptId, variantId = null) => {
     const state = get();
     if (state.set?.id !== setId) {
-      set({ requestedSetId: setId, requestedScriptId: scriptId, requestedVariantId: variantId });
+      set({
+        requestedSetId: setId,
+        requestedScriptId: scriptId,
+        requestedVariant:
+          scriptId && variantId ? { scriptId, variantId, step: state.step } : null,
+      });
       return;
     }
     // Asking for the script they are already on is not a boundary crossing:
@@ -946,7 +958,7 @@ export const useProm = create<PrompterState>((set, get) => ({
     if (!variantId || get().transcriptId === variantId) return;
     const script = currentScript(get());
     if (script && findTranscript(script, variantId)) get().selectTranscript(variantId);
-    else set({ requestedVariantId: variantId });
+    else if (script) set({ requestedVariant: { scriptId: script.id, variantId, step: get().step } });
   },
 
   applyRig: (rigId) => {
