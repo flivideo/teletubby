@@ -61,8 +61,11 @@ export type TalentId = string;
  * - `cadence`    — the same meaning re-voiced into how a specific talent
  *   actually speaks. Always carries a `talentId`; a cadence transcript with no
  *   talent is meaningless, because cadence is measured per person.
+ * - `variant`    — one regeneration of a story, published by Story Pilot. Not
+ *   the originator's approved words, so a script may hold many. Always carries
+ *   its `variant` mark, and only this kind may.
  */
-export const TRANSCRIPT_KINDS = ['provenance', 'cadence'] as const;
+export const TRANSCRIPT_KINDS = ['provenance', 'cadence', 'variant'] as const;
 export type TranscriptKind = (typeof TRANSCRIPT_KINDS)[number];
 
 /* ------------------------------------------------------------------ *
@@ -154,6 +157,19 @@ export interface Transcript {
   source: string;
   topics: MajorTopic[];
   triggerSets: TriggerSet[];
+  /**
+   * Set when this transcript is a published story variant. The transcript's
+   * `id` is the variant id. Story Pilot owns the version history; Teletubby
+   * keeps only the current words and shows these two values read-only.
+   */
+  variant?: TranscriptVariant;
+}
+
+export interface TranscriptVariant {
+  /** Free text. Never a fixed long/short choice. */
+  label: string;
+  /** Story Pilot's own version number for these words. */
+  version: number;
 }
 
 export interface Script {
@@ -334,6 +350,8 @@ export function validateTranscript(transcript: Transcript, at = 'transcript'): D
     push(`${at}.talentId`, 'a cadence transcript must name the talent it was voiced for');
   if (transcript.kind === 'provenance' && transcript.talentId)
     push(`${at}.talentId`, 'a provenance transcript belongs to no talent — meaning is not voiced');
+  if ((transcript.kind === 'variant') !== Boolean(transcript.variant))
+    push(`${at}.variant`, 'a variant mark and the variant kind always go together');
 
   const paragraphs = paragraphsOf(transcript);
   if (paragraphs.length === 0) push(`${at}.topics`, 'a transcript needs at least one paragraph');

@@ -53,6 +53,7 @@ import type { LifecycleHooks } from './index.js';
 import type { StageRequests, TalentActivity } from './stage.js';
 import {
   emptyOnDemandSet,
+  mergeVariant,
   onDemandSetId,
   scriptFromText,
   upsertOnDemand,
@@ -967,14 +968,58 @@ export function createHandlers(): Record<string, Handler> {
       // INPUT.write_script is the validator for exactly this shape.
       const built = scriptFromText(parsed as TextScriptInput, 1);
       if ('problem' in built) fail('invalid_input', built.problem);
-      const { set: next, previous } = upsertOnDemand(current, built.script);
+
+      const prior = current.scripts.find((candidate) => candidate.id === built.script.id) ?? null;
+      const published = parsed.variant ?? null;
+      let toStore = built.script;
+      let variantResult: Record<string, unknown> | undefined;
+      if (published) {
+        const merged = mergeVariant(prior, built.script);
+        if (merged.kind === 'stale')
+          fail(
+            'conflict',
+            `Teletubby already has version ${merged.held} of variant "${published.id}"; version ${merged.sent} is older`,
+            { held: merged.held, sent: merged.sent },
+          );
+        if (merged.kind === 'unchanged')
+          return {
+            applied: false,
+            unchanged: true,
+            setId,
+            variant: {
+              id: published.id,
+              version: merged.version,
+              previousVersion: merged.version,
+              created: false,
+            },
+          };
+        toStore = merged.script;
+        variantResult = {
+          id: published.id,
+          version: published.version,
+          previousVersion: merged.previousVersion,
+          created: merged.created,
+        };
+      } else if (prior?.transcripts.some((transcript) => transcript.variant)) {
+        // A plain write replaces the whole script, which would silently delete every variant.
+        fail(
+          'conflict',
+          `script "${built.script.id}" holds published variants; a write without a variant would delete them`,
+        );
+      }
+
+      const { set: next, previous } = upsertOnDemand(current, toStore);
       assertShape(scriptSetSchema, next, 'set');
       assertDomain(validateScriptSet(next));
 
       const script = next.scripts.find((candidate) => candidate.id === built.script.id)!;
       const replaced = previous !== null;
       if (context.dryRun)
-        return { applied: false, preview: { setId, replaced, script } };
+        return {
+          applied: false,
+          preview: { setId, replaced, script },
+          ...(variantResult ? { variant: variantResult } : {}),
+        };
 
       const sets = existing.some((candidate) => candidate.id === setId)
         ? existing.map((candidate) => (candidate.id === setId ? next : candidate))
@@ -1000,6 +1045,7 @@ export function createHandlers(): Record<string, Handler> {
         drivable: script.transcripts[0]!.triggerSets.length > 0,
         previous,
         projectFile: projectFilePath(projectDir),
+        ...(variantResult ? { variant: variantResult } : {}),
       };
     });
   };

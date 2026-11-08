@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { FileRepository, createCore, type Core } from '@core/index';
 import { KYBERNESIS_PHASE_1 } from '@shared/script-set';
 import { DEFAULT_LAYOUT } from '@shared/rig';
+import { validateTranscript } from '@shared/domain';
 import { onDemandSetId, paragraphsOfText, scriptFromText, slugOf } from '../src/core/text-script';
 
 /**
@@ -105,6 +106,160 @@ describe('text → script, the pure rules', () => {
   it('slugs a display name into an id', () => {
     expect(slugOf('Intro — take 2!')).toBe('intro-take-2');
     expect(onDemandSetId('d01-flivideo-tour')).toBe('d01-flivideo-tour-scripts');
+  });
+});
+
+describe('write_script with a variant — the publish contract', () => {
+  const STORY = 'storypilot-project';
+  const LONG = { id: 'main-aaaa1111', label: 'Tolkien · teaching · long', version: 8 };
+  const SHORT = { id: 'main-bbbb2222', label: 'Spielberg · short', version: 3 };
+  const publish = (variant: unknown, text = INTRO, extra: object = {}): Promise<any> =>
+    call('write_script', { id: STORY, name: 'Story', text, variant, ...extra });
+  const stored = (): any =>
+    JSON.parse(readFileSync(projectFile(), 'utf8')).sets[0].scripts.find((s: any) => s.id === STORY);
+  const wordsOf = (transcript: any): string[] =>
+    transcript.topics.flatMap((m: any) => m.minors.flatMap((n: any) => n.paragraphs.map((p: any) => p.text)));
+
+  beforeEach(() => open());
+
+  it('a first publish creates the script with one labelled variant, and no version history', async () => {
+    const result = await publish(LONG);
+    expect(result.data.variant).toEqual({ id: LONG.id, version: 8, previousVersion: null, created: true });
+    expect(stored().transcripts).toHaveLength(1);
+    expect(stored().transcripts[0]).toMatchObject({
+      id: LONG.id,
+      corpus: LONG.id,
+      kind: 'variant',
+      talentId: null,
+      variant: { label: LONG.label, version: 8 },
+    });
+    expect(Object.keys(stored().transcripts[0].variant).sort()).toEqual(['label', 'version']);
+  });
+
+  it('a new id is appended, and the script’s own title is left alone', async () => {
+    await publish(LONG);
+    const result = await call('write_script', { id: STORY, name: 'Other title', text: 'Short words.', variant: SHORT });
+    expect(result.data.variant).toMatchObject({ created: true, previousVersion: null });
+    expect(stored().transcripts.map((t: any) => t.id)).toEqual([LONG.id, SHORT.id]);
+    expect(stored().title).toBe('Story');
+  });
+
+  it('same id, higher version replaces that variant in place and touches no other', async () => {
+    await publish(LONG);
+    await publish(SHORT, 'Short words.');
+    changes.length = 0;
+    const result = await publish({ ...LONG, version: 9 }, 'New words.\n\nSecond.');
+    expect(result.data.variant).toEqual({ id: LONG.id, version: 9, previousVersion: 8, created: false });
+    expect(stored().transcripts.map((t: any) => t.id)).toEqual([LONG.id, SHORT.id]);
+    expect(wordsOf(stored().transcripts[0])).toEqual(['New words.', 'Second.']);
+    expect(wordsOf(stored().transcripts[1])).toEqual(['Short words.']);
+    expect(changes).toEqual(['write_script']);
+  });
+
+  it('identical content writes nothing and wakes nobody', async () => {
+    await publish(LONG);
+    const before = readFileSync(projectFile(), 'utf8');
+    changes.length = 0;
+    const result = await publish(LONG);
+    expect(result.data).toMatchObject({ applied: false, unchanged: true });
+    expect(readFileSync(projectFile(), 'utf8')).toBe(before);
+    expect(changes).toEqual([]);
+  });
+
+  it('identical content is still recognised after a round trip through the file', async () => {
+    await publish(LONG, INTRO, { chapters: [{ name: 'Open', paragraph: 1 }] });
+    const result = await publish(LONG, INTRO, { chapters: [{ name: 'Open', paragraph: 1 }] });
+    expect(result.data.unchanged).toBe(true);
+  });
+
+  it('same version with a new label, chapters or text replaces in place; the number stays', async () => {
+    await publish(LONG);
+    await publish({ ...LONG, label: 'My own name' });
+    expect(stored().transcripts[0].variant).toEqual({ label: 'My own name', version: 8 });
+
+    // A recorded paragraph becomes a cue line: the sent text changes, the version's words do not.
+    const result = await publish({ ...LONG, label: 'My own name' }, 'RECORDED: plays here.\n\nSecond.');
+    expect(result.ok).toBe(true);
+    expect(result.data.variant).toMatchObject({ version: 8, previousVersion: 8, created: false });
+    expect(wordsOf(stored().transcripts[0])).toEqual(['RECORDED: plays here.', 'Second.']);
+  });
+
+  it('a lower version is refused and the words stay', async () => {
+    await publish({ ...LONG, version: 9 }, 'Newest words.');
+    const before = readFileSync(projectFile(), 'utf8');
+    changes.length = 0;
+    const result = await publish({ ...LONG, version: 7 }, 'Older words.');
+    expect(result.ok).toBe(false);
+    expect(result.error.code).toBe('conflict');
+    expect(result.error.details).toEqual({ held: 9, sent: 7 });
+    expect(readFileSync(projectFile(), 'utf8')).toBe(before);
+    expect(changes).toEqual([]);
+  });
+
+  it('the first variant publish replaces the old unlabelled body', async () => {
+    await ok('write_script', { id: STORY, name: 'Story', text: INTRO });
+    expect(stored().transcripts.map((t: any) => t.id)).toEqual(['text']);
+    const result = await publish(LONG);
+    expect(result.data.variant).toMatchObject({ created: true });
+    expect(stored().transcripts.map((t: any) => t.id)).toEqual([LONG.id]);
+  });
+
+  it('a plain write on a script with variants is refused, so nothing is silently deleted', async () => {
+    await publish(LONG);
+    const result = await call('write_script', { id: STORY, name: 'Story', text: 'Plain.' });
+    expect(result.ok).toBe(false);
+    expect(result.error.code).toBe('conflict');
+    expect(stored().transcripts.map((t: any) => t.id)).toEqual([LONG.id]);
+  });
+
+  it('a plain write with no variants behaves exactly as before', async () => {
+    await ok('write_script', { id: STORY, name: 'Story', text: INTRO });
+    const data = await ok('write_script', { id: STORY, name: 'Story two', text: 'Plain again.' });
+    expect(data).toMatchObject({ applied: true, replaced: true });
+    expect(data.variant).toBeUndefined();
+    expect(stored().title).toBe('Story two');
+    expect(stored().transcripts[0]).not.toHaveProperty('variant');
+  });
+
+  it('a variant cannot be forged through write_transcript, and the mark needs its kind', async () => {
+    await publish(LONG);
+    const result = await call('write_transcript', {
+      scriptId: STORY,
+      id: 'forged',
+      kind: 'variant',
+      corpus: 'forged',
+      source: 'test',
+      topics: [{ heading: 'A', minors: [{ heading: 'A', paragraphs: [{ text: 'x' }] }] }],
+    });
+    expect(result.ok).toBe(false);
+    expect(result.error.code).toBe('invalid_input');
+
+    const base = { id: 't', corpus: 't', talentId: null, source: 's', topics: [], triggerSets: [] };
+    expect(validateTranscript({ ...base, kind: 'variant' })).not.toEqual([]);
+    expect(
+      validateTranscript({ ...base, kind: 'provenance', variant: { label: 'x', version: 1 } }),
+    ).not.toEqual([]);
+  });
+
+  it('refuses a bad variant at the door', async () => {
+    for (const bad of [
+      { ...LONG, id: 'has space' },
+      { ...LONG, label: '   ' },
+      { ...LONG, label: 'x'.repeat(81) },
+      { ...LONG, version: 0 },
+      { ...LONG, version: 1.5 },
+    ]) {
+      const result = await publish(bad);
+      expect(result.ok, JSON.stringify(bad)).toBe(false);
+      expect(result.error.code).toBe('invalid_input');
+    }
+    expect(existsSync(projectFile())).toBe(false);
+  });
+
+  it('a dry run previews and writes nothing', async () => {
+    const result = await call('write_script', { id: STORY, name: 'Story', text: INTRO, variant: LONG, dryRun: true });
+    expect(result.data).toMatchObject({ applied: false, variant: { id: LONG.id, created: true } });
+    expect(existsSync(projectFile())).toBe(false);
   });
 });
 

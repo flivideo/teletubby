@@ -82,6 +82,12 @@ export const transcriptSchema: z.ZodType<Transcript> = z.object({
   source: z.string().trim().min(1, 'transcript source must not be empty'),
   topics: z.array(majorTopicSchema).min(1, 'a transcript needs at least one major topic'),
   triggerSets: z.array(triggerSetSchema),
+  variant: z
+    .object({
+      label: z.string().trim().min(1, 'variant label must not be empty').max(80),
+      version: z.number().int().positive(),
+    })
+    .optional(),
 });
 
 export const scriptSchema: z.ZodType<Script> = z.object({

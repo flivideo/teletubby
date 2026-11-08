@@ -4432,6 +4432,40 @@
           }
         },
         {
+          "name": "variant",
+          "required": false,
+          "summary": "a published story variant: only this variant of the script is written, the others are kept",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9\\-/.]*$",
+                "description": "stable for this variant; the same id updates it, a new id adds another"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80,
+                "description": "free text shown on the selector"
+              },
+              "version": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991,
+                "description": "the publisher's version number for these words; a lower one than held is refused"
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "version"
+            ],
+            "additionalProperties": {},
+            "description": "a published story variant: only this variant of the script is written, the others are kept"
+          }
+        },
+        {
           "name": "dryRun",
           "required": false,
           "schema": {

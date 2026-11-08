@@ -43,7 +43,12 @@ export interface TextScriptInput {
    * named after the script. Paragraph ids stay global (p1..pN) either way.
    */
   chapters?: { name: string; paragraph: number }[];
+  /** A published story variant: the transcript carries its id, label and version. */
+  variant?: { id: string; label: string; version: number };
 }
+
+/** The transcript id a plain `write_script` uses; the unlabelled body a first variant publish replaces. */
+const PLAIN_TRANSCRIPT_ID = 'text';
 
 /** The one on-demand set per project. Its id is derived, so there is only ever one. */
 export const onDemandSetId = (project: string): string => `${project}-scripts`;
@@ -116,13 +121,17 @@ export function scriptFromText(
       video: input.video ?? null,
       transcripts: [
         {
-          id: 'text',
-          kind: 'provenance',
-          corpus: 'as-written',
+          id: input.variant?.id ?? PLAIN_TRANSCRIPT_ID,
+          kind: input.variant ? 'variant' : 'provenance',
+          // `corpus` is id-format, so it cannot hold the free-text label.
+          corpus: input.variant?.id ?? 'as-written',
           talentId: null,
           source: input.source?.trim() || 'write_script',
           topics: topics.topics,
           triggerSets,
+          ...(input.variant
+            ? { variant: { label: input.variant.label, version: input.variant.version } }
+            : {}),
         },
       ],
     },
@@ -201,6 +210,46 @@ export function upsertOnDemand(
   return {
     set: { ...set, scripts: scripts.map((candidate, i) => ({ ...candidate, n: i + 1 })) },
     previous,
+  };
+}
+
+export type VariantMerge =
+  | { kind: 'write'; script: Script; previousVersion: number | null; created: boolean }
+  | { kind: 'unchanged'; version: number }
+  | { kind: 'stale'; held: number; sent: number };
+
+/**
+ * Fold one published variant into the script that holds it. `built` carries a
+ * single transcript, the variant being published.
+ *
+ * Only that variant is touched. A new one goes LAST so the selector never
+ * reorders under the talent, and an existing script keeps its title, takeaway,
+ * summary and video: publishing one variant must not rename what is on stage.
+ * The unlabelled body of a plain write is dropped, because the first publish
+ * of a story is that same story arriving as a variant.
+ */
+export function mergeVariant(existing: Script | null, built: Script): VariantMerge {
+  const incoming = built.transcripts[0]!;
+  const version = incoming.variant!.version;
+  if (!existing) return { kind: 'write', script: built, previousVersion: null, created: true };
+
+  const held = existing.transcripts.find((transcript) => transcript.id === incoming.id);
+  const heldVersion = held?.variant?.version ?? null;
+  if (heldVersion !== null && version < heldVersion)
+    return { kind: 'stale', held: heldVersion, sent: version };
+  if (held && JSON.stringify(held) === JSON.stringify(incoming)) return { kind: 'unchanged', version };
+
+  const kept = existing.transcripts.filter(
+    (transcript) => transcript.variant || transcript.id !== PLAIN_TRANSCRIPT_ID,
+  );
+  const transcripts = kept.some((transcript) => transcript.id === incoming.id)
+    ? kept.map((transcript) => (transcript.id === incoming.id ? incoming : transcript))
+    : [...kept, incoming];
+  return {
+    kind: 'write',
+    script: { ...existing, transcripts },
+    previousVersion: heldVersion,
+    created: !held,
   };
 }
 

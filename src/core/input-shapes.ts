@@ -221,6 +221,23 @@ export const INPUT = {
             'optional column-1 headings: the first starts at paragraph 1, starts strictly increase, each runs to the next; ' +
               'absent → one topic named after the script. Paragraph numbers stay global',
           ),
+        variant: z
+          .object({
+            id: z
+              .string()
+              .regex(/^[a-z0-9][a-z0-9\-/.]*$/i, 'a variant id is a slug (a-z 0-9 - / .)')
+              .describe('stable for this variant; the same id updates it, a new id adds another'),
+            label: z.string().trim().min(1).max(80).describe('free text shown on the selector'),
+            version: z
+              .number()
+              .int()
+              .positive()
+              .describe("the publisher's version number for these words; a lower one than held is refused"),
+          })
+          .optional()
+          .describe(
+            'a published story variant: only this variant of the script is written, the others are kept',
+          ),
         ...commandEnvelope,
       }),
 
@@ -237,7 +254,8 @@ export const INPUT = {
         setId: slug.optional(),
         scriptId: slug.optional(),
         id: slug,
-        kind: z.enum(TRANSCRIPT_KINDS),
+        // A variant arrives only through write_script, which carries its label and version.
+        kind: z.enum(TRANSCRIPT_KINDS.filter((kind) => kind !== 'variant') as ['provenance', 'cadence']),
         corpus: slug,
         talentId: slug.nullish(),
         source: z.string().min(1),
