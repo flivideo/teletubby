@@ -6198,6 +6198,16 @@
           }
         },
         {
+          "name": "variantId",
+          "required": false,
+          "summary": "a published variant of that script; needs scriptId. Already on stage → nothing happens",
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "description": "a published variant of that script; needs scriptId. Already on stage → nothing happens"
+          }
+        },
+        {
           "name": "dryRun",
           "required": false,
           "schema": {

@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { highlightTokens, type HighlightToken } from '../../../core/voice-highlight';
 import type { MajorTopic, MinorTopic, Paragraph, Transcript } from '@shared/domain';
 import { paragraphsOf } from '@shared/domain';
-import { ZONE_LABEL, type Rank, type RecordingZone } from '../store';
+import { ZONE_LABEL, useProm, type Rank, type RecordingZone } from '../store';
 import EndCard from './EndCard';
 
 /**
@@ -35,11 +35,15 @@ const markerBar = (rank: Rank, active: boolean): string => {
  * `scroll-padding-top` puts the beat at the line with two or three said lines
  * above it. See .tt-lane-scroll in index.css.
  */
-function useReadingLine(active: boolean, deps: unknown[]) {
+function useReadingLine(active: boolean, deps: unknown[], contentSeq = 0) {
   const ref = useRef<HTMLLIElement | null>(null);
+  const seatedFor = useRef(contentSeq);
   useEffect(() => {
     if (!active || !ref.current) return undefined;
     const row = ref.current;
+    // Words changing under the talent re-seat the row with no glide; only a move of theirs eases.
+    const instant = seatedFor.current !== contentSeq;
+    seatedFor.current = contentSeq;
     /*
      * ⚠️ ONE FRAME LATE, ON PURPOSE.
      *
@@ -51,10 +55,12 @@ function useReadingLine(active: boolean, deps: unknown[]) {
      * did. An animation frame lands after the attribute is on the element and
      * after layout, so the row seats against the line that is actually current.
      */
-    const frame = requestAnimationFrame(() => row.scrollIntoView({ block: 'start' }));
+    const frame = requestAnimationFrame(() =>
+      row.scrollIntoView({ block: 'start', ...(instant ? { behavior: 'instant' as const } : {}) }),
+    );
     return () => cancelAnimationFrame(frame);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+  }, [...deps, contentSeq]);
   return ref;
 }
 
@@ -427,7 +433,12 @@ export function ParagraphZone({
         preset it takes the line box from 45px to 38px, which on an 11-line
         paragraph is 77px off the slab.
       */}
-      <div ref={beatRef} className={['tt-beat rounded-r px-4 py-1.5', markerBar(rank, true)].join(' ')}>
+      <div
+        ref={beatRef}
+        data-testid="live-paragraph"
+        data-paragraph-id={paragraph?.id}
+        className={['tt-beat rounded-r px-4 py-1.5', markerBar(rank, true)].join(' ')}
+      >
         {/* One paragraph, not a scrolling wall. This was the configuration that
             actually worked on camera — Jan, watching David's eyes: "the eyes is
             fixed just on the camera" (B437). With voice on, the same text as
@@ -499,7 +510,9 @@ export function TranscriptDrawer({
       >
         <p className="mb-4 flex items-baseline gap-3 font-display text-[0.65rem] uppercase tracking-[0.2em] text-muted">
           Full transcript
-          <span className="font-mono normal-case tracking-normal">{transcript.corpus}</span>
+          <span className="font-mono normal-case tracking-normal">
+            {transcript.variant?.label ?? transcript.corpus}
+          </span>
           <span className="ml-auto font-mono text-[0.65rem] normal-case tracking-normal">
             T to close
           </span>
@@ -550,10 +563,12 @@ function Row({
   // MOVES the reading line (26vh -> 0.5rem). Without it the lane keeps the
   // scroll offset it had before the toggle, so the live beat lands wherever the
   // old line used to be — half off the top, in the case that caught this.
-  const ref = useReadingLine(active, [dep, focus]);
+  const contentSeq = useProm((s) => s.contentSeq);
+  const ref = useReadingLine(active, [dep, focus], contentSeq);
   return (
     <li ref={ref}>
       <div
+        data-testid={active ? 'live-row' : undefined}
         className={[
           'rounded-r px-4 py-2 transition-all duration-150',
           markerBar(rank, active),

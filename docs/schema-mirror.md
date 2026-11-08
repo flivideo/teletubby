@@ -3,13 +3,13 @@
 > Generated from the code, not written about it. Do not hand-edit — every line below is anchored to a `file:line` and is re-derived on every run. `verify_mirror.py` fails when this page no longer matches its JSON. To record a gap the extractor cannot find, use `docs/schema-mirror.known-gaps.json`.
 
 - **stack** `typescript` · **extractor** `extract_typescript.py`
-- **commit** `571e27241177` · **generated** 2026-11-08T10:26:07+00:00
+- **commit** `975e874b9d5a` · **generated** 2026-11-08T10:45:55+00:00
 - **scope** include `*.ts`, `*.tsx` · exclude `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx`, `*.stories.tsx`, `*.config.ts`, `*/test/*`, `*/tests/*`, `*/__tests__/*`, `*/e2e/*`, `*/__mocks__/*`, `*/fixtures/*`, `*.d.ts`, `*/dist/*`, `*/build/*`, `*/out/*`
 - **zod bound** in 0 file(s) by a direct import, 6 through a re-export, 0 by call shape only
 
 | shapes | declared sets | derived sets | gaps | declared but not read | findings |
 |---|---|---|---|---|---|
-| 167 | 47 | 6 | 9 | 54 | 6 |
+| 168 | 47 | 6 | 9 | 54 | 6 |
 
 > **Read the gaps, the census and the never-read list before trusting the shape.** Derived sets have no declaring symbol and will drift silently. Gaps are things this mirror could not reach — they are not absences in the code.
 
@@ -21,14 +21,15 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 - `src/core/cadence.ts` — `CadenceMeasurements` :29 · `CadenceRule` :44 · `CadenceScore` :62
 - `src/core/handlers.ts` — `HandlerContext` :81 · `Resolved` :143 · `MaybeUnreadable` :342
 - `src/core/index.ts` — `CoreOptions` :50 · `WindowShown` :65 · `LifecycleHooks` :74 · `InvokeOptions` :93 · `ChangeEvent` :115 · `Core` :121
-- `src/core/input-shapes.ts` — `slug` :25 · `projectName` :28 · `paragraphInput` :34 · `minorInput` :39 · `majorInput` :45 · `layoutInput` :56 · `triggerInput` :71 · `InputField` :367 · `Def` :387
+- `src/core/input-shapes.ts` — `slug` :25 · `projectName` :28 · `paragraphInput` :34 · `minorInput` :39 · `majorInput` :45 · `layoutInput` :56 · `triggerInput` :71 · `InputField` :370 · `Def` :390
 - `src/core/open-context.ts` — `OPEN_REFUSAL_CODES` (set) :35 · `OpenRefusal` :45 · `OpenContext` :54 · `OpenResolution` :65 · `ResolveOpenArgsOptions` :69 · `ContextReport` :239
 - `src/core/press-log.ts` — `PressEvent` :18 · `PressLogOptions` :25 · `KINDS` (set) :34
 - `src/core/project-store.ts` — `projectFileSchema` :33 · `UnreadableProjectFile` :98
+- `src/core/reanchor.ts` — `Para` :11
 - `src/core/recognizer.ts` — `RecognizerEvent` :11 · `Recognizer` :17 · `LiveRecognizer` :28
 - `src/core/repository.ts` — `RepositoryDocument` :24 · `Repository` :66
 - `src/core/safety.ts` — `PendingAction` :107 · `AuditEntry` :288
-- `src/core/stage.ts` — `StagePosition` :29 · `StageRequest` :36
+- `src/core/stage.ts` — `StagePosition` :29 · `StageRequest` :38
 - `src/core/text-script.ts` — `TextScriptInput` :28 · `VariantMerge` :216
 - `src/core/voice-driver.ts` — `DriverParagraph` :15 · `VoiceCursor` :21 · `DriverResult` :27 · `VoiceDriver` :36
 - `src/core/voice-follow-replay.ts` — `TimedWord` :16 · `ParagraphResult` :21 · `ReplaySummary` :29 · `PressLogOptions` :133
@@ -48,10 +49,10 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 - `src/main/voice/voice-control.ts` — `MicGate` :4 · `VoiceControlDeps` :9 · `VoiceControlResult` :16
 - `src/main/voice/voice-session.ts` — `VoiceSessionOptions` :4
 - `src/main/window-manager.ts` — `WindowOptions` :4
-- `src/renderer/src/App.tsx` — `zone (switch)` (set) :787
+- `src/renderer/src/App.tsx` — `zone (switch)` (set) :791
 - `src/renderer/src/components/CadencePanel.tsx` — `Rule` :23 · `Score` :31
-- `src/renderer/src/components/Zones.tsx` — `ParagraphVoice` :266
-- `src/renderer/src/store.ts` — `ZONES` (set) :72 · `CueCard` :98 · `PrompterState` :105 · `SetSummary` :266 · `UnreadableFile` :287 · `StageHold` :343 · `Rank` (set) :1218
+- `src/renderer/src/components/Zones.tsx` — `ParagraphVoice` :272
+- `src/renderer/src/store.ts` — `ZONES` (set) :73 · `CueCard` :99 · `PrompterState` :106 · `SetSummary` :273 · `UnreadableFile` :294 · `StageHold` :350 · `Rank` (set) :1279
 - `src/renderer/src/voice-live.ts` — `VoiceState` (set) :13 · `VoiceStore` :15
 - `src/shared/capabilities.ts` — `PRINCIPALS` (set) :36 · `SIDE_EFFECTS` (set) :43 · `CapabilityKind` (set) :51 · `ERROR_CODES` (set) :59 · `CapabilityMeta` :75 · `InvokeRequest` :428 · `CapabilityError` :435 · `InvokeResult` :444
 - `src/shared/domain-schema.ts` — `paragraphSchema` :47 · `minorTopicSchema` :52 · `majorTopicSchema` :58 · `triggerSchema` :64 · `triggerSetSchema` :70 · `transcriptSchema` :77 · `scriptSchema` :93 · `scriptSetSchema` :108 · `cadenceEnvelopeSchema` :133 · `talentSchema` :145 · `rigLayoutSchema` :155 · `rigSchema` :170 · `workspaceSchema` :176
@@ -80,7 +81,7 @@ These constructs are outside what this extractor reads **on every run, in every 
 
 ## Coverage census
 
-**216** top-level declarations counted = **159** mirrored + **3** listed as gaps + **54** declared but not read.
+**217** top-level declarations counted = **160** mirrored + **3** listed as gaps + **54** declared but not read.
 
 Counted: every top-level interface, enum, class and type alias (exported or not) and every exported constant, in the files in scope.
 Not counted, as not schema-bearing: 35 functions, 3 function types, 19 literal constants.
@@ -305,19 +306,19 @@ Where the test ran: inside the app (real mic status) or standalone.
 | `stale-task` | `src/main/voice/apple-partials.ts:23` |
 | `after-reset` | `src/main/voice/apple-partials.ts:23` |
 
-### `src/renderer/src/store.ZONES` — `src/renderer/src/store.ts:72`
+### `src/renderer/src/store.ZONES` — `src/renderer/src/store.ts:73`
 
 *`as const` array `ZONES`, typed from by `typeof ZONES[number]` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `major` | `src/renderer/src/store.ts:72` |
-| `minor` | `src/renderer/src/store.ts:72` |
-| `triggers` | `src/renderer/src/store.ts:72` |
-| `paragraph` | `src/renderer/src/store.ts:72` |
-| `transcript` | `src/renderer/src/store.ts:72` |
+| `major` | `src/renderer/src/store.ts:73` |
+| `minor` | `src/renderer/src/store.ts:73` |
+| `triggers` | `src/renderer/src/store.ts:73` |
+| `paragraph` | `src/renderer/src/store.ts:73` |
+| `transcript` | `src/renderer/src/store.ts:73` |
 
-### `src/renderer/src/store.SetSummary.source` — `src/renderer/src/store.ts:281`
+### `src/renderer/src/store.SetSummary.source` — `src/renderer/src/store.ts:288`
 
 Where this row's data was read from: the open project's fli.tubby.json, or the app store.
 
@@ -325,26 +326,26 @@ Where this row's data was read from: the open project's fli.tubby.json, or the a
 
 | value | declared at |
 |---|---|
-| `project` | `src/renderer/src/store.ts:281` |
-| `store` | `src/renderer/src/store.ts:281` |
+| `project` | `src/renderer/src/store.ts:288` |
+| `store` | `src/renderer/src/store.ts:288` |
 
-### `src/renderer/src/store.StageHold.reason` — `src/renderer/src/store.ts:344`
+### `src/renderer/src/store.StageHold.reason` — `src/renderer/src/store.ts:351`
 
 *literal union type of `reason` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `project-closed` | `src/renderer/src/store.ts:344` |
-| `unreadable` | `src/renderer/src/store.ts:344` |
+| `project-closed` | `src/renderer/src/store.ts:351` |
+| `unreadable` | `src/renderer/src/store.ts:351` |
 
-### `src/renderer/src/store.Rank` — `src/renderer/src/store.ts:1218`
+### `src/renderer/src/store.Rank` — `src/renderer/src/store.ts:1279`
 
 *literal union type alias `Rank` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `driven` | `src/renderer/src/store.ts:1218` |
-| `follower` | `src/renderer/src/store.ts:1218` |
+| `driven` | `src/renderer/src/store.ts:1279` |
+| `follower` | `src/renderer/src/store.ts:1279` |
 
 ### `src/renderer/src/voice-live.VoiceState` — `src/renderer/src/voice-live.ts:13`
 
@@ -623,24 +624,24 @@ Voice-follow IPC shapes, shared by renderer, preload and main.
 
 Each set below was read out of the real authority — control flow, membership tests, dispatch tables — because nothing declares it. **Correct as of this commit and fragile after it.** Each carries the refactor that would make it declared.
 
-### `src/core/input-shapes.def.type (switch)` — `src/core/input-shapes.ts:408`
+### `src/core/input-shapes.def.type (switch)` — `src/core/input-shapes.ts:411`
 
 *`switch` on `def.type` - its type is not a literal union, no enum, no z.enum*
 
 | value | read from |
 |---|---|
-| `optional` | `src/core/input-shapes.ts:409` |
-| `nullable` | `src/core/input-shapes.ts:410` |
-| `default` | `src/core/input-shapes.ts:411` |
-| `pipe` | `src/core/input-shapes.ts:412` |
-| `string` | `src/core/input-shapes.ts:414` |
-| `number` | `src/core/input-shapes.ts:416` |
-| `boolean` | `src/core/input-shapes.ts:418` |
-| `enum` | `src/core/input-shapes.ts:420` |
-| `array` | `src/core/input-shapes.ts:422` |
-| `object` | `src/core/input-shapes.ts:424` |
+| `optional` | `src/core/input-shapes.ts:412` |
+| `nullable` | `src/core/input-shapes.ts:413` |
+| `default` | `src/core/input-shapes.ts:414` |
+| `pipe` | `src/core/input-shapes.ts:415` |
+| `string` | `src/core/input-shapes.ts:417` |
+| `number` | `src/core/input-shapes.ts:419` |
+| `boolean` | `src/core/input-shapes.ts:421` |
+| `enum` | `src/core/input-shapes.ts:423` |
+| `array` | `src/core/input-shapes.ts:425` |
+| `object` | `src/core/input-shapes.ts:427` |
 
-> **REFACTOR: `def.type` is a closed set enforced only by control flow at src/core/input-shapes.ts:408. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
+> **REFACTOR: `def.type` is a closed set enforced only by control flow at src/core/input-shapes.ts:411. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
 
 ### `src/core/press-log.KINDS` — `src/core/press-log.ts:34`
 
@@ -689,18 +690,18 @@ Each set below was read out of the real authority — control flow, membership t
 
 > **REFACTOR: `status` is a closed set enforced only by control flow at src/main/voice/apple-bundle.ts:17. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
 
-### `src/renderer/src/App.zone (switch)` — `src/renderer/src/App.tsx:787`
+### `src/renderer/src/App.zone (switch)` — `src/renderer/src/App.tsx:791`
 
 *`switch` on `zone` - its type is not a literal union, no enum, no z.enum*
 
 | value | read from |
 |---|---|
-| `major` | `src/renderer/src/App.tsx:788` |
-| `minor` | `src/renderer/src/App.tsx:798` |
-| `triggers` | `src/renderer/src/App.tsx:808` |
-| `paragraph` | `src/renderer/src/App.tsx:812` |
+| `major` | `src/renderer/src/App.tsx:792` |
+| `minor` | `src/renderer/src/App.tsx:802` |
+| `triggers` | `src/renderer/src/App.tsx:812` |
+| `paragraph` | `src/renderer/src/App.tsx:816` |
 
-> **REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:787. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
+> **REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:791. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.**
 
 ### `src/renderer/src/voice-live.event.state (branching)` — `src/renderer/src/voice-live.ts:167`
 
@@ -923,30 +924,30 @@ A layout as a caller supplies it. `visible` is canonicalised on the way in
 | `text` | `z.string().min(1)` | — | `src/core/input-shapes.ts:73` |
 | `paragraphId` | `slug → src/core/input-shapes.slug` | — | `src/core/input-shapes.ts:74` |
 
-### `src/core/input-shapes.InputField` — interface — `src/core/input-shapes.ts:367-380`
+### `src/core/input-shapes.InputField` — interface — `src/core/input-shapes.ts:370-383`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `name` | `string` | — | `src/core/input-shapes.ts:368` |  |
-| `type` | `string` | — | `src/core/input-shapes.ts:369` |  |
-| `required` | `boolean` | — | `src/core/input-shapes.ts:370` |  |
-| `default` | `?: unknown` | — | `src/core/input-shapes.ts:378` | Present when omitting the field APPLIES A VALUE rather than leaving it |
-| `note` | `?: string` | — | `src/core/input-shapes.ts:379` |  |
+| `name` | `string` | — | `src/core/input-shapes.ts:371` |  |
+| `type` | `string` | — | `src/core/input-shapes.ts:372` |  |
+| `required` | `boolean` | — | `src/core/input-shapes.ts:373` |  |
+| `default` | `?: unknown` | — | `src/core/input-shapes.ts:381` | Present when omitting the field APPLIES A VALUE rather than leaving it |
+| `note` | `?: string` | — | `src/core/input-shapes.ts:382` |  |
 
-### `src/core/input-shapes.Def` — interface — `src/core/input-shapes.ts:387-396`
+### `src/core/input-shapes.Def` — interface — `src/core/input-shapes.ts:390-399`
 
 The zod 4 def fields the walkers below read. `.transform()` is a `pipe` whose
 
 | field | type | default | at |
 |---|---|---|---|
-| `type` | `string` | — | `src/core/input-shapes.ts:388` |
-| `innerType` | `?: z.ZodType → ZodType (zod)` | — | `src/core/input-shapes.ts:389` |
-| `in` | `?: z.ZodType → ZodType (zod)` | — | `src/core/input-shapes.ts:390` |
-| `out` | `?: z.ZodType → ZodType (zod)` | — | `src/core/input-shapes.ts:391` |
-| `element` | `?: z.ZodType → ZodType (zod)` | — | `src/core/input-shapes.ts:392` |
-| `entries` | `?: Record<string, string \| number>` | — | `src/core/input-shapes.ts:393` |
-| `shape` | `?: Record<string, z.ZodType> → ZodType (zod)` | — | `src/core/input-shapes.ts:394` |
-| `defaultValue` | `?: unknown` | — | `src/core/input-shapes.ts:395` |
+| `type` | `string` | — | `src/core/input-shapes.ts:391` |
+| `innerType` | `?: z.ZodType → ZodType (zod)` | — | `src/core/input-shapes.ts:392` |
+| `in` | `?: z.ZodType → ZodType (zod)` | — | `src/core/input-shapes.ts:393` |
+| `out` | `?: z.ZodType → ZodType (zod)` | — | `src/core/input-shapes.ts:394` |
+| `element` | `?: z.ZodType → ZodType (zod)` | — | `src/core/input-shapes.ts:395` |
+| `entries` | `?: Record<string, string \| number>` | — | `src/core/input-shapes.ts:396` |
+| `shape` | `?: Record<string, z.ZodType> → ZodType (zod)` | — | `src/core/input-shapes.ts:397` |
+| `defaultValue` | `?: unknown` | — | `src/core/input-shapes.ts:398` |
 
 ### `src/core/open-context.OpenRefusal` — interface — `src/core/open-context.ts:45-52`
 
@@ -1033,6 +1034,15 @@ The zod 4 def fields the walkers below read. `.transform()` is a `pipe` whose
 | `file` | `string` | — | `src/core/project-store.ts:99` |
 | `message` | `string` | — | `src/core/project-store.ts:100` |
 
+### `src/core/reanchor.Para` — interface — `src/core/reanchor.ts:11-14`
+
+Where is the talent, after the words changed underneath them?
+
+| field | type | default | at |
+|---|---|---|---|
+| `id` | `string` | — | `src/core/reanchor.ts:12` |
+| `text` | `string` | — | `src/core/reanchor.ts:13` |
+
 ### `src/core/recognizer.RecognizerEvent` — interface — `src/core/recognizer.ts:11-15`
 
 One interface for "audio in, words out", so Apple (on-device) and Groq (cloud) can be swapped
@@ -1108,23 +1118,25 @@ Live (streaming) shape used by the app. Audio is mono 16 kHz signed 16-bit PCM p
 | `dryRun` | `?: boolean` | — | `src/core/safety.ts:301` |  |
 | `replayed` | `?: boolean` | — | `src/core/safety.ts:302` |  |
 
-### `src/core/stage.StagePosition` — interface — `src/core/stage.ts:29-34`
+### `src/core/stage.StagePosition` — interface — `src/core/stage.ts:29-36`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
 | `setId` | `string \| null` | — | `src/core/stage.ts:30` |  |
 | `scriptId` | `string \| null` | — | `src/core/stage.ts:31` |  |
-| `paragraphId` | `?: string \| null` | — | `src/core/stage.ts:33` | The beat, by paragraph id — stepping inside one script changes only this. |
+| `transcriptId` | `?: string \| null` | — | `src/core/stage.ts:33` | The transcript on stage: for a published story, its variant id. |
+| `paragraphId` | `?: string \| null` | — | `src/core/stage.ts:35` | The beat, by paragraph id — stepping inside one script changes only this. |
 
-### `src/core/stage.StageRequest` — interface — `src/core/stage.ts:36-44`
+### `src/core/stage.StageRequest` — interface — `src/core/stage.ts:38-48`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `seq` | `number` | — | `src/core/stage.ts:38` | Increases per request, so the window applies each one exactly once. |
-| `setId` | `string` | — | `src/core/stage.ts:39` |  |
-| `scriptId` | `string \| null` | — | `src/core/stage.ts:40` |  |
-| `requestedBy` | `string` | — | `src/core/stage.ts:42` | The principal name that asked (`agent:claude`, `cli`). |
-| `at` | `string` | — | `src/core/stage.ts:43` |  |
+| `seq` | `number` | — | `src/core/stage.ts:40` | Increases per request, so the window applies each one exactly once. |
+| `setId` | `string` | — | `src/core/stage.ts:41` |  |
+| `scriptId` | `string \| null` | — | `src/core/stage.ts:42` |  |
+| `variantId` | `string \| null` | — | `src/core/stage.ts:44` | The variant asked for, or null for whichever the script shows. |
+| `requestedBy` | `string` | — | `src/core/stage.ts:46` | The principal name that asked (`agent:claude`, `cli`). |
+| `at` | `string` | — | `src/core/stage.ts:47` |  |
 
 ### `src/core/text-script.TextScriptInput` — interface — `src/core/text-script.ts:28-48`
 
@@ -1721,125 +1733,128 @@ WHAT "CADENCE" ACTUALLY MEANS, shown in the app.
 | `rules` | `Rule[] → src/renderer/src/components/CadencePanel.Rule` | — | `src/renderer/src/components/CadencePanel.tsx:33` |
 | `envelopeSource` | `string` | — | `src/renderer/src/components/CadencePanel.tsx:34` |
 
-### `src/renderer/src/components/Zones.ParagraphVoice` — interface — `src/renderer/src/components/Zones.tsx:266-270`
+### `src/renderer/src/components/Zones.ParagraphVoice` — interface — `src/renderer/src/components/Zones.tsx:272-276`
 
 Voice-follow's view of the paragraph on screen. `null` = voice off: the zone renders exactly
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `word` | `number \| null` | — | `src/renderer/src/components/Zones.tsx:267` |  |
-| `anchorSeq` | `number` | — | `src/renderer/src/components/Zones.tsx:269` | Bumps on a manual re-anchor: the in-beat scroll may then go back. |
+| `word` | `number \| null` | — | `src/renderer/src/components/Zones.tsx:273` |  |
+| `anchorSeq` | `number` | — | `src/renderer/src/components/Zones.tsx:275` | Bumps on a manual re-anchor: the in-beat scroll may then go back. |
 
-### `src/renderer/src/store.CueCard` — interface — `src/renderer/src/store.ts:98-103`
-
-| field | type | default | at | note |
-|---|---|---|---|---|
-| `label` | `string` | — | `src/renderer/src/store.ts:99` |  |
-| `title` | `string` | — | `src/renderer/src/store.ts:100` |  |
-| `token` | `number` | — | `src/renderer/src/store.ts:102` | Changes on every cue so the component can restart its dismiss timer. |
-
-### `src/renderer/src/store.PrompterState` — interface — `src/renderer/src/store.ts:105-259`
+### `src/renderer/src/store.CueCard` — interface — `src/renderer/src/store.ts:99-104`
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `set` | `ScriptSet \| null → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:107` | Null until the control API answers. The UI shows a waiting state, not an error. |
-| `scriptId` | `string \| null` | — | `src/renderer/src/store.ts:108` |  |
-| `transcriptId` | `string \| null` | — | `src/renderer/src/store.ts:109` |  |
-| `style` | `TriggerStyle \| null → TriggerStyle (@shared/domain)` | — | `src/renderer/src/store.ts:110` |  |
-| `step` | `number` | — | `src/renderer/src/store.ts:113` | Index into the ACTIVE trigger set. THE position — everything derives from it. |
-| `visible` | `RecordingZone[] → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:115` |  |
-| `driven` | `RecordingZone → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:116` |  |
-| `weights` | `Record<RecordingZone, number> → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:122` | Flex weight per zone, adjusted by dragging a divider. Relative, not pixels, |
-| `camera` | `CameraSide → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:123` |  |
-| `transcriptOpen` | `boolean` | — | `src/renderer/src/store.ts:125` | The full-transcript skim surface. Overlays; never displaces (see below). |
-| `transcriptEdge` | `CameraSide → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:126` |  |
-| `setupOpen` | `boolean` | — | `src/renderer/src/store.ts:143` | The setup panel — everything that BUILDS an arrangement, in one slide-out. |
-| `mirror` | `boolean` | — | `src/renderer/src/store.ts:145` |  |
-| `focus` | `boolean` | — | `src/renderer/src/store.ts:146` |  |
-| `text` | `TextPreset → TextPreset (@shared/rig)` | — | `src/renderer/src/store.ts:147` |  |
-| `rigs` | `Rig[] → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:157` | Named arrangements, and the one currently applied. |
-| `rigId` | `string \| null` | — | `src/renderer/src/store.ts:158` |  |
-| `rigsLoaded` | `boolean` | — | `src/renderer/src/store.ts:167` | Whether the stored workspace has actually been read. |
-| `restoredLayout` | `boolean` | — | `src/renderer/src/store.ts:174` | Whether a stored arrangement was actually applied — as opposed to the app |
-| `pendingPosition` | `WorkspacePosition \| null → WorkspacePosition (@shared/rig)` | — | `src/renderer/src/store.ts:182` | The saved position, held between `loadRigs` (which recalls it) and `load` |
-| `freshTranscripts` | `Record<string, string[]>` | — | `src/renderer/src/store.ts:193` | Transcripts that arrived or changed since the talent last looked at them — |
-| `cue` | `CueCard \| null → src/renderer/src/store.CueCard` | — | `src/renderer/src/store.ts:195` |  |
-| `nudge` | `number` | — | `src/renderer/src/store.ts:197` | Increments each time a step was refused at the boundary, to replay the nudge. |
-| `load` | `(set: ScriptSet) => void → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:199` |  |
-| `refresh` | `(set: ScriptSet) => void → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:200` |  |
-| `stepNext` | `() => void` | — | `src/renderer/src/store.ts:201` |  |
-| `stepPrev` | `() => void` | — | `src/renderer/src/store.ts:202` |  |
-| `voiceAdvance` | `(paragraphId: string) => boolean` | — | `src/renderer/src/store.ts:204` | Voice-follow: move forward to a paragraph. Returns whether the prompter moved. |
-| `selectScript` | `(scriptId: string) => void` | — | `src/renderer/src/store.ts:205` |  |
-| `goToNextScript` | `() => void` | — | `src/renderer/src/store.ts:206` |  |
-| `goToPrevScript` | `() => void` | — | `src/renderer/src/store.ts:207` |  |
-| `selectTranscript` | `(transcriptId: string) => void` | — | `src/renderer/src/store.ts:208` |  |
-| `selectStyle` | `(style: TriggerStyle) => void → TriggerStyle (@shared/domain)` | — | `src/renderer/src/store.ts:209` |  |
-| `toggleZone` | `(zone: RecordingZone) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:210` |  |
-| `setDriven` | `(zone: RecordingZone) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:211` |  |
-| `setCamera` | `(side: CameraSide) => void → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:212` |  |
-| `resizeZones` | `(left: RecordingZone, right: RecordingZone, deltaPx: number) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:213` |  |
-| `toggleTranscript` | `() => void` | — | `src/renderer/src/store.ts:214` |  |
-| `toggleSetup` | `() => void` | — | `src/renderer/src/store.ts:215` |  |
-| `closeSetup` | `() => void` | — | `src/renderer/src/store.ts:216` |  |
-| `toggleMirror` | `() => void` | — | `src/renderer/src/store.ts:217` |  |
-| `toggleFocus` | `() => void` | — | `src/renderer/src/store.ts:218` |  |
-| `setText` | `(preset: TextPreset) => void → TextPreset (@shared/rig)` | — | `src/renderer/src/store.ts:219` |  |
-| `loadRigs` | `(rigs: Rig[], workspace: Workspace) => void → Rig (@shared/rig), Workspace (@shared/rig)` | — | `src/renderer/src/store.ts:220` |  |
-| `setRigs` | `(rigs: Rig[]) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:221` |  |
-| `sets` | `SetSummary[] → src/renderer/src/store.SetSummary` | — | `src/renderer/src/store.ts:228` | Every set (project) in the store, as summaries — for the setup panel's |
-| `setSets` | `(sets: SetSummary[]) => void → src/renderer/src/store.SetSummary` | — | `src/renderer/src/store.ts:229` |  |
-| `openProject` | `string \| null` | — | `src/renderer/src/store.ts:231` | The session's open project (W6 `context_get`), or null. Never persisted, like the context itself. |
-| `setOpenProject` | `(project: string \| null) => void` | — | `src/renderer/src/store.ts:233` | Records the open project. |
-| `stageHold` | `StageHold \| null → src/renderer/src/store.StageHold` | — | `src/renderer/src/store.ts:235` | Non-null while a change event is holding the on-stage data (W6 S1/S2). |
-| `setStageHold` | `(hold: StageHold \| null) => void → src/renderer/src/store.StageHold` | — | `src/renderer/src/store.ts:236` |  |
-| `unreadableFile` | `UnreadableFile \| null → src/renderer/src/store.UnreadableFile` | — | `src/renderer/src/store.ts:238` | The open project's fli.tubby.json when it cannot be read, else null. |
-| `setUnreadableFile` | `(file: UnreadableFile \| null) => void → src/renderer/src/store.UnreadableFile` | — | `src/renderer/src/store.ts:239` |  |
-| `requestedSetId` | `string \| null` | — | `src/renderer/src/store.ts:240` |  |
-| `requestSet` | `(setId: string) => void` | — | `src/renderer/src/store.ts:241` |  |
-| `clearRequestedSet` | `() => void` | — | `src/renderer/src/store.ts:242` |  |
-| `requestedScriptId` | `string \| null` | — | `src/renderer/src/store.ts:248` | The script to land on once `requestedSetId` has loaded — set only by an |
-| `applyStageRequest` | `(setId: string, scriptId: string \| null) => void` | — | `src/renderer/src/store.ts:254` | Apply an agent's stage request. Same set → just the script; another set |
-| `applyRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:255` |  |
-| `adoptRig` | `(rig: Rig) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:256` |  |
-| `forgetRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:257` |  |
-| `dismissCue` | `() => void` | — | `src/renderer/src/store.ts:258` |  |
+| `label` | `string` | — | `src/renderer/src/store.ts:100` |  |
+| `title` | `string` | — | `src/renderer/src/store.ts:101` |  |
+| `token` | `number` | — | `src/renderer/src/store.ts:103` | Changes on every cue so the component can restart its dismiss timer. |
 
-### `src/renderer/src/store.SetSummary` — interface — `src/renderer/src/store.ts:266-284`
+### `src/renderer/src/store.PrompterState` — interface — `src/renderer/src/store.ts:106-266`
+
+| field | type | default | at | note |
+|---|---|---|---|---|
+| `set` | `ScriptSet \| null → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:108` | Null until the control API answers. The UI shows a waiting state, not an error. |
+| `scriptId` | `string \| null` | — | `src/renderer/src/store.ts:109` |  |
+| `transcriptId` | `string \| null` | — | `src/renderer/src/store.ts:110` |  |
+| `style` | `TriggerStyle \| null → TriggerStyle (@shared/domain)` | — | `src/renderer/src/store.ts:111` |  |
+| `step` | `number` | — | `src/renderer/src/store.ts:114` | Index into the ACTIVE trigger set. THE position — everything derives from it. |
+| `visible` | `RecordingZone[] → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:116` |  |
+| `driven` | `RecordingZone → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:117` |  |
+| `weights` | `Record<RecordingZone, number> → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:123` | Flex weight per zone, adjusted by dragging a divider. Relative, not pixels, |
+| `camera` | `CameraSide → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:124` |  |
+| `transcriptOpen` | `boolean` | — | `src/renderer/src/store.ts:126` | The full-transcript skim surface. Overlays; never displaces (see below). |
+| `transcriptEdge` | `CameraSide → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:127` |  |
+| `setupOpen` | `boolean` | — | `src/renderer/src/store.ts:144` | The setup panel — everything that BUILDS an arrangement, in one slide-out. |
+| `mirror` | `boolean` | — | `src/renderer/src/store.ts:146` |  |
+| `focus` | `boolean` | — | `src/renderer/src/store.ts:147` |  |
+| `text` | `TextPreset → TextPreset (@shared/rig)` | — | `src/renderer/src/store.ts:148` |  |
+| `rigs` | `Rig[] → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:158` | Named arrangements, and the one currently applied. |
+| `rigId` | `string \| null` | — | `src/renderer/src/store.ts:159` |  |
+| `rigsLoaded` | `boolean` | — | `src/renderer/src/store.ts:168` | Whether the stored workspace has actually been read. |
+| `restoredLayout` | `boolean` | — | `src/renderer/src/store.ts:175` | Whether a stored arrangement was actually applied — as opposed to the app |
+| `pendingPosition` | `WorkspacePosition \| null → WorkspacePosition (@shared/rig)` | — | `src/renderer/src/store.ts:183` | The saved position, held between `loadRigs` (which recalls it) and `load` |
+| `freshTranscripts` | `Record<string, string[]>` | — | `src/renderer/src/store.ts:194` | Transcripts that arrived or changed since the talent last looked at them — |
+| `cue` | `CueCard \| null → src/renderer/src/store.CueCard` | — | `src/renderer/src/store.ts:196` |  |
+| `nudge` | `number` | — | `src/renderer/src/store.ts:198` | Increments each time a step was refused at the boundary, to replay the nudge. |
+| `load` | `(set: ScriptSet) => void → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:200` |  |
+| `refresh` | `(set: ScriptSet) => void → ScriptSet (@shared/domain)` | — | `src/renderer/src/store.ts:201` |  |
+| `stepNext` | `() => void` | — | `src/renderer/src/store.ts:202` |  |
+| `stepPrev` | `() => void` | — | `src/renderer/src/store.ts:203` |  |
+| `voiceAdvance` | `(paragraphId: string) => boolean` | — | `src/renderer/src/store.ts:205` | Voice-follow: move forward to a paragraph. Returns whether the prompter moved. |
+| `selectScript` | `(scriptId: string) => void` | — | `src/renderer/src/store.ts:206` |  |
+| `goToNextScript` | `() => void` | — | `src/renderer/src/store.ts:207` |  |
+| `goToPrevScript` | `() => void` | — | `src/renderer/src/store.ts:208` |  |
+| `selectTranscript` | `(transcriptId: string) => void` | — | `src/renderer/src/store.ts:209` |  |
+| `selectStyle` | `(style: TriggerStyle) => void → TriggerStyle (@shared/domain)` | — | `src/renderer/src/store.ts:210` |  |
+| `toggleZone` | `(zone: RecordingZone) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:211` |  |
+| `setDriven` | `(zone: RecordingZone) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:212` |  |
+| `setCamera` | `(side: CameraSide) => void → CameraSide (@shared/rig)` | — | `src/renderer/src/store.ts:213` |  |
+| `resizeZones` | `(left: RecordingZone, right: RecordingZone, deltaPx: number) => void → RecordingZone (@shared/rig)` | — | `src/renderer/src/store.ts:214` |  |
+| `toggleTranscript` | `() => void` | — | `src/renderer/src/store.ts:215` |  |
+| `toggleSetup` | `() => void` | — | `src/renderer/src/store.ts:216` |  |
+| `closeSetup` | `() => void` | — | `src/renderer/src/store.ts:217` |  |
+| `toggleMirror` | `() => void` | — | `src/renderer/src/store.ts:218` |  |
+| `toggleFocus` | `() => void` | — | `src/renderer/src/store.ts:219` |  |
+| `setText` | `(preset: TextPreset) => void → TextPreset (@shared/rig)` | — | `src/renderer/src/store.ts:220` |  |
+| `loadRigs` | `(rigs: Rig[], workspace: Workspace) => void → Rig (@shared/rig), Workspace (@shared/rig)` | — | `src/renderer/src/store.ts:221` |  |
+| `setRigs` | `(rigs: Rig[]) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:222` |  |
+| `sets` | `SetSummary[] → src/renderer/src/store.SetSummary` | — | `src/renderer/src/store.ts:229` | Every set (project) in the store, as summaries — for the setup panel's |
+| `setSets` | `(sets: SetSummary[]) => void → src/renderer/src/store.SetSummary` | — | `src/renderer/src/store.ts:230` |  |
+| `openProject` | `string \| null` | — | `src/renderer/src/store.ts:232` | The session's open project (W6 `context_get`), or null. Never persisted, like the context itself. |
+| `setOpenProject` | `(project: string \| null) => void` | — | `src/renderer/src/store.ts:234` | Records the open project. |
+| `stageHold` | `StageHold \| null → src/renderer/src/store.StageHold` | — | `src/renderer/src/store.ts:236` | Non-null while a change event is holding the on-stage data (W6 S1/S2). |
+| `setStageHold` | `(hold: StageHold \| null) => void → src/renderer/src/store.StageHold` | — | `src/renderer/src/store.ts:237` |  |
+| `unreadableFile` | `UnreadableFile \| null → src/renderer/src/store.UnreadableFile` | — | `src/renderer/src/store.ts:239` | The open project's fli.tubby.json when it cannot be read, else null. |
+| `setUnreadableFile` | `(file: UnreadableFile \| null) => void → src/renderer/src/store.UnreadableFile` | — | `src/renderer/src/store.ts:240` |  |
+| `requestedSetId` | `string \| null` | — | `src/renderer/src/store.ts:241` |  |
+| `requestSet` | `(setId: string) => void` | — | `src/renderer/src/store.ts:242` |  |
+| `clearRequestedSet` | `() => void` | — | `src/renderer/src/store.ts:243` |  |
+| `requestedScriptId` | `string \| null` | — | `src/renderer/src/store.ts:249` | The script to land on once `requestedSetId` has loaded — set only by an |
+| `applyStageRequest` | `(setId: string, scriptId: string \| null, variantId?: string \| null) => void` | — | `src/renderer/src/store.ts:255` | Apply an agent's stage request. Same set → just the script; another set |
+| `requestedVariantId` | `string \| null` | — | `src/renderer/src/store.ts:257` | A variant an agent asked for that has not arrived in this window yet. |
+| `variantPlaces` | `Record<string, string>` | — | `src/renderer/src/store.ts:259` | The paragraph the talent left each variant on, this session only. |
+| `contentSeq` | `number` | — | `src/renderer/src/store.ts:261` | Bumped when the words on stage change under the talent, so the lane re-seats the live row. |
+| `applyRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:262` |  |
+| `adoptRig` | `(rig: Rig) => void → Rig (@shared/rig)` | — | `src/renderer/src/store.ts:263` |  |
+| `forgetRig` | `(rigId: string) => void` | — | `src/renderer/src/store.ts:264` |  |
+| `dismissCue` | `() => void` | — | `src/renderer/src/store.ts:265` |  |
+
+### `src/renderer/src/store.SetSummary` — interface — `src/renderer/src/store.ts:273-291`
 
 What `list_sets` answers with — a project row for the setup panel.
 
 | field | type | default | at | note |
 |---|---|---|---|---|
-| `id` | `string` | — | `src/renderer/src/store.ts:267` |  |
-| `title` | `string` | — | `src/renderer/src/store.ts:268` |  |
-| `description` | `string` | — | `src/renderer/src/store.ts:269` |  |
-| `project` | `string \| null` | — | `src/renderer/src/store.ts:271` | The FliHub folder name, verbatim, or null for an unattached set. |
-| `scriptCount` | `number` | — | `src/renderer/src/store.ts:272` |  |
-| `exportedTo` | `?: string \| null` | — | `src/renderer/src/store.ts:274` | Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy. |
-| `readOnly` | `?: boolean` | — | `src/renderer/src/store.ts:276` | An exported store copy seen without its project open — listed, never editable. |
-| `livesIn` | `?: string \| null` | — | `src/renderer/src/store.ts:277` |  |
-| `onDemand` | `?: boolean` | — | `src/renderer/src/store.ts:279` | A project's on-demand named scripts (`write_script`) — listed by name, newest first. |
-| `source` | `?: 'project' \| 'store'` | — | `src/renderer/src/store.ts:281` | Where this row's data was read from: the open project's fli.tubby.json, or the app store. |
-| `unreadable` | `?: boolean` | — | `src/renderer/src/store.ts:283` | The open project's fli.tubby.json cannot be read, and this set may live there — get_set refuses it. |
+| `id` | `string` | — | `src/renderer/src/store.ts:274` |  |
+| `title` | `string` | — | `src/renderer/src/store.ts:275` |  |
+| `description` | `string` | — | `src/renderer/src/store.ts:276` |  |
+| `project` | `string \| null` | — | `src/renderer/src/store.ts:278` | The FliHub folder name, verbatim, or null for an unattached set. |
+| `scriptCount` | `number` | — | `src/renderer/src/store.ts:279` |  |
+| `exportedTo` | `?: string \| null` | — | `src/renderer/src/store.ts:281` | Set on an exported app-store copy (W6): the folder whose fli.tubby.json holds the live copy. |
+| `readOnly` | `?: boolean` | — | `src/renderer/src/store.ts:283` | An exported store copy seen without its project open — listed, never editable. |
+| `livesIn` | `?: string \| null` | — | `src/renderer/src/store.ts:284` |  |
+| `onDemand` | `?: boolean` | — | `src/renderer/src/store.ts:286` | A project's on-demand named scripts (`write_script`) — listed by name, newest first. |
+| `source` | `?: 'project' \| 'store'` | — | `src/renderer/src/store.ts:288` | Where this row's data was read from: the open project's fli.tubby.json, or the app store. |
+| `unreadable` | `?: boolean` | — | `src/renderer/src/store.ts:290` | The open project's fli.tubby.json cannot be read, and this set may live there — get_set refuses it. |
 
-### `src/renderer/src/store.UnreadableFile` — interface — `src/renderer/src/store.ts:287-290`
+### `src/renderer/src/store.UnreadableFile` — interface — `src/renderer/src/store.ts:294-297`
 
 `list_sets.filter.unreadable` — the project file that could not be read, named.
 
 | field | type | default | at |
 |---|---|---|---|
-| `file` | `string` | — | `src/renderer/src/store.ts:288` |
-| `message` | `string` | — | `src/renderer/src/store.ts:289` |
+| `file` | `string` | — | `src/renderer/src/store.ts:295` |
+| `message` | `string` | — | `src/renderer/src/store.ts:296` |
 
-### `src/renderer/src/store.StageHold` — interface — `src/renderer/src/store.ts:343-346`
+### `src/renderer/src/store.StageHold` — interface — `src/renderer/src/store.ts:350-353`
 
 Why the set on stage is being HELD rather than refreshed — shown by the
 
 | field | type | default | at |
 |---|---|---|---|
-| `reason` | `'project-closed' \| 'unreadable'` | — | `src/renderer/src/store.ts:344` |
-| `message` | `string` | — | `src/renderer/src/store.ts:345` |
+| `reason` | `'project-closed' \| 'unreadable'` | — | `src/renderer/src/store.ts:351` |
+| `message` | `string` | — | `src/renderer/src/store.ts:352` |
 
 ### `src/renderer/src/voice-live.VoiceStore` — interface — `src/renderer/src/voice-live.ts:15-29`
 
@@ -2371,13 +2386,13 @@ The census found these top-level declarations and the extractor did not mirror t
 
 | family | count | declarations |
 |---|---|---|
-| class | 22 | `src/core/active-context.ActiveContextHolder` `src/core/active-context.ts:48`<br>`src/core/open-context.OpenContextHolder` `src/core/open-context.ts:250`<br>`src/core/press-log.PressLog` `src/core/press-log.ts:40`<br>`src/core/repository.FileRepository` `src/core/repository.ts:109`<br>`src/core/repository.MemoryRepository` `src/core/repository.ts:80`<br>`src/core/safety.AuditLog` `src/core/safety.ts:305`<br>`src/core/safety.CapabilityFailure` `src/core/safety.ts:40`<br>`src/core/safety.ConfirmationLedger` `src/core/safety.ts:125`<br>`src/core/safety.IdempotencyLedger` `src/core/safety.ts:220`<br>`src/core/safety.RateLimiter` `src/core/safety.ts:259`<br>`src/core/stage.StageRequests` `src/core/stage.ts:46`<br>`src/core/stage.TalentActivity` `src/core/stage.ts:66`<br>`src/main/file-author.FileAuthor` `src/main/file-author.ts:32`<br>`src/main/ipc-router.IpcRouter` `src/main/ipc-router.ts:19`<br>`src/main/process-supervisor.Managed` `src/main/process-supervisor.ts:54`<br>`src/main/process-supervisor.ProcessSupervisor` `src/main/process-supervisor.ts:31`<br>`src/main/updater.Updater` `src/main/updater.ts:25`<br>`src/main/voice/apple-live.AppleLive` `src/main/voice/apple-live.ts:11`<br>`src/main/voice/groq-live.AudioBudget` `src/main/voice/groq-live.ts:21`<br>`src/main/voice/groq-live.GroqLive` `src/main/voice/groq-live.ts:77`<br>`src/main/voice/voice-session.VoiceSession` `src/main/voice/voice-session.ts:16`<br>`src/main/window-manager.WindowManager` `src/main/window-manager.ts:20` |
-| object constant | 10 | `src/core/agent-layer.DOTTED_NAME` `src/core/agent-layer.ts:52`<br>`src/core/input-shapes.INPUT` `src/core/input-shapes.ts:78`<br>`src/core/repository.EMPTY_DOCUMENT` `src/core/repository.ts:35`<br>`src/core/voice-follow.DEFAULT_OPTIONS` `src/core/voice-follow.ts:33`<br>`src/renderer/src/store.ZONE_LABEL` `src/renderer/src/store.ts:90`<br>`src/shared/domain.TRIGGER_STYLE_LETTER` `src/shared/domain.ts:87`<br>`src/shared/ipc.IPC` `src/shared/ipc.ts:23`<br>`src/shared/rig.DEFAULT_LAYOUT` `src/shared/rig.ts:142`<br>`src/shared/rig.EMPTY_WORKSPACE` `src/shared/rig.ts:133`<br>`src/shared/script-set.KYBERNESIS_PHASE_1` `src/shared/script-set.ts:17` |
+| class | 22 | `src/core/active-context.ActiveContextHolder` `src/core/active-context.ts:48`<br>`src/core/open-context.OpenContextHolder` `src/core/open-context.ts:250`<br>`src/core/press-log.PressLog` `src/core/press-log.ts:40`<br>`src/core/repository.FileRepository` `src/core/repository.ts:109`<br>`src/core/repository.MemoryRepository` `src/core/repository.ts:80`<br>`src/core/safety.AuditLog` `src/core/safety.ts:305`<br>`src/core/safety.CapabilityFailure` `src/core/safety.ts:40`<br>`src/core/safety.ConfirmationLedger` `src/core/safety.ts:125`<br>`src/core/safety.IdempotencyLedger` `src/core/safety.ts:220`<br>`src/core/safety.RateLimiter` `src/core/safety.ts:259`<br>`src/core/stage.StageRequests` `src/core/stage.ts:50`<br>`src/core/stage.TalentActivity` `src/core/stage.ts:76`<br>`src/main/file-author.FileAuthor` `src/main/file-author.ts:32`<br>`src/main/ipc-router.IpcRouter` `src/main/ipc-router.ts:19`<br>`src/main/process-supervisor.Managed` `src/main/process-supervisor.ts:54`<br>`src/main/process-supervisor.ProcessSupervisor` `src/main/process-supervisor.ts:31`<br>`src/main/updater.Updater` `src/main/updater.ts:25`<br>`src/main/voice/apple-live.AppleLive` `src/main/voice/apple-live.ts:11`<br>`src/main/voice/groq-live.AudioBudget` `src/main/voice/groq-live.ts:21`<br>`src/main/voice/groq-live.GroqLive` `src/main/voice/groq-live.ts:77`<br>`src/main/voice/voice-session.VoiceSession` `src/main/voice/voice-session.ts:16`<br>`src/main/window-manager.WindowManager` `src/main/window-manager.ts:20` |
+| object constant | 10 | `src/core/agent-layer.DOTTED_NAME` `src/core/agent-layer.ts:52`<br>`src/core/input-shapes.INPUT` `src/core/input-shapes.ts:78`<br>`src/core/repository.EMPTY_DOCUMENT` `src/core/repository.ts:35`<br>`src/core/voice-follow.DEFAULT_OPTIONS` `src/core/voice-follow.ts:33`<br>`src/renderer/src/store.ZONE_LABEL` `src/renderer/src/store.ts:91`<br>`src/shared/domain.TRIGGER_STYLE_LETTER` `src/shared/domain.ts:87`<br>`src/shared/ipc.IPC` `src/shared/ipc.ts:23`<br>`src/shared/rig.DEFAULT_LAYOUT` `src/shared/rig.ts:142`<br>`src/shared/rig.EMPTY_WORKSPACE` `src/shared/rig.ts:133`<br>`src/shared/script-set.KYBERNESIS_PHASE_1` `src/shared/script-set.ts:17` |
 | alias of a primitive | 8 | `src/shared/domain.ParagraphId` `src/shared/domain.ts:47`<br>`src/shared/domain.ScriptId` `src/shared/domain.ts:44`<br>`src/shared/domain.SetId` `src/shared/domain.ts:43`<br>`src/shared/domain.TalentId` `src/shared/domain.ts:49`<br>`src/shared/domain.TopicId` `src/shared/domain.ts:46`<br>`src/shared/domain.TranscriptId` `src/shared/domain.ts:45`<br>`src/shared/domain.TriggerId` `src/shared/domain.ts:48`<br>`src/shared/rig.RigId` `src/shared/rig.ts:32` |
 | array constant | 3 | `src/core/voice-selftest.SELFTEST_SCRIPT` `src/core/voice-selftest.ts:16`<br>`src/shared/capabilities.CAPABILITIES` `src/shared/capabilities.ts:168`<br>`src/shared/script-set.TALENTS` `src/shared/script-set.ts:2110` |
-| const built by a call (helper or non-zod call) | 3 | `src/core/agent-layer.SNAKE_NAME` `src/core/agent-layer.ts:93`<br>`src/renderer/src/store.useProm` `src/renderer/src/store.ts:421`<br>`src/renderer/src/voice-live.useVoice` `src/renderer/src/voice-live.ts:34` |
+| const built by a call (helper or non-zod call) | 3 | `src/core/agent-layer.SNAKE_NAME` `src/core/agent-layer.ts:93`<br>`src/renderer/src/store.useProm` `src/renderer/src/store.ts:428`<br>`src/renderer/src/voice-live.useVoice` `src/renderer/src/voice-live.ts:34` |
 | constant (other form) | 3 | `src/core/active-context.ACTIVE_CONTEXT_TTL_MS` `src/core/active-context.ts:27`<br>`src/core/safety.CONFIRMATION_TTL_MS` `src/core/safety.ts:123`<br>`src/core/stage.TALENT_BUSY_WINDOW_MS` `src/core/stage.ts:27` |
-| alias of another value (`X = Y`) | 1 | `src/core/input-shapes.INPUT_BY_NAME` `src/core/input-shapes.ts:365` |
+| alias of another value (`X = Y`) | 1 | `src/core/input-shapes.INPUT_BY_NAME` `src/core/input-shapes.ts:368` |
 | derived type (`keyof typeof`, indexed access, `typeof`) | 1 | `src/shared/capabilities.CapabilityName` `src/shared/capabilities.ts:411` |
 | instance constant (`new ...`) | 1 | `src/shared/capabilities.CAPABILITY_BY_NAME` `src/shared/capabilities.ts:413` |
 | union of named or mixed types | 1 | `src/core/active-context.ActiveContext` `src/core/active-context.ts:38` |
@@ -2387,11 +2402,11 @@ The census found these top-level declarations and the extractor did not mirror t
 
 These are refactors of the **application**, not of this mirror. Each one converts a derived section into a declared one.
 
-1. `src/core/input-shapes.ts:408` — REFACTOR: `def.type` is a closed set enforced only by control flow at src/core/input-shapes.ts:408. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
+1. `src/core/input-shapes.ts:411` — REFACTOR: `def.type` is a closed set enforced only by control flow at src/core/input-shapes.ts:411. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
 2. `src/core/press-log.ts:34` — REFACTOR (minor): `KINDS` at src/core/press-log.ts:34 names the set but does not type it. A z.enum or `as const` + `typeof KINDS[number]` would make a wrong value a static error rather than a runtime miss.
 3. `src/main/control-server.ts:385` — REFACTOR: `result.error.code` is a closed set enforced only by control flow at src/main/control-server.ts:385. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
 4. `src/main/voice/apple-bundle.ts:17` — REFACTOR: `status` is a closed set enforced only by control flow at src/main/voice/apple-bundle.ts:17. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
-5. `src/renderer/src/App.tsx:787` — REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:787. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
+5. `src/renderer/src/App.tsx:791` — REFACTOR: `zone` is a closed set enforced only by control flow at src/renderer/src/App.tsx:791. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
 6. `src/renderer/src/voice-live.ts:167` — REFACTOR: `event.state` is a closed set enforced only by control flow at src/renderer/src/voice-live.ts:167. Declare it once (a z.enum or a literal union type) and type the subject with it; until then this section is DERIVED and will drift silently.
 
 ---

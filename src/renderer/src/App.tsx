@@ -191,13 +191,13 @@ export default function App(): JSX.Element {
     let appliedStageSeq = 0;
     const applyStageRequest = async (): Promise<void> => {
       const result = await window.appytron.invoke<{
-        request: { seq: number; setId: string; scriptId: string | null } | null;
+        request: { seq: number; setId: string; scriptId: string | null; variantId: string | null } | null;
       }>({ capability: 'stage_get' });
       if (cancelled || !result.ok || !result.data.request) return;
       const request = result.data.request;
       if (request.seq <= appliedStageSeq) return;
       appliedStageSeq = request.seq;
-      useProm.getState().applyStageRequest(request.setId, request.scriptId);
+      useProm.getState().applyStageRequest(request.setId, request.scriptId, request.variantId);
     };
 
     const unsubscribe = window.appytron.onControlChanged(() => {
@@ -284,7 +284,11 @@ export default function App(): JSX.Element {
         load(full.data);
         // An agent's stage_select names the script too; a person's pick does not.
         const script = useProm.getState().requestedScriptId;
-        if (script && full.data.scripts.some((s) => s.id === script)) useProm.getState().selectScript(script);
+        const variant = useProm.getState().requestedVariantId;
+        if (script && full.data.scripts.some((s) => s.id === script)) {
+          useProm.getState().selectScript(script);
+          if (variant) useProm.getState().applyStageRequest(full.data.id, script, variant);
+        }
       }
       useProm.setState({ requestedScriptId: null });
       useProm.getState().clearRequestedSet();
@@ -1002,7 +1006,7 @@ function Stage(): JSX.Element {
           {/* Corpus and style are the two axes of the A/B/C experiment and the
               talent flips them mid-session, so they are never behind a gesture —
               not the setup panel's, and not the reclaimed state's either. */}
-          <div className="flex shrink-0 gap-1.5">
+          <div className="flex min-w-0 max-w-[45vw] gap-1.5 overflow-x-auto">
             {/* A corpus that ARRIVED gets a pulsing yellow dot until it is
                 selected. David sat one click from v07-rewrite for an hour
                 believing it had not landed — the write path worked, the chip
@@ -1017,20 +1021,34 @@ function Stage(): JSX.Element {
                   on={t.id === transcript?.id}
                   source={isSource}
                   title={
-                    isSource
-                      ? 'Source material — the original, not a performance script'
-                      : undefined
+                    t.variant
+                      ? `${t.variant.label} · v${t.variant.version}`
+                      : isSource
+                        ? 'Source material — the original, not a performance script'
+                        : undefined
                   }
+                  data={{
+                    'data-testid': 'transcript-chip',
+                    'data-transcript-id': t.id,
+                    'data-active': String(t.id === transcript?.id),
+                  }}
                   onClick={() => selectTranscript(t.id)}
                 >
-                  {t.corpus}
+                  {t.variant ? (
+                    <span className="inline-block max-w-[24ch] truncate align-bottom">{t.variant.label}</span>
+                  ) : (
+                    t.corpus
+                  )}
                   {isSource && (
                     <span className="ml-1.5 font-mono text-[0.6rem] normal-case tracking-normal opacity-70">
                       source
                     </span>
                   )}
                   {arrived && (
-                    <span className="ml-1.5 inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-driven align-middle ring-1 ring-edge-strong" />
+                    <span
+                      data-testid="arrival-dot"
+                      className="ml-1.5 inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-driven align-middle ring-1 ring-edge-strong"
+                    />
                   )}
                 </Chip>
               );

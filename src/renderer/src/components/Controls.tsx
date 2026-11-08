@@ -31,9 +31,12 @@ export function Chip({
   title,
   mono,
   source,
+  data,
   children,
 }: {
   on: boolean;
+  /** `data-*` attributes for the element, so a test can find it without leaning on a class name. */
+  data?: Record<string, string>;
   disabled?: boolean;
   onClick: () => void;
   title?: string;
@@ -58,6 +61,7 @@ export function Chip({
 }): JSX.Element {
   return (
     <button
+      {...data}
       type="button"
       onClick={onClick}
       disabled={disabled}

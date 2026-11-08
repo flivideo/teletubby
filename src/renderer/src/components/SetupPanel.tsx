@@ -287,6 +287,7 @@ export default function SetupPanel(): JSX.Element | null {
 
   const set = useProm((s) => s.set);
   const scriptId = useProm((s) => s.scriptId);
+  const current = set?.scripts.find((s) => s.id === scriptId);
   const selectScript = useProm((s) => s.selectScript);
 
   const visible = useProm(useShallow((s) => s.visible));
@@ -363,6 +364,20 @@ export default function SetupPanel(): JSX.Element | null {
                 </Chip>
               ))}
             </div>
+          </Field>
+        )}
+        {current?.transcripts.some((t) => t.variant) && (
+          <Field label="Variants">
+            <ul className="flex flex-col gap-1 font-mono text-[0.7rem]" data-testid="variant-versions">
+              {current.transcripts.map(
+                (t) =>
+                  t.variant && (
+                    <li key={t.id} className="truncate">
+                      {t.variant.label} · v{t.variant.version}
+                    </li>
+                  ),
+              )}
+            </ul>
           </Field>
         )}
         {set && !set.onDemand && (

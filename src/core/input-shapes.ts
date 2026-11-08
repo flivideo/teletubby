@@ -346,6 +346,9 @@ export const INPUT = {
   stage_select: z.object({
         setId: slug.describe('the set to put on stage (set.list / set.get)'),
         scriptId: slug.optional().describe('a script in that set; omitted → the set opens at its default script'),
+        variantId: slug
+          .optional()
+          .describe('a published variant of that script; needs scriptId. Already on stage → nothing happens'),
         dryRun: z.boolean().optional(),
       }),
   stage_get: z.object({}),

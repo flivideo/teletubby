@@ -204,10 +204,13 @@ export function attachVoiceFollow(): () => void {
   // Any position change that is not ours is the talent's own hand: re-anchor, forget the audio.
   let lastStep = useProm.getState().step;
   let lastScript = useProm.getState().scriptId;
+  let lastContent = useProm.getState().contentSeq;
   const offStore = useProm.subscribe((s) => {
-    const moved = s.step !== lastStep || s.scriptId !== lastScript;
+    // New words under the talent are a re-anchor too: the driver holds the old text.
+    const moved = s.step !== lastStep || s.scriptId !== lastScript || s.contentSeq !== lastContent;
     lastStep = s.step;
     lastScript = s.scriptId;
+    lastContent = s.contentSeq;
     if (!moved || selfMove || !useVoice.getState().on) return;
     driver = null; // rebuilt lazily from the new position
     ensureDriver();

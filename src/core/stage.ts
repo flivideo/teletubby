@@ -29,6 +29,8 @@ export const TALENT_BUSY_WINDOW_MS = 2 * 60 * 1000;
 export interface StagePosition {
   setId: string | null;
   scriptId: string | null;
+  /** The transcript on stage: for a published story, its variant id. */
+  transcriptId?: string | null;
   /** The beat, by paragraph id — stepping inside one script changes only this. */
   paragraphId?: string | null;
 }
@@ -38,6 +40,8 @@ export interface StageRequest {
   seq: number;
   setId: string;
   scriptId: string | null;
+  /** The variant asked for, or null for whichever the script shows. */
+  variantId: string | null;
   /** The principal name that asked (`agent:claude`, `cli`). */
   requestedBy: string;
   at: string;
@@ -47,11 +51,17 @@ export class StageRequests {
   private latest: StageRequest | null = null;
   constructor(private readonly clock: Clock) {}
 
-  request(setId: string, scriptId: string | null, requestedBy: string): StageRequest {
+  request(
+    setId: string,
+    scriptId: string | null,
+    requestedBy: string,
+    variantId: string | null = null,
+  ): StageRequest {
     this.latest = {
       seq: (this.latest?.seq ?? 0) + 1,
       setId,
       scriptId,
+      variantId,
       requestedBy,
       at: new Date(this.clock()).toISOString(),
     };
@@ -78,6 +88,7 @@ export class TalentActivity {
     const next: StagePosition = {
       setId: position?.setId ?? null,
       scriptId: position?.scriptId ?? null,
+      transcriptId: position?.transcriptId ?? null,
       paragraphId: position?.paragraphId ?? null,
     };
     const previous = this.lastPosition;
@@ -88,6 +99,7 @@ export class TalentActivity {
     if (
       previous.setId === next.setId &&
       previous.scriptId === next.scriptId &&
+      previous.transcriptId === next.transcriptId &&
       previous.paragraphId === next.paragraphId
     )
       return;
@@ -95,10 +107,22 @@ export class TalentActivity {
     // the talent's — otherwise a second stage_select would refuse on the first.
     const asked = this.stage.get();
     const onRequest =
-      asked !== null && asked.setId === next.setId && (asked.scriptId ?? next.scriptId) === next.scriptId;
-    if (onRequest && (previous.setId !== next.setId || previous.scriptId !== next.scriptId)) return;
+      asked !== null &&
+      asked.setId === next.setId &&
+      (asked.scriptId ?? next.scriptId) === next.scriptId &&
+      (asked.variantId ?? next.transcriptId) === next.transcriptId;
+    const landed =
+      previous.setId !== next.setId ||
+      previous.scriptId !== next.scriptId ||
+      previous.transcriptId !== next.transcriptId;
+    if (onRequest && landed) return;
     this.lastMovedAt = this.clock();
     this.where = next;
+  }
+
+  /** Where the window last said the talent is, or null before it has said. */
+  position(): StagePosition | null {
+    return this.lastPosition;
   }
 
   busy(): { what: string; since: string }[] {

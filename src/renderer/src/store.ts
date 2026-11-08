@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { reanchorParagraph } from '../../core/reanchor';
 import { markPress } from './press-log';
 import {
   TRIGGER_STYLES,
@@ -251,7 +252,13 @@ interface PrompterState {
    * → through the panel's own `requestedSetId` path, then the script. The
    * core has already refused it if the talent was mid-take.
    */
-  applyStageRequest: (setId: string, scriptId: string | null) => void;
+  applyStageRequest: (setId: string, scriptId: string | null, variantId?: string | null) => void;
+  /** A variant an agent asked for that has not arrived in this window yet. */
+  requestedVariantId: string | null;
+  /** The paragraph the talent left each variant on, this session only. */
+  variantPlaces: Record<string, string>;
+  /** Bumped when the words on stage change under the talent, so the lane re-seats the live row. */
+  contentSeq: number;
   applyRig: (rigId: string) => void;
   adoptRig: (rig: Rig) => void;
   forgetRig: (rigId: string) => void;
@@ -446,6 +453,9 @@ export const useProm = create<PrompterState>((set, get) => ({
   unreadableFile: null,
   requestedSetId: null,
   requestedScriptId: null,
+  requestedVariantId: null,
+  variantPlaces: {},
+  contentSeq: 0,
 
   cue: null,
   nudge: 0,
@@ -577,7 +587,9 @@ export const useProm = create<PrompterState>((set, get) => ({
     const from = currentTranscript(state);
     const fromParagraph = currentParagraphId(state);
     let step: number;
-    if (transcript && from && fromParagraph) {
+    if (transcript && from && fromParagraph && !moved && isVariantUpdate(from, transcript, script)) {
+      step = stepAfterVariantUpdate(from, state.style, state.step, fromParagraph, transcript, triggers);
+    } else if (transcript && from && fromParagraph) {
       if (transcript.id === from.id && triggers[state.step]?.paragraphId === fromParagraph) {
         // The same index still points at the same paragraph — the common case
         // (a reworded trigger, a new set elsewhere). Hold the exact beat;
@@ -603,6 +615,8 @@ export const useProm = create<PrompterState>((set, get) => ({
       style,
       step,
       freshTranscripts,
+      contentSeq:
+        state.contentSeq + (from && transcript && JSON.stringify(from) !== JSON.stringify(transcript) ? 1 : 0),
       cue: moved
         ? {
             label: String(script.n).padStart(2, '0'),
@@ -611,6 +625,13 @@ export const useProm = create<PrompterState>((set, get) => ({
           }
         : state.cue,
     });
+
+    // A staging request can reach the window before the words it names do.
+    const waiting = get().requestedVariantId;
+    if (waiting && findTranscript(script, waiting)) {
+      set({ requestedVariantId: null });
+      if (get().transcriptId !== waiting) get().selectTranscript(waiting);
+    }
   },
 
   /**
@@ -683,6 +704,7 @@ export const useProm = create<PrompterState>((set, get) => ({
       transcriptId: transcript?.id ?? null,
       style: defaultStyle(transcript),
       step: 0,
+      requestedVariantId: null,
       cue: {
         label: String(script.n).padStart(2, '0'),
         title: script.title,
@@ -741,11 +763,18 @@ export const useProm = create<PrompterState>((set, get) => ({
       state.style && findTriggerSet(transcript, state.style)
         ? state.style
         : defaultStyle(transcript);
-    const landing = correspondingParagraphId(
-      currentTranscript(state),
-      currentParagraphId(state),
-      transcript,
-    );
+    const leaving = currentTranscript(state);
+    const leftOn = currentParagraphId(state);
+    const variantPlaces =
+      leaving?.variant && leftOn ? { ...state.variantPlaces, [leaving.id]: leftOn } : state.variantPlaces;
+    // Two regenerations share no structure: topic ids line up by position only,
+    // so the topic correspondence would land somewhere confident and wrong.
+    const remembered = variantPlaces[transcript.id];
+    const landing = transcript.variant
+      ? paragraphsOf(transcript).some((p) => p.id === remembered)
+        ? remembered!
+        : (paragraphsOf(transcript)[0]?.id ?? null)
+      : correspondingParagraphId(leaving, leftOn, transcript);
     const triggers = style ? (findTriggerSet(transcript, style)?.triggers ?? []) : [];
 
     // Looking at it is what clears the mark.
@@ -759,6 +788,8 @@ export const useProm = create<PrompterState>((set, get) => ({
       style,
       step: stepAtParagraph(transcript, triggers, landing),
       freshTranscripts,
+      variantPlaces,
+      requestedVariantId: null,
     });
   },
 
@@ -902,13 +933,20 @@ export const useProm = create<PrompterState>((set, get) => ({
   setUnreadableFile: (file) => set({ unreadableFile: file }),
   requestSet: (setId) => set({ requestedSetId: setId }),
   clearRequestedSet: () => set({ requestedSetId: null }),
-  applyStageRequest: (setId, scriptId) => {
+  applyStageRequest: (setId, scriptId, variantId = null) => {
     const state = get();
-    if (state.set?.id === setId) {
-      if (scriptId && findScript(state.set, scriptId)) state.selectScript(scriptId);
+    if (state.set?.id !== setId) {
+      set({ requestedSetId: setId, requestedScriptId: scriptId, requestedVariantId: variantId });
       return;
     }
-    set({ requestedSetId: setId, requestedScriptId: scriptId });
+    // Asking for the script they are already on is not a boundary crossing:
+    // selectScript would send them to the top with a cue card.
+    if (scriptId && scriptId !== state.scriptId && findScript(state.set, scriptId))
+      state.selectScript(scriptId);
+    if (!variantId || get().transcriptId === variantId) return;
+    const script = currentScript(get());
+    if (script && findTranscript(script, variantId)) get().selectTranscript(variantId);
+    else set({ requestedVariantId: variantId });
   },
 
   applyRig: (rigId) => {
@@ -1090,6 +1128,29 @@ export const correspondingParagraphId = (
   const first = major?.minors[0]?.paragraphs[0];
   if (first) return first.id;
   return all[all.length - 1]?.id ?? null;
+};
+
+/** A new version of the variant on stage, or the first publish replacing the unlabelled body it came from. */
+const isVariantUpdate = (from: Transcript, to: Transcript, script: Script): boolean =>
+  Boolean(to.variant) &&
+  (to.id === from.id || (!from.variant && !findTranscript(script, from.id)));
+
+/** Same words, same beat inside the paragraph; the ordinal is clamped when the paragraph has fewer triggers now. */
+const stepAfterVariantUpdate = (
+  from: Transcript,
+  style: TriggerStyle | null,
+  step: number,
+  fromParagraph: string,
+  to: Transcript,
+  triggers: { text: string; paragraphId: string }[],
+): number => {
+  const landing = reanchorParagraph(paragraphsOf(from), fromParagraph, paragraphsOf(to));
+  if (!landing) return 0;
+  const before = style ? (findTriggerSet(from, style)?.triggers ?? []) : [];
+  const ordinal = before.slice(0, step).filter((t) => t.paragraphId === fromParagraph).length;
+  const inParagraph = triggers.flatMap((t, i) => (t.paragraphId === landing ? [i] : []));
+  if (inParagraph.length > 0) return inParagraph[Math.min(ordinal, inParagraph.length - 1)]!;
+  return stepAtParagraph(to, triggers, landing);
 };
 
 /**

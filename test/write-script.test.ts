@@ -543,6 +543,74 @@ describe('d04: two named scripts, listed, one put on stage by an agent', () => {
     });
   });
 
+  describe('staging a variant', () => {
+    const SET = `${PROJECT}-scripts`;
+    const LONG = { id: 'long', label: 'Long', version: 1 };
+    const SHORT = { id: 'short', label: 'Short', version: 1 };
+    const seen = async (transcriptId: string, paragraphId = 'p1'): Promise<void> => {
+      const written = await core.invoke(
+        'remember_layout',
+        {
+          layout: DEFAULT_LAYOUT,
+          rigId: null,
+          position: { setId: SET, scriptId: 'story', transcriptId, style: null, paragraphId },
+        },
+        { principal: 'ui' },
+      );
+      expect(written.ok).toBe(true);
+    };
+    const select = (variantId?: string): Promise<any> =>
+      asAgent('stage_select', { setId: SET, scriptId: 'story', ...(variantId ? { variantId } : {}) });
+
+    beforeEach(async () => {
+      await asAgent('write_script', { id: 'story', name: 'Story', text: INTRO, variant: LONG });
+      await asAgent('write_script', { id: 'story', name: 'Story', text: 'Short.', variant: SHORT });
+    });
+
+    it('already on stage and idle: nothing is asked of the window', async () => {
+      await seen('long');
+      const result = await select('long');
+      expect(result).toMatchObject({ ok: true, data: { applied: false, alreadyOnStage: true } });
+      expect((await asAgent('stage_get')).data.request).toBeNull();
+    });
+
+    it('already on stage while the talent is mid-take: still no refusal, still nothing asked', async () => {
+      await seen('long', 'p1');
+      await seen('long', 'p2'); // a move: the talent is busy
+      const result = await select('long');
+      expect(result).toMatchObject({ ok: true, data: { applied: false, alreadyOnStage: true } });
+      expect((await asAgent('stage_get')).data.request).toBeNull();
+    });
+
+    it('naming only the script they are on counts as there', async () => {
+      await seen('long');
+      expect(await select()).toMatchObject({ ok: true, data: { alreadyOnStage: true } });
+    });
+
+    it('another variant, idle: the request carries it to the window', async () => {
+      await seen('long');
+      const result = await select('short');
+      expect(result).toMatchObject({ ok: true, data: { applied: true, variantId: 'short' } });
+      expect((await asAgent('stage_get')).data.request).toMatchObject({ variantId: 'short' });
+    });
+
+    it('another variant, talent busy: refused, and nothing is asked', async () => {
+      await seen('long', 'p1');
+      await seen('long', 'p2');
+      const result = await select('short');
+      expect(result.ok).toBe(false);
+      expect(result.error.failureMode).toBe('app-busy');
+      expect((await asAgent('stage_get')).data.request).toBeNull();
+    });
+
+    it('a variant the script does not have, or one with no script, is refused', async () => {
+      expect((await select('nope')).error.failureMode).toBe('not-found');
+      const noScript = await asAgent('stage_select', { setId: SET, variantId: 'long' });
+      expect(noScript.ok).toBe(false);
+      expect(noScript.error.code).toBe('invalid_input');
+    });
+  });
+
   it('refuses a script the set does not have, naming what it does have', async () => {
     await asAgent('write_script', { name: 'Intro', text: INTRO });
     const result = await asAgent('stage_select', { setId: `${PROJECT}-scripts`, scriptId: 'nope' });

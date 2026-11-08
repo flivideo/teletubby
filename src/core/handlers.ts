@@ -1094,18 +1094,47 @@ export function createHandlers(): Record<string, Handler> {
     const parsed = parse(INPUT.stage_select, input);
     const document = await effectiveDocument(context);
     const set = resolveSet(document, parsed.setId, context.active);
-    if (parsed.scriptId && !findScript(set, parsed.scriptId))
+    const asked = parsed.scriptId ? findScript(set, parsed.scriptId) : undefined;
+    if (parsed.scriptId && !asked)
       fail('not_found', `set "${set.id}" has no script "${parsed.scriptId}"`, {
         available: set.scripts.map((script) => ({ id: script.id, title: script.title })),
       });
+    const variantId = parsed.variantId ?? null;
+    if (variantId) {
+      if (!asked) fail('invalid_input', 'a variantId needs the scriptId it belongs to');
+      if (!asked.transcripts.some((transcript) => transcript.id === variantId))
+        fail('not_found', `script "${asked.id}" has no variant "${variantId}"`, {
+          available: asked.transcripts.map((transcript) => transcript.id),
+        });
+    }
+    // Before the busy check on purpose: asking for where the talent already is
+    // is not a move, however recently they pressed a key.
+    const on = context.activity.position();
+    if (
+      on?.setId === set.id &&
+      (!parsed.scriptId || on.scriptId === parsed.scriptId) &&
+      (!variantId || on.transcriptId === variantId)
+    )
+      return {
+        applied: false,
+        alreadyOnStage: true,
+        setId: set.id,
+        scriptId: parsed.scriptId ?? null,
+        project: set.project ?? null,
+      };
     const busy = busyOf(context);
     if (busy.length > 0)
       fail('app_busy', `the talent is on the prompter (${busy[0]!.what}); an agent does not move them mid-take`, {
         busy,
       });
-    const preview = { setId: set.id, scriptId: parsed.scriptId ?? null, project: set.project ?? null };
+    const preview = {
+      setId: set.id,
+      scriptId: parsed.scriptId ?? null,
+      variantId,
+      project: set.project ?? null,
+    };
     if (context.dryRun) return { applied: false, preview };
-    const request = context.stage.request(set.id, parsed.scriptId ?? null, context.principalName);
+    const request = context.stage.request(set.id, parsed.scriptId ?? null, context.principalName, variantId);
     return { applied: true, ...preview, request };
   };
 

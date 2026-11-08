@@ -24,6 +24,7 @@ export default function CueOverlay(): JSX.Element | null {
 
   return (
     <div
+      data-testid="cue-card"
       className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-veil"
       role="status"
       aria-live="polite"
