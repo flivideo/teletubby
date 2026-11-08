@@ -237,6 +237,14 @@ describe('write_script with a variant — the publish contract', () => {
     const base = { id: 't', corpus: 't', talentId: null, source: 's', topics: [], triggerSets: [] };
     expect(validateTranscript({ ...base, kind: 'variant' })).not.toEqual([]);
     expect(
+      validateTranscript({
+        ...base,
+        kind: 'variant',
+        talentId: 'someone',
+        variant: { label: 'x', version: 1 },
+      }).map((v) => v.path),
+    ).toContain('transcript.talentId');
+    expect(
       validateTranscript({ ...base, kind: 'provenance', variant: { label: 'x', version: 1 } }),
     ).not.toEqual([]);
   });

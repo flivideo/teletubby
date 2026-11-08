@@ -350,6 +350,8 @@ export function validateTranscript(transcript: Transcript, at = 'transcript'): D
     push(`${at}.talentId`, 'a cadence transcript must name the talent it was voiced for');
   if (transcript.kind === 'provenance' && transcript.talentId)
     push(`${at}.talentId`, 'a provenance transcript belongs to no talent — meaning is not voiced');
+  if (transcript.kind === 'variant' && transcript.talentId)
+    push(`${at}.talentId`, 'a variant belongs to no talent — talents are for cadence transcripts');
   if ((transcript.kind === 'variant') !== Boolean(transcript.variant))
     push(`${at}.variant`, 'a variant mark and the variant kind always go together');
 
