@@ -184,6 +184,19 @@ describe('the first publish over yesterday’s unlabelled script', () => {
     expect(paragraphNow()).toBe('p4');
     expect(s().cue).toBeNull();
   });
+  it('puts no arrival dot on the chip the talent is now reading, then or on later updates', () => {
+    open(plain(WORDS));
+    s().refresh(setOf(variant('main', 9, WORDS)));
+    expect(s().freshTranscripts).toEqual({});
+    s().refresh(setOf(variant('main', 10, ['Changed words here entirely.', ...WORDS.slice(1)])));
+    expect(s().freshTranscripts).toEqual({});
+  });
+  it('a dot left on a chip clears once that chip is the one on screen', () => {
+    open(variant('main', 9, WORDS));
+    useProm.setState({ freshTranscripts: { story: ['main'] } });
+    s().refresh(setOf(variant('main', 10, ['Changed words here entirely.', ...WORDS.slice(1)])));
+    expect(s().freshTranscripts).toEqual({});
+  });
 });
 
 describe('another variant arriving', () => {

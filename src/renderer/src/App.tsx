@@ -521,8 +521,8 @@ function Stage(): JSX.Element {
   const freshTranscripts = useProm((s) => s.freshTranscripts);
   // The newest variant goes last, so the one with the dot is the first to scroll out of the row.
   useEffect(() => {
-    document
-      .querySelector('[data-testid="arrival-dot"]:last-of-type')
+    Array.from(document.querySelectorAll('[data-testid="arrival-dot"]'))
+      .at(-1)
       ?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'instant' });
   }, [freshTranscripts]);
 
@@ -1013,7 +1013,9 @@ function Stage(): JSX.Element {
           {/* Corpus and style are the two axes of the A/B/C experiment and the
               talent flips them mid-session, so they are never behind a gesture —
               not the setup panel's, and not the reclaimed state's either. */}
-          <div className="flex min-w-0 max-w-[45vw] gap-1.5 overflow-x-auto">
+          {/* One line and no scrollbar, always: a variant arriving must not make
+              the footer taller in the middle of a take. */}
+          <div className="flex min-w-0 max-w-[45vw] gap-1.5 overflow-x-auto [scrollbar-width:none] [&>button]:shrink-0 [&>button]:whitespace-nowrap">
             {/* A corpus that ARRIVED gets a pulsing yellow dot until it is
                 selected. David sat one click from v07-rewrite for an hour
                 believing it had not landed — the write path worked, the chip

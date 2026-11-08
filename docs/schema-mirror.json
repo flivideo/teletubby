@@ -1374,7 +1374,7 @@
     {
       "anchor": {
         "file": "src/renderer/src/store.ts",
-        "line": 1291
+        "line": 1292
       },
       "authority": "literal union type alias `Rank` - a single declaring symbol",
       "grade": "declared",
@@ -1383,14 +1383,14 @@
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 1291
+            "line": 1292
           },
           "value": "driven"
         },
         {
           "anchor": {
             "file": "src/renderer/src/store.ts",
-            "line": 1291
+            "line": 1292
           },
           "value": "follower"
         }
@@ -2389,7 +2389,7 @@
       "target": "src/renderer/src/voice-live.event.state (branching)"
     }
   ],
-  "generated": "2026-11-08T10:58:58+00:00",
+  "generated": "2026-11-08T11:14:43+00:00",
   "ignored_derived": [
     {
       "anchor": {
@@ -11890,7 +11890,7 @@
     }
   ],
   "target": {
-    "commit": "b33e6dbd39b0955113d2804ca8f5f5fe72472c0b",
+    "commit": "97da6467c83ffef53b62168dcc0584e44aa56a83",
     "root": "..",
     "stack": "typescript"
   },

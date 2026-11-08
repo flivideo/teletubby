@@ -368,11 +368,11 @@ export default function SetupPanel(): JSX.Element | null {
         )}
         {current?.transcripts.some((t) => t.variant) && (
           <Field label="Variants">
-            <ul className="flex flex-col gap-1 font-mono text-[0.7rem]" data-testid="variant-versions">
+            <ul className="flex w-full min-w-0 flex-col gap-1 font-mono text-[0.7rem]" data-testid="variant-versions">
               {current.transcripts.map(
                 (t) =>
                   t.variant && (
-                    <li key={t.id} className="truncate">
+                    <li key={t.id} className="truncate" title={t.variant.label}>
                       {t.variant.label} · v{t.variant.version}
                     </li>
                   ),

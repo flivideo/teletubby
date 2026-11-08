@@ -577,11 +577,12 @@ export const useProm = create<PrompterState>((set, get) => ({
       const prior = state.set?.scripts.find((sc) => sc.id === nextScript.id);
       const marks = new Set(freshTranscripts[nextScript.id] ?? []);
       for (const candidate of nextScript.transcripts) {
-        const displayed =
-          nextScript.id === state.scriptId && candidate.id === state.transcriptId;
+        // What WILL be on screen after this refresh: on a first publish that is
+        // the variant replacing the transcript the talent was reading.
+        const displayed = nextScript.id === script.id && candidate.id === transcript?.id;
         const old = prior?.transcripts.find((o) => o.id === candidate.id);
-        if (!displayed && (!old || JSON.stringify(old) !== JSON.stringify(candidate)))
-          marks.add(candidate.id);
+        if (displayed) marks.delete(candidate.id);
+        else if (!old || JSON.stringify(old) !== JSON.stringify(candidate)) marks.add(candidate.id);
       }
       // A transcript that vanished sheds its mark with it.
       const kept = [...marks].filter((id) => nextScript.transcripts.some((t) => t.id === id));

@@ -192,7 +192,7 @@ export const INPUT = {
         id: slug
           .optional()
           .describe(
-            'defaults to the slug of name; an existing id is REPLACED in place. With variant, only that variant is',
+            'defaults to the slug of name; an existing id is REPLACED in place. With variant, only that variant is replaced',
           ),
         video: projectName
           .nullish()

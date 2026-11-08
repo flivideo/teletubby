@@ -3,7 +3,7 @@
 > Generated from the code, not written about it. Do not hand-edit — every line below is anchored to a `file:line` and is re-derived on every run. `verify_mirror.py` fails when this page no longer matches its JSON. To record a gap the extractor cannot find, use `docs/schema-mirror.known-gaps.json`.
 
 - **stack** `typescript` · **extractor** `extract_typescript.py`
-- **commit** `b33e6dbd39b0` · **generated** 2026-11-08T10:58:58+00:00
+- **commit** `97da6467c83f` · **generated** 2026-11-08T11:14:43+00:00
 - **scope** include `*.ts`, `*.tsx` · exclude `*.test.ts`, `*.test.tsx`, `*.spec.ts`, `*.spec.tsx`, `*.stories.tsx`, `*.config.ts`, `*/test/*`, `*/tests/*`, `*/__tests__/*`, `*/e2e/*`, `*/__mocks__/*`, `*/fixtures/*`, `*.d.ts`, `*/dist/*`, `*/build/*`, `*/out/*`
 - **zod bound** in 0 file(s) by a direct import, 6 through a re-export, 0 by call shape only
 
@@ -52,7 +52,7 @@ Top-level entries by file, with the line each is declared on. Search the page fo
 - `src/renderer/src/App.tsx` — `zone (switch)` (set) :798
 - `src/renderer/src/components/CadencePanel.tsx` — `Rule` :23 · `Score` :31
 - `src/renderer/src/components/Zones.tsx` — `ParagraphVoice` :272
-- `src/renderer/src/store.ts` — `ZONES` (set) :73 · `CueCard` :99 · `PrompterState` :106 · `SetSummary` :277 · `UnreadableFile` :298 · `StageHold` :354 · `Rank` (set) :1291
+- `src/renderer/src/store.ts` — `ZONES` (set) :73 · `CueCard` :99 · `PrompterState` :106 · `SetSummary` :277 · `UnreadableFile` :298 · `StageHold` :354 · `Rank` (set) :1292
 - `src/renderer/src/voice-live.ts` — `VoiceState` (set) :13 · `VoiceStore` :15
 - `src/shared/capabilities.ts` — `PRINCIPALS` (set) :36 · `SIDE_EFFECTS` (set) :43 · `CapabilityKind` (set) :51 · `ERROR_CODES` (set) :59 · `CapabilityMeta` :75 · `InvokeRequest` :428 · `CapabilityError` :435 · `InvokeResult` :444
 - `src/shared/domain-schema.ts` — `paragraphSchema` :47 · `minorTopicSchema` :52 · `majorTopicSchema` :58 · `triggerSchema` :64 · `triggerSetSchema` :70 · `transcriptSchema` :77 · `scriptSchema` :93 · `scriptSetSchema` :108 · `cadenceEnvelopeSchema` :133 · `talentSchema` :145 · `rigLayoutSchema` :155 · `rigSchema` :170 · `workspaceSchema` :176
@@ -338,14 +338,14 @@ Where this row's data was read from: the open project's fli.tubby.json, or the a
 | `project-closed` | `src/renderer/src/store.ts:355` |
 | `unreadable` | `src/renderer/src/store.ts:355` |
 
-### `src/renderer/src/store.Rank` — `src/renderer/src/store.ts:1291`
+### `src/renderer/src/store.Rank` — `src/renderer/src/store.ts:1292`
 
 *literal union type alias `Rank` - a single declaring symbol*
 
 | value | declared at |
 |---|---|
-| `driven` | `src/renderer/src/store.ts:1291` |
-| `follower` | `src/renderer/src/store.ts:1291` |
+| `driven` | `src/renderer/src/store.ts:1292` |
+| `follower` | `src/renderer/src/store.ts:1292` |
 
 ### `src/renderer/src/voice-live.VoiceState` — `src/renderer/src/voice-live.ts:13`
 
