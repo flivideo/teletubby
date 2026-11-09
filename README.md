@@ -31,11 +31,11 @@ verbatim. The fix isn't a better script — it's needing less of it on screen.
 
 ## What it does
 
-True at `6547eca` (2026-09-23).
+True at `f48874f` (2026-11-09).
 
-Teletubby **shows and edits scripts** in a teleprompter. It does not write them. Writing a
-script is a separate, future FliVideo app, **Scribe**. Whatever writes the words hands them to
-Teletubby, and Teletubby puts them in front of the talent.
+Teletubby **shows and edits scripts** in a teleprompter. It does not write them. Today the agent
+**Sally** and the script-writing skills do that; whether scripting needs its own app is undecided.
+Whatever writes the words hands them to Teletubby, and Teletubby puts them in front of the talent.
 
 - **Tied to a video project, not to one script.** Open it on a FliVideo project and it shows
   that project's scripts: a numbered set such as the twelve Kybernesis explainers, or many small
@@ -43,8 +43,15 @@ Teletubby, and Teletubby puts them in front of the talent.
 - **Drivable.** A loopback control API on `7111` lets an agent read and write scripts,
   transcripts and trigger words without the UI. Changes appear in the window without a restart,
   and never move the person on camera.
+- **Follows your voice, if you ask it to.** Voice-follow is off by default; press `V`. Said words fade
+  and the next word gets a quiet underline. Apple's on-device speech is the main engine and Groq the
+  fallback; a key press re-anchors it. Details:
+  [docs/voice-follow-parity-2026-11-04.md](docs/voice-follow-parity-2026-11-04.md).
+- **Takes scripts from Story Pilot.** FliStudio's Story Pilot publishes each variant of a script
+  through `write_script`. Variants appear as chips on the strip, and a new version keeps the talent
+  on the same words.
 - **Part of the FliVideo suite.** It opens through the same `{ brand, project }` contract as
-  FliHub, FliCut and FliCast, and keeps a project's own scripts in `<project>/fli.tubby.json`.
+  FliHub, FliCut, FliCast and FliEdit, and keeps a project's own scripts in `<project>/fli.tubby.json`.
 
 ## Quick start
 
@@ -72,14 +79,14 @@ from the app, so it is always current.
 | `S` | setup panel: script, project, zones, camera side, rigs (`Esc` closes) |
 | `T` | the full transcript, sliding out from the edge away from the lens |
 | `D` | focus: dim everything but the current beat and reclaim the top of the window |
+| `V` | voice-follow on or off |
 | `M` | mirror, for prompter glass |
 | `F` | fullscreen |
 
 Bare `←` `→` are deliberately unbound: the zone model has no single axis for them to mean.
 
-**Not built:** writing scripts (that is Scribe), the AI layer (listening, sync-to-voice, trigger
-generation), recording and clip capture (Ecamm records; FliHub watches the folder). The app
-never invents a trigger word; an agent writes them through the control API.
+**Not built:** writing scripts, trigger generation, recording and clip capture (Ecamm records; FliHub
+watches the folder). The app never invents a trigger word; an agent writes them through the control API.
 
 ## Docs
 
@@ -96,53 +103,13 @@ never invents a trigger word; an agent writes them through the control API.
 | [docs/requirements.md](docs/requirements.md) | What gets built — zone model, camera constraint, trigger styles |
 | [CLAUDE.md](CLAUDE.md) | How to work on this app — the rules, the data pipeline, the gotchas |
 | [docs/prior-art-kybernesis-prompter.md](docs/prior-art-kybernesis-prompter.md) | A working two-column prompter built the day before — what it settled, what it didn't |
-
-## Setup on another machine
-
-Canonical location — **do not clone it anywhere else**, several docs reference this path:
-
-```
-~/dev/ad/flivideo/teletubby      # git@github.com:flivideo/teletubby.git
-```
-
-Moved from `~/dev/ad/apps/teletubby` on 2026-09-10; dated handovers that name the
-old path were right at the time.
-
-Jump alias: **`jfli-tubby`** (registry key `teletubby`), following the `jfli-<name>`
-convention of the other FliVideo apps.
-
-**The alias is already registered and pushed**, so another machine does not re-add it —
-it pulls it. The registry is git-synced; only the generated shell file is per-machine:
-
-```bash
-git -C ~/.config/appydave pull                     # locations.json — source of truth, synced
-cd ~/dev/ad/flivideo && gh repo clone flivideo/teletubby
-
-# regenerate this machine's shell aliases from the registry
-~/dev/ad/appydave-tools/bin/jump.rb generate aliases > /tmp/aliases-jump.zsh
-diff ~/.oh-my-zsh/custom/aliases-jump.zsh /tmp/aliases-jump.zsh    # expect only additions
-cp /tmp/aliases-jump.zsh ~/.oh-my-zsh/custom/aliases-jump.zsh
-source ~/.oh-my-zsh/custom/aliases-jump.zsh
-```
-
-Three ways this goes wrong, all seen before:
-
-- **Never edit `aliases-jump.zsh` by hand.** It is generated; `locations.json` is the
-  source of truth and a hand edit is silently overwritten on the next regen.
-- **Generate to a temp file and diff before copying.** Redirecting straight onto the real
-  file truncates it the moment the generator errors, and you lose every alias at once.
-- **Over SSH, initialise rbenv first.** A non-login shell on the Minis can land on system
-  Ruby 2.6, where `jump.rb` fails — combined with the point above, that is exactly how the
-  alias file gets wiped.
-
-If `jfli-tubby` is missing after all that, the registry pull is what failed, not the
-clone — check `~/.config/appydave` is on `origin/main` before regenerating again.
+| [docs/setup-on-another-machine.md](docs/setup-on-another-machine.md) | The clone location and the jump alias, for another of David's machines |
 
 ## Related
 
 - **FliVideo suite map**: `~/dev/ad/flivideo/README.md`. FliStudio opens Teletubby on a
-  project; FliHub (`~/dev/ad/flivideo/flihub`) captures and queues the takes; Scribe (future)
-  writes the scripts.
+  project and its Story Pilot publishes scripts here; FliHub (`~/dev/ad/flivideo/flihub`) captures
+  and queues the takes; FliCut and FliEdit take it from there.
 - **`@flivideo/core`** (`~/dev/ad/flivideo/fli-core`): the shared open contract and window-state
   helper.
 - **Kybernesis**: the video channel this was first built to serve.
