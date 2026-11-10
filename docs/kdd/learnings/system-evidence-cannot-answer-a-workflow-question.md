@@ -11,9 +11,8 @@ status: open
 **The one-line version**: a full day of project-support work — data model, guards,
 published shapes, a chip-row UI, a grain contract, a registry ruling — was designed
 entirely from what SYSTEMS said (FliHub's code, folders on disk, API counts, measured
-artifacts) and shipped without once asking David how he works with video projects. His
-verdict: *"the worst user experience I've seen — it has no relevance to how I do video
-projects. Why aren't you guys listening to me?"*
+artifacts) and shipped without once asking David how he works with video projects. It
+didn't match how he works, and he rejected it.
 
 ## What happened
 
