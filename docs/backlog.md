@@ -25,6 +25,8 @@ end of the afternoon. Keep it warm. We'll want to test our scripts on it today."
 - **Voice-follow real numbers.** After the press log: record at least 3 scripted takes and compare follow vs presses.
   Slice 1 (`d748f8a`, ported Textream PromptMatcher) is merged but switched off.
 
+- **Drive a narrated deck by David's voice** (David, 18 Nov 2026): play a narrated 16:9 deck (e.g. https://claude.ai/artifact/LqFvLeSyRQmbpMT1GBNaem) while David talks to camera, with the slides following his voice. Full item: FliStudio `docs/backlog.md`, "Narrated slide deck as a ready-made presentation David talks over". Builds on voice-follow slice 1 above.
+
 ## Banked
 
 - Script on demand (fill-in and rescue): `docs/briefs/script-on-demand-2026-10-11.md`, a draft, not authorised.
