@@ -1,10 +1,6 @@
 # Teletubby
 
-An open-source teleprompter that you **glance at**, not read from.
-
-Standard teleprompters make you recite. Teletubby is built on the opposite bet: the
-words that come out of your mouth should be *yours*, and the screen's job is only to
-keep you on track. It does that with three columns instead of one scrolling wall of text.
+**An open-source teleprompter that you glance at, not read from, driven by an agent or by hand.**
 
 ```
 ┌──────────────┬─────────────────────┬────────────────────────────┐
@@ -20,48 +16,43 @@ keep you on track. It does that with three columns instead of one scrolling wall
 └──────────────┴─────────────────────┴────────────────────────────┘
 ```
 
-**Column 2 is the product.** Everything else is context.
+Standard teleprompters make you recite. Teletubby is built on the opposite bet: the words that come out of your mouth
+should be *yours*, and the screen's job is only to keep you on track. Scripts that someone else wrote do not come out
+naturally, because they are not in your voice, and reading verbatim looks like reading verbatim. The fix is not a better
+script; it is needing less of it on screen. **Column 2 is the product.** Everything else is context.
 
-## Why it exists
+Teletubby **shows and edits scripts**; it does not write them. Whatever writes the words (a person, a script-writing
+agent, FliStudio's Story Pilot) hands them over, and Teletubby puts them in front of the talent. It is the teleprompter
+of the FliVideo suite: it opens on a project, keeps that project's scripts in `<project>/fli.tubby.json`, and takes
+published script variants from FliStudio.
 
-David's own constraint, stated plainly: *"my memory is going — I can't hold recited
-sentences in my head."* Scripts written by someone (or something) else don't come out
-naturally, because they aren't in his voice. Reading verbatim looks like reading
-verbatim. The fix isn't a better script — it's needing less of it on screen.
-
-## What it does
-
-True at `f48874f` (2026-11-09).
-
-Teletubby **shows and edits scripts** in a teleprompter. It does not write them. Today the agent
-**Sally** and the script-writing skills do that; whether scripting needs its own app is undecided.
-Whatever writes the words hands them to Teletubby, and Teletubby puts them in front of the talent.
-
-- **Tied to a video project, not to one script.** Open it on a FliVideo project and it shows
-  that project's scripts: a numbered set such as the twelve Kybernesis explainers, or many small
-  named pieces (an intro, a title, a CTA), each optionally tagged with the video it is for.
-- **Drivable.** A loopback control API on `7111` lets an agent read and write scripts,
-  transcripts and trigger words without the UI. Changes appear in the window without a restart,
-  and never move the person on camera.
-- **Follows your voice, if you ask it to.** Voice-follow is off by default; press `V`. Said words fade
-  and the next word gets a quiet underline. Apple's on-device speech is the main engine and Groq the
-  fallback; a key press re-anchors it. Details:
+- **Tied to a video project, not to one script**: a numbered set, or many small named pieces, each optionally tagged
+  with the video it is for.
+- **Drivable**: a loopback control API lets an agent read and write scripts, transcripts and trigger words without the
+  UI. Changes appear without a restart and never move the person on camera.
+- **Follows your voice, if you ask it to**: off by default, `V` turns it on. Said words fade and the next word gets a
+  quiet underline; Apple's on-device speech is the main engine, with a cloud fallback. Details:
   [docs/voice-follow-parity-2026-11-04.md](docs/voice-follow-parity-2026-11-04.md).
-- **Takes scripts from Story Pilot.** FliStudio's Story Pilot publishes each variant of a script
-  through `write_script`. Variants appear as chips on the strip, and a new version keeps the talent
-  on the same words.
-- **Part of the FliVideo suite.** It opens through the same `{ brand, project }` contract as
-  FliHub, FliCut, FliCast and FliEdit, and keeps a project's own scripts in `<project>/fli.tubby.json`.
 
-## Quick start
+**Not built:** writing scripts, trigger generation, recording and clip capture. The app never invents a trigger word.
+
+## Run
 
 ```bash
-npm install          # npm only — packageManager is pinned
-npm run app          # starts detached; renderer on 7110, control API on 7111
-npm run app:status   # is it up?
+npm install          # npm only: packageManager is pinned
+npm run app          # starts detached. Also: app:status, app:stop, app:restart, app:logs
 ```
 
-Open it on a project, then hand it a script:
+**Needs:** macOS · Node and npm · the contract library `@flivideo/core` (a `github:` dependency) ·
+**Ports:** renderer 7110 · control API 7111 (loopback).
+
+Keys: `↑` `↓` `Space` step the beat · `⌘←` `⌘→` previous / next script · `S` setup · `T` transcript · `D` focus ·
+`V` voice-follow · `M` mirror · `F` fullscreen. Bare `←` `→` are deliberately unbound.
+
+## Open it on a project
+
+Teletubby follows the suite's open contract: pointed at a **brand** and **project** (optionally a **video**) at
+launch, or re-pointed while it runs.
 
 ```bash
 scripts/app.sh start --brand appydave --project d01-flivideo-tour
@@ -69,49 +60,38 @@ bin/teletubby.mjs call write_script \
   --input '{"name":"Intro","text":"First paragraph.\n\nSecond paragraph.","video":"flivideo-tour"}'
 ```
 
-`bin/teletubby.mjs capabilities` lists every verb with its input shape. The list is generated
-from the app, so it is always current.
+The shared rules and refusal codes live in the contract library's mirror and in
+[docs/schema-mirror.md](docs/schema-mirror.md).
 
-| Key | Does |
-|---|---|
-| `↑` `↓` `Space` | step the beat, at the scale of the driven zone; clamped inside the script, never crosses into the next |
-| `⌘←` `⌘→` | previous / next script |
-| `S` | setup panel: script, project, zones, camera side, rigs (`Esc` closes) |
-| `T` | the full transcript, sliding out from the edge away from the lens |
-| `D` | focus: dim everything but the current beat and reclaim the top of the window |
-| `V` | voice-follow on or off |
-| `M` | mirror, for prompter glass |
-| `F` | fullscreen |
+## Ask it what it can do
 
-Bare `←` `→` are deliberately unbound: the zone model has no single axis for them to mean.
+Teletubby describes itself; this README does not copy the command list.
 
-**Not built:** writing scripts, trigger generation, recording and clip capture (Ecamm records; FliHub
-watches the folder). The app never invents a trigger word; an agent writes them through the control API.
+- **`GET /api/describe`** (`describe/1`) and **`GET /api/map`** (the command map): no token needed.
+- **`bin/teletubby.mjs capabilities`** lists every verb with its input shape, generated from the app.
 
 ## Docs
 
-| Doc | What's in it |
-|---|---|
-| [docs/SYSTEM.md](docs/SYSTEM.md) | How it works and why: the core concepts, workflows, design decisions and failure modes |
-| [docs/AGENT-NOTES.md](docs/AGENT-NOTES.md) | The short list an agent working in this repo needs, and nothing the code already says |
+| Read | For |
+| --- | --- |
+| [docs/SYSTEM.md](docs/SYSTEM.md) | How it works and why: concepts, workflows, design decisions, failure modes |
+| [docs/AGENT-NOTES.md](docs/AGENT-NOTES.md) | What an agent working in this repo needs, and nothing the code already says |
 | [docs/schema-mirror.md](docs/schema-mirror.md) | Every data shape, generated from the code and checked for drift |
 | [docs/kdd/](docs/kdd/README.md) | Decisions (ADRs) and learnings, one per incident |
 | [docs/concept.md](docs/concept.md) | The three-column model, the AI layer, FliHub integration |
-| [docs/open-questions.md](docs/open-questions.md) | What's genuinely unresolved — trigger words, scrolling, scope |
-| [docs/source/b421-2026-08-19-plaud.md](docs/source/b421-2026-08-19-plaud.md) | Raw origin brainstorm (Captain's Log B421) |
 | [docs/north-star.md](docs/north-star.md) | What it is for, and the test that settles feature arguments |
-| [docs/requirements.md](docs/requirements.md) | What gets built — zone model, camera constraint, trigger styles |
-| [CLAUDE.md](CLAUDE.md) | How to work on this app — the rules, the data pipeline, the gotchas |
-| [docs/prior-art-kybernesis-prompter.md](docs/prior-art-kybernesis-prompter.md) | A working two-column prompter built the day before — what it settled, what it didn't |
-| [docs/setup-on-another-machine.md](docs/setup-on-another-machine.md) | The clone location and the jump alias, for another of David's machines |
+| [docs/requirements.md](docs/requirements.md) | What gets built: zone model, camera constraint, trigger styles |
+| [docs/open-questions.md](docs/open-questions.md) | What is genuinely unresolved |
+| [CLAUDE.md](CLAUDE.md) | How to work on this app: the rules and the gotchas |
 
-## Related
+## Suite
 
-- **FliVideo suite map**: `~/dev/ad/flivideo/README.md`. FliStudio opens Teletubby on a
-  project and its Story Pilot publishes scripts here; FliHub (`~/dev/ad/flivideo/flihub`) captures
-  and queues the takes; FliCut and FliEdit take it from there.
-- **`@flivideo/core`** (`~/dev/ad/flivideo/fli-core`): the shared open contract and window-state
-  helper.
-- **Kybernesis**: the video channel this was first built to serve.
+Part of the FliVideo suite — map: [flivideo/flivideo](https://github.com/flivideo/flivideo#readme). Shared contract:
+[`@flivideo/core`](https://github.com/flivideo/fli-core). Siblings: FliStudio · FliHub · FliCut · FliCast · FliEdit ·
+FliTools.
 
-MIT licensed. See [LICENSE](LICENSE).
+## Status
+
+**Built and in use; the control API and docs are current.** True at `16c835e` (2026-11-18).
+
+Public repo `flivideo/teletubby` · MIT, see [LICENSE](LICENSE)
