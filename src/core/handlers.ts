@@ -85,6 +85,8 @@ export interface HandlerContext {
   stage: StageRequests;
   /** When the talent last moved — what "busy" means. */
   activity: TalentActivity;
+  /** RPC Map: builds the `system_describe` document (the host has the identity and the counts). Absent headless. */
+  describe?: () => unknown;
   /** Who is calling, by name (`human:prompter`, `agent:claude`, `cli`). */
   principalName: string;
   repository: Repository;
@@ -1141,6 +1143,12 @@ export function createHandlers(): Record<string, Handler> {
       busy: busyOf(context),
       note: 'request is what an agent last asked for; the window reports where it actually is in list_rigs → workspace.position',
     };
+  };
+
+  handlers.system_describe = async (input, context) => {
+    parse(INPUT.system_describe, input);
+    if (!context.describe) fail('unavailable', 'this host has no self-description (system.describe needs the app host)');
+    return context.describe();
   };
 
   handlers.system_status = async (input, context) => {

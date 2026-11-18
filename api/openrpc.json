@@ -3,7 +3,7 @@
   "info": {
     "title": "Teletubby capability API",
     "version": "api1",
-    "description": "The teleprompter that shows and edits scripts. Every client — the prompter window, `bin/teletubby.mjs`, `POST /api/invoke` (snake names) and `POST /api/rpc` (these family.verb names) — calls one seam, `core.invoke`. Port and bearer token: `~/Library/Application Support/teletubby/control.json`. Name yourself in `x-fli-principal: agent:<name>`.\n\n38 methods; 6 are human-only in whole or in part (`x-human-only`) and refused with `forbidden` for agent and cli principals.\n\nEvery error carries `data.failureMode` (the canonical name) beside the integer code."
+    "description": "The teleprompter that shows and edits scripts. Every client — the prompter window, `bin/teletubby.mjs`, `POST /api/invoke` (snake names) and `POST /api/rpc` (these family.verb names) — calls one seam, `core.invoke`. Port and bearer token: `~/Library/Application Support/teletubby/control.json`. Name yourself in `x-fli-principal: agent:<name>`.\n\n39 methods; 6 are human-only in whole or in part (`x-human-only`) and refused with `forbidden` for agent and cli principals.\n\nEvery error carries `data.failureMode` (the canonical name) beside the integer code."
   },
   "servers": [
     {
@@ -6466,6 +6466,666 @@
       "x-required": [
         "setId"
       ]
+    },
+    {
+      "name": "system.describe",
+      "summary": "Teletubby describes itself (describe/1, RPC Map): who it is (name, version, git sha, machine), what it is for, every command with access (read / write / long job), the person-only mark, inputs, output and one example request, its data files, events and settings, and how often each command has been used since counting began. The same document as GET /api/describe, which needs no token.",
+      "tags": [
+        {
+          "name": "system"
+        }
+      ],
+      "paramStructure": "by-name",
+      "params": [],
+      "result": {
+        "name": "result",
+        "description": "The call envelope: `ok: true` with the value, or `ok: false` with a named refusal.",
+        "schema": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "ok",
+                "value"
+              ],
+              "properties": {
+                "ok": {
+                  "const": true
+                },
+                "value": {}
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "ok",
+                "error"
+              ],
+              "properties": {
+                "ok": {
+                  "const": false
+                },
+                "error": {
+                  "type": "object"
+                }
+              }
+            }
+          ],
+          "x-value": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "object",
+            "properties": {
+              "schema": {
+                "type": "string",
+                "const": "describe/1"
+              },
+              "generatedAt": {
+                "type": "string"
+              },
+              "app": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "gitSha": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "machine": {
+                    "type": "string"
+                  },
+                  "purpose": {
+                    "type": "string"
+                  },
+                  "startedAt": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "version",
+                  "gitSha",
+                  "machine",
+                  "purpose",
+                  "startedAt"
+                ],
+                "additionalProperties": false
+              },
+              "parts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "purpose": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "owner": {
+                      "type": "string"
+                    },
+                    "dataFiles": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string"
+                          },
+                          "access": {
+                            "type": "string",
+                            "enum": [
+                              "read",
+                              "write",
+                              "read-write"
+                            ]
+                          },
+                          "purpose": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "access",
+                          "purpose"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "events": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "channel": {
+                            "type": "string"
+                          },
+                          "purpose": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "purpose"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "settings": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "where": {
+                            "type": "string"
+                          },
+                          "purpose": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "where",
+                          "purpose"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "docs": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "label": {
+                            "type": "string"
+                          },
+                          "href": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "label",
+                          "href"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "core",
+                        "extension"
+                      ]
+                    },
+                    "namespace": {
+                      "type": "string"
+                    },
+                    "stage": {
+                      "type": "string"
+                    },
+                    "contractVersion": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "apps": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "commands": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "family": {
+                            "type": "string"
+                          },
+                          "summary": {
+                            "type": "string"
+                          },
+                          "access": {
+                            "type": "string",
+                            "enum": [
+                              "read",
+                              "write",
+                              "long-job"
+                            ]
+                          },
+                          "humanOnly": {
+                            "anyOf": [
+                              {
+                                "type": "boolean"
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "when": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "when"
+                                ],
+                                "additionalProperties": false
+                              }
+                            ]
+                          },
+                          "kind": {
+                            "type": "string"
+                          },
+                          "sideEffects": {
+                            "type": "string"
+                          },
+                          "inputs": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "required": {
+                                  "type": "boolean"
+                                },
+                                "type": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "required",
+                                "type"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "output": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "type": "object",
+                            "properties": {
+                              "jsonrpc": {
+                                "type": "string",
+                                "const": "2.0"
+                              },
+                              "id": {
+                                "type": "number"
+                              },
+                              "method": {
+                                "type": "string"
+                              },
+                              "params": {
+                                "type": "object",
+                                "propertyNames": {
+                                  "type": "string"
+                                },
+                                "additionalProperties": {}
+                              }
+                            },
+                            "required": [
+                              "jsonrpc",
+                              "id",
+                              "method",
+                              "params"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "failureModes": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "usage": {
+                            "type": "object",
+                            "properties": {
+                              "calls": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "firstUsed": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "lastUsed": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "lastPrincipal": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "lastFailureMode": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "calls",
+                              "firstUsed",
+                              "lastUsed",
+                              "lastPrincipal",
+                              "lastFailureMode"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "family",
+                          "summary",
+                          "access",
+                          "humanOnly",
+                          "kind",
+                          "sideEffects",
+                          "inputs",
+                          "output",
+                          "example",
+                          "failureModes"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "name",
+                    "purpose",
+                    "version",
+                    "owner",
+                    "dataFiles",
+                    "events",
+                    "settings",
+                    "docs",
+                    "kind",
+                    "commands"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "totals": {
+                "type": "object",
+                "properties": {
+                  "parts": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "commands": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "read": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "write": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "longJob": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "humanOnly": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "used": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "unused": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "parts",
+                  "commands",
+                  "read",
+                  "write",
+                  "longJob",
+                  "humanOnly"
+                ],
+                "additionalProperties": false
+              },
+              "usageSince": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "docs": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "href": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "href"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "schema",
+              "generatedAt",
+              "app",
+              "parts",
+              "totals",
+              "docs"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "errors": [
+        {
+          "code": -32001,
+          "message": "forbidden",
+          "data": {
+            "type": "object",
+            "required": [
+              "failureMode"
+            ],
+            "properties": {
+              "failureMode": {
+                "const": "forbidden"
+              },
+              "details": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "capability": {
+                    "type": "string"
+                  },
+                  "principal": {
+                    "type": "string"
+                  },
+                  "allowed": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "human",
+                        "agent",
+                        "cli"
+                      ]
+                    }
+                  },
+                  "humanOnly": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "capability",
+                  "principal",
+                  "allowed",
+                  "humanOnly"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "code": -32007,
+          "message": "rate-limited",
+          "data": {
+            "type": "object",
+            "required": [
+              "failureMode"
+            ],
+            "properties": {
+              "failureMode": {
+                "const": "rate-limited"
+              },
+              "details": {}
+            }
+          }
+        },
+        {
+          "code": -32008,
+          "message": "unavailable",
+          "data": {
+            "type": "object",
+            "required": [
+              "failureMode"
+            ],
+            "properties": {
+              "failureMode": {
+                "const": "unavailable"
+              },
+              "details": {}
+            }
+          }
+        },
+        {
+          "code": -32601,
+          "message": "unknown-capability",
+          "data": {
+            "type": "object",
+            "required": [
+              "failureMode"
+            ],
+            "properties": {
+              "failureMode": {
+                "const": "unknown-capability"
+              },
+              "details": {}
+            }
+          }
+        },
+        {
+          "code": -32602,
+          "message": "invalid-input",
+          "data": {
+            "type": "object",
+            "required": [
+              "failureMode"
+            ],
+            "properties": {
+              "failureMode": {
+                "const": "invalid-input"
+              },
+              "details": {}
+            }
+          }
+        },
+        {
+          "code": -32603,
+          "message": "internal",
+          "data": {
+            "type": "object",
+            "required": [
+              "failureMode"
+            ],
+            "properties": {
+              "failureMode": {
+                "const": "internal"
+              },
+              "details": {}
+            }
+          }
+        }
+      ],
+      "x-kind": "query",
+      "x-family": "system",
+      "x-principals": [
+        "human",
+        "agent",
+        "cli"
+      ],
+      "x-human-only": false,
+      "x-side-effects": "read-only",
+      "x-idempotent": true,
+      "x-confirmation-required": false,
+      "x-expected-duration": "fast",
+      "x-failure-modes": [
+        "unavailable"
+      ],
+      "x-required": []
     },
     {
       "name": "system.quit",

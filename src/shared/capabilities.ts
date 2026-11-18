@@ -366,6 +366,11 @@ export const CAPABILITIES: readonly CapabilityMeta[] = [
     { failureModes: ['unavailable'] },
   ),
   query(
+    'system_describe',
+    'Teletubby describes itself (describe/1, RPC Map): who it is (name, version, git sha, machine), what it is for, every command with access (read / write / long job), the person-only mark, inputs, output and one example request, its data files, events and settings, and how often each command has been used since counting began. The same document as GET /api/describe, which needs no token.',
+    { failureModes: ['unavailable'] },
+  ),
+  query(
     'system_status',
     'Is the app up, which run is it, what project is open, and is the talent mid-session (busy).',
     { failureModes: [] },

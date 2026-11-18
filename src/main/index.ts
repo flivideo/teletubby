@@ -1,7 +1,9 @@
 import { app, ipcMain, screen, systemPreferences, type BrowserWindow } from 'electron';
-import { spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { UsageTelemetry } from '@flivideo/core';
+import { teletubbyDescribe } from './describe.js';
 import {
   appScriptArgs,
   loadWindow,
@@ -33,6 +35,8 @@ import type { WindowManager } from './window-manager.js';
 let core: Core | null = null;
 let windowsRef: WindowManager | null = null;
 let control: ControlServerHandle | null = null;
+/** RPC Map: call counts beside control.json; closed (flushed) at stop. */
+let usage: UsageTelemetry | null = null;
 let pressLogDir: () => string | null = () => null;
 const pressLog = new PressLog({
   dir: () => pressLogDir(),
@@ -308,8 +312,26 @@ const desktop = createConsole({
     // overwrites — an agent's trigger set written yesterday survives today's
     // build, which would not be true if the bundle were the source of truth.
     const repository = new FileRepository(join(userData, 'teletubby.json'));
+    // RPC Map: call counts beside control.json (written at most every few seconds; a failed write costs the counts, never a call).
+    const counts = new UsageTelemetry({
+      file: join(userData, 'usage.json'),
+      onError: (error) => logger.warn({ error: String(error) }, 'usage counts not written'),
+    });
+    usage = counts;
+    void counts.load();
+    const hooks = lifecycleHooks(windows);
+    const gitSha = ((): string | null => {
+      try {
+        return execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: app.getAppPath(), encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() || null;
+      } catch {
+        return null; // a packaged app has no checkout
+      }
+    })();
+    const describe = (): unknown => teletubbyDescribe({ version: app.getVersion(), gitSha, startedAt: hooks.startedAt }, counts);
     core = createCore({
-      lifecycle: lifecycleHooks(windows),
+      lifecycle: hooks,
+      usage: counts,
+      describe,
       repository,
       auditSink: (entry) =>
         logger.info(
@@ -352,6 +374,7 @@ const desktop = createConsole({
         core,
         userDataPath: userData,
         appVersion: app.getVersion(),
+        describe,
         log: (message, detail) => logger.info({ detail }, message),
       });
     } catch (error) {
@@ -370,6 +393,8 @@ const desktop = createConsole({
 desktop.lifecycle.onStop(async () => {
   await control?.close();
   control = null;
+  await usage?.close();
+  usage = null;
 });
 
 /**

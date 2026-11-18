@@ -355,6 +355,7 @@ export const INPUT = {
       }),
   stage_get: z.object({}),
 
+  system_describe: z.object({}),
   system_status: z.object({}),
   voice_selftest: z.object({}),
   system_show: z.object({}),

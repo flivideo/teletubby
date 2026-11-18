@@ -33,6 +33,7 @@ import {
   newControlToken,
   removeControlFile,
   renderApiPage,
+  renderMapPage,
   writeControlFile,
   type CallAnswer,
 } from '@flivideo/core';
@@ -47,6 +48,7 @@ import type { InvokeResult } from '@shared/capabilities';
  *   POST /api/invoke      snake names (`write_script`) — unchanged, the CLI's door
  *   POST /api/rpc         JSON-RPC 2.0, family.verb names (`script.write`)
  *   GET  /api/openrpc.json  the spec (committed as api/openrpc.json) — no token
+ *   GET  /api/describe    the self-description (describe/1) — no token; /api/map draws it
  *   GET  /api/docs        the reference page — no token, read-only
  *   GET  /api/console     pick a verb, fill the fields, fire it as agent:console
  *   GET  /api/session     the console's token, same-origin pages only
@@ -63,6 +65,8 @@ export interface ControlServerOptions {
   userDataPath: string;
   port?: number;
   appVersion: string;
+  /** RPC Map: the `system_describe` document, also served at GET /api/describe (no token). */
+  describe?: () => unknown;
   log?: (message: string, detail?: unknown) => void;
 }
 
@@ -177,6 +181,15 @@ export async function startControlServer(
     // token from /api/session, which only a same-origin page may read.
     if (request.method === 'GET' && url.pathname === '/api/openrpc.json') {
       json(response, 200, openRpc());
+      return;
+    }
+    if (request.method === 'GET' && url.pathname === '/api/describe') {
+      if (options.describe) json(response, 200, options.describe());
+      else json(response, 404, { ok: false, error: { code: 'not_found', message: 'this host has no self-description' } });
+      return;
+    }
+    if (request.method === 'GET' && url.pathname === '/api/map') {
+      sendPage(response, renderMapPage({ describePath: '/api/describe', rpcPath: RPC_PATH, tokenPath: '/api/session', principal: 'agent:map', consoleHref: '/api/console' }));
       return;
     }
     if (request.method === 'GET' && url.pathname === '/api/docs') {
@@ -301,6 +314,8 @@ export async function startControlServer(
           routes: [
             'GET /api/health',
             'GET /api/openrpc.json',
+            'GET /api/describe',
+            'GET /api/map',
             'GET /api/docs',
             'GET /api/console',
             'GET /api/capabilities',

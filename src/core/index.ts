@@ -59,6 +59,10 @@ export interface CoreOptions {
    * answer `unavailable` rather than pretending.
    */
   lifecycle?: LifecycleHooks;
+  /** RPC Map: counts every call at this seam (fli-core `UsageTelemetry` fits). Absent in most tests. */
+  usage?: { record(verb: string, principal: string, failureMode?: string | null): void };
+  /** RPC Map: builds the `system_describe` document. Absent: the verb answers `unavailable`. */
+  describe?: () => unknown;
 }
 
 /** Read back from the window after a raise — never what was asked for. */
@@ -148,6 +152,22 @@ export function createCore(options: CoreOptions): Core {
     input: unknown,
     invokeOptions: InvokeOptions,
   ): Promise<InvokeResult> {
+    const result = await invokeInner(name, input, invokeOptions);
+    // Telemetry (RPC Map): counted at the one seam the window, CLI and every agent share, under the suite's family.verb name.
+    // A name that is not a published verb is not counted, so a typo cannot grow the table.
+    const dotted = DOTTED_NAME[name];
+    if (options.usage && dotted) {
+      const who = invokeOptions.as ?? (invokeOptions.principal === 'ui' ? UI_PRINCIPAL : ANONYMOUS_AGENT);
+      options.usage.record(dotted, who, result.ok ? null : (result.error.failureMode ?? result.error.code));
+    }
+    return result;
+  }
+
+  async function invokeInner(
+    name: string,
+    input: unknown,
+    invokeOptions: InvokeOptions,
+  ): Promise<InvokeResult> {
     const { principal } = invokeOptions;
     let capability: CapabilityMeta | undefined;
     let prior: unknown;
@@ -218,6 +238,7 @@ export function createCore(options: CoreOptions): Core {
 
       const context: HandlerContext = {
         lifecycle: options.lifecycle,
+        ...(options.describe ? { describe: options.describe } : {}),
         stage,
         activity,
         principalName,

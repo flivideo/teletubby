@@ -33,6 +33,7 @@ import {
   LIFECYCLE_CAPABILITIES,
   SUITE_FAILURE_CODES,
   SUITE_REFUSAL_DETAILS,
+  DescribeDocument,
   defineCapabilities,
   defineCapability,
   defineFailureCodes,
@@ -83,6 +84,7 @@ export const DOTTED_NAME: Readonly<Record<string, string>> = {
   list_pending: 'pending.list',
   stage_select: 'stage.select',
   stage_get: 'stage.get',
+  system_describe: 'system.describe',
   system_status: 'system.status',
   voice_selftest: 'voice.selftest',
   system_show: 'system.show',
@@ -175,7 +177,7 @@ const contractFor = (meta: CapabilityMeta): CapabilityContract => {
     input: schema
       ? (z4.fromJSONSchema(inputJsonSchema(schema) as never) as z4.ZodType)
       : z4.object({}),
-    output: z4.unknown(),
+    output: meta.name === 'system_describe' ? DescribeDocument : z4.unknown(),
     sideEffects: meta.sideEffects,
     idempotent: meta.idempotent,
     confirmationRequired: meta.confirmationRequired,
